@@ -1,0 +1,19 @@
+{
+	"id" : "discordlink",
+	"name" : "Discord Link",
+	"description" : "Le plugin va permettre d'envoiler des message sur un serveur discord, et dans un second temps d'utiliser les fonction ask de jeedom.",
+	"licence" : "AGPL",
+	"author" : "Thibaut.Trarbach",
+	"require" : "3.2",
+	"category" : "programming",
+	"hasDependency" : true,
+	"hasOwnDeamon" : true,
+	"maxDependancyInstallTime" : 300,
+	"changelog" : "https://jeedom.github.io/plugin-template/#language#/changelog",
+	"documentation" : "https://jeedom.github.io/plugin-template/#language#/",
+	"link" : {
+		"forum":"Lien vers le forum"
+	},
+	"language" : ["fr_FR"],
+	"compatibility" : ["miniplus","smart","rpi","docker","diy"]
+}
