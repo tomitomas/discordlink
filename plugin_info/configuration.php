@@ -39,6 +39,6 @@ if (!isConnect()) {
                 </select>
             </div>
         </div>
-  </fieldset>
+    </fieldset>
 </form>
 
