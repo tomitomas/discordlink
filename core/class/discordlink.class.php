@@ -19,7 +19,7 @@
 /* * ***************************Includes********************************* */
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
-class template extends eqLogic {
+class discordlink extends eqLogic {
     /*     * *************************Attributs****************************** */
 
 
@@ -51,6 +51,25 @@ class template extends eqLogic {
 
 
     /*     * *********************Méthodes d'instance************************* */
+
+	public static function dependancy_info() {
+        $return = array();
+        $return['log'] = 'discordlink_dep';
+        $return['state'] = 'nok';
+        $cmd = "dpkg -l | grep jre";
+        exec($cmd, $output, $return_var);
+
+        if ($output[0] != "") {
+          $return['state'] = 'ok';
+        }
+        return $return;
+    }
+
+	public static function dependancy_install() {
+		$dep_info = self::dependancy_info();
+		log::remove(__CLASS__ . '_dep');
+		return array('script' => dirname(__FILE__) . '/../../resources/install.sh ' . jeedom::getTmpFolder('discordlink') . '/dependance', 'log' => log::getPathToLog(__CLASS__ . '_dep'));
+	}
 
     public function preInsert() {
         
@@ -106,7 +125,7 @@ class template extends eqLogic {
     /*     * **********************Getteur Setteur*************************** */
 }
 
-class templateCmd extends cmd {
+class discordlinkCmd extends cmd {
     /*     * *************************Attributs****************************** */
 
 
