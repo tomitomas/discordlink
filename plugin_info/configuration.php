@@ -30,6 +30,20 @@ if (!isConnect()) {
                 <input class="configKey form-control" data-l1key="Token" />
             </div>
         </div>
+        </br>
+        <center>
+            <?php
+          
+            include_file('desktop', 'configuration', 'js', 'discordlink');
+
+            if (discordlink::deamon_info()['state'] == "ok") {
+                echo '<a class="btn btn-success btn-sm bt_getinvite">Ajouter votre bot a votre serveur discord</a>';
+                sendVarToJS('invitebotdiscord',discordlink::getinvite());
+            } else {
+                echo '<a class="btn btn-danger btn-sm bt_errorinvite">Erreur Lancer votre deamon Avant</a>';
+            }
+            ?>
+        </center>
     </fieldset>
 </form>
 

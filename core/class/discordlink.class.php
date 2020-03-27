@@ -52,6 +52,13 @@ class discordlink extends eqLogic {
 
     /*     * *********************Méthodes d'instance************************* */
 
+	public static function getinvite() {
+		$json = file_get_contents("http://" . config::byKey('internalAddr') . ":3466/getinvite");
+		$json = json_decode($json, true);
+		$json = $json[0];
+		return $json['invite'];
+	}
+
 	public static function dependancy_info() {
 		$return = array();
 		$return['log'] = 'discordlink_dep';
