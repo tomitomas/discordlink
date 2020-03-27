@@ -16,7 +16,7 @@ const logLevel = process.argv[4];
 
 /* Configuration */
 const config = {
-	logger: console,
+	logger: console2,
 	token: token,
 	listeningPort: 3466
 };
@@ -61,7 +61,7 @@ function isEmpty(obj) {
 	//niveaudeLog=2 c'est reduit
 	
 
-function console(text, level='') {
+function console2(text, level='') {
 	var today = new Date();
 
 	// 100=DEBUG
