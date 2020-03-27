@@ -286,7 +286,6 @@ function httpPost(nom, jsonaenvoyer) {
 
 var url=IPJeedom+"/plugins/discordlink/core/php/jeeAlexaapi.php?apikey="+ClePlugin+"&nom="+nom;
 
-console.log(url);
 config.logger && config.logger('URL envoyée: '+url, "DEBUG");
  
 jsonaenvoyer=JSON.stringify(jsonaenvoyer);
