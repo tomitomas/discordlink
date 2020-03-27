@@ -1,12 +1,22 @@
+######################### INCLUSION LIB ##########################
+BASEDIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+wget https://raw.githubusercontent.com/NebzHB/dependance.lib/master/dependance.lib -O $BASEDIR/dependance.lib &>/dev/null
+PLUGIN=$(basename "$(realpath $BASEDIR/..)")
+. ${BASEDIR}/dependance.lib
+##################################################################
+
+pre
+
+
 PROGRESS_FILE=/tmp/jeedom/${2}/dependance
 installVer='12' 	#NodeJS major version to be installed
 minVer='12'	#min NodeJS major version to be accepted
 
 touch ${PROGRESS_FILE}
 echo 0 > ${PROGRESS_FILE}
-echo "--0%"
+step 0 "Creation des fichier pour les dependence"
 if [ "$3" = "1" ]; then
-  date +'--[%Y/%m/%d %H:%M:%S]-Mode Debug--'
+  date +'[%Y/%m/%d %H:%M:%S]-Mode Debug--'
 fi
 BASEDIR=$1
 DIRECTORY="/var/www"
@@ -17,8 +27,7 @@ fi
 sudo chown -R www-data $DIRECTORY
 
 echo 10 > ${PROGRESS_FILE}
-echo "--10%"
-echo "Lancement de l'installation/mise à jour des dépendances"
+step 10 "Lancement de l'installation/mise à jour des dépendances"
 
 if [ -f /etc/apt/sources.list.d/deb-multimedia.list* ]; then
   echo "Vérification si la source deb-multimedia existe (bug lors du apt-get update si c'est le cas)"
@@ -73,12 +82,12 @@ Pin-Priority: 600
 EOL
 
 echo 20 > ${PROGRESS_FILE}
-echo "--20%"
+step 20 "Update / Install dependence"
 sudo apt-get update
 sudo DEBIAN_FRONTEND=noninteractive apt-get install -y lsb-release
 
 echo 30 > ${PROGRESS_FILE}
-echo "--30%"
+step 30 "Update / Install dependence"
 type nodejs &>/dev/null
 if [ $? -eq 0 ]; then actual=`nodejs -v`; fi
 echo "Version actuelle : ${actual}"
@@ -112,7 +121,7 @@ then
   new=$actual
 else
   echo 40 > ${PROGRESS_FILE}
-  echo "--40%"
+  step 40 "Suppression du Nodejs existant et installation du paquet recommandé"
   echo "KO, version obsolète à upgrader";
   echo "Suppression du Nodejs existant et installation du paquet recommandé"
   #if npm exists
@@ -128,7 +137,6 @@ else
   sudo DEBIAN_FRONTEND=noninteractive apt-get -y --purge autoremove nodejs
 
   echo 45 > ${PROGRESS_FILE}
-  echo "--45%"
   if [[ $arch == "armv6l" ]]
   then
     echo "Raspberry 1, 2 ou zéro détecté, utilisation du paquet v${installVer} pour ${arch}"
@@ -161,14 +169,13 @@ if [ $? -ne 0 ]; then
 fi
 
 echo 50 > ${PROGRESS_FILE}
-echo "--50%"
+step 50 "..."
 cd ${BASEDIR};
 #remove old local modules
 sudo rm -rf node_modules
 
 echo 60 > ${PROGRESS_FILE}
-echo "--60%"
-echo "Installation..."
+step 60 "Installation..."
 if [ "$3" = "1" ]; then
   sudo npm install --verbose
 else
@@ -177,7 +184,7 @@ fi
 sudo chown -R www-data node_modules
 
 echo 95 > ${PROGRESS_FILE}
-echo "--95%"
+step 95 "Finalisation"
 sudo rm -f /etc/apt/preferences.d/nodesource
 
 if [ -f /etc/apt/sources.list.d/deb-multimedia.list.disabledBy${2} ]; then
@@ -190,9 +197,13 @@ if [ -f /etc/apt/sources.list.d/jeedom.list.disabledBy${2} ]; then
 fi
 
 echo 100 > ${PROGRESS_FILE}
-echo "--100%"
+step 100 "Fini"
 echo "Installation des dépendances ${2} terminée, vérifiez qu'il n'y a pas d'erreur"
 if [ "$3" = "1" ]; then
-  date +'--[%Y/%m/%d %H:%M:%S]--'
+  date +'[%Y/%m/%d %H:%M:%S]--'
 fi
 rm -f ${PROGRESS_FILE}
+
+
+echo "not silent"
+post
