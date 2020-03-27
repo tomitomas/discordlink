@@ -77,7 +77,7 @@ class discordlink extends eqLogic {
 		if (log::getLogLevel('discordlink') == 100 || $verbose === "true" || $verbose === true) $_debug = 1;
 		log::add('discordlink', 'info', 'Installation des dépendances : ');
 		$resource_path = realpath(dirname(__FILE__) . '/../../resources');
-		return array('script' => $resource_path . '/nodejs.sh ' . $resource_path . ' discordlink ' . $_debug, 'log' => log::getPathToLog('discordlink_dep'));
+		return array('script' => $resource_path . '/install.sh ' . $resource_path . ' discordlink ' . $_debug, 'log' => log::getPathToLog('discordlink_dep'));
 	}
       
     
@@ -94,7 +94,7 @@ class discordlink extends eqLogic {
 		if (config::byKey('Token', 'discordlink', 'null') != "null") $return['launchable'] = 'ok';
 		else {
 			$return['launchable'] = 'nok';
-			$return['launchable_message'] = "TOKENT DISCORD ABSENT ";
+			$return['launchable_message'] = "TOKEN DISCORD ABSENT ";
 		}
 		return $return;
 	}
