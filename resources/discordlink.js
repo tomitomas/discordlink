@@ -144,15 +144,6 @@ app.get('/restart', (req, res) => {
 	
 });
 
-app.get('/sendmsg', (req, res) => {
-	config.logger('DiscordLink: Restart');
-	res.status(200).json({});
-		config.logger('DiscordLink: ******************************************************************');
-		config.logger('DiscordLink: *****************************Relance forcée du Serveur*************');
-		config.logger('DiscordLink: ******************************************************************');
-	startServer();
-	
-});
 
 app.get('/getinvite', (req, res) => {
     
@@ -189,15 +180,49 @@ app.get('/getchannel', (req, res) => {
     res.type('json');
     var toReturn = [];
 
-	config.logger('DiscordLink: GetGuild');
-    var guildall = client.guilds.array();
-    for (var a in guildall) {
-        var guild = guildall[a];
-        toReturn.push({
-            'a': guildall
-        });
+	config.logger('DiscordLink: GetChannel');
+    var chnannelsall = client.channels.array();
+    for (var b in chnannelsall) {
+        var channel = chnannelsall[b];
+        if (channel.type == "text") {
+            toReturn.push({
+                'id': channel.id,
+                'name': channel.name,
+                'guildID': channel.guild.id
+            });
+        }
     }
     res.status(200).json(toReturn);
+});
+
+app.get('/sendMsg', (req, res) => {
+    res.type('json');
+    var toReturn = [];
+
+    config.logger('DiscordLink: sendMsg');
+    
+    client.channels.get(req.query.channelID).send(req.query.message);
+
+    toReturn.push({
+        'id': req.query
+    });
+    res.status(200).json(toReturn);	
+});
+
+app.get('/sendMsgTTS', (req, res) => {
+    res.type('json');
+    var toReturn = [];
+
+    config.logger('DiscordLink: sendMsgTTS');
+    
+    client.channels.get(req.query.channelID).send(req.query.message, {
+        tts: true
+       });
+
+    toReturn.push({
+        'id': req.query
+    });
+    res.status(200).json(toReturn);	
 });
 /* Main */
 
