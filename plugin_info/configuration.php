@@ -30,15 +30,6 @@ if (!isConnect()) {
                 <input class="configKey form-control" data-l1key="Token" />
             </div>
         </div>
-        <div class="form-group">
-            <label class="col-lg-4 control-label">{{Guild}}</label>
-            <div class="col-lg-2">
-                <select class="configKey form-control" data-l1key="guild">
-                    <option value="guild1">guild1</option>
-                    <option value="guild2">guild2</option>
-                </select>
-            </div>
-        </div>
     </fieldset>
 </form>
 

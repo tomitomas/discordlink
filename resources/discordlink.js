@@ -9,7 +9,7 @@ const client = new Discord.Client();
 const request = require('request');
 
 const token = process.argv[3];
-const IPJeedom = process.argv[2];
+//const IPJeedom = process.argv[2];
 const logLevel = process.argv[4];
 
 
