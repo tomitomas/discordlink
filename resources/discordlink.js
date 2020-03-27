@@ -10,7 +10,6 @@ const request = require('request');
 
 const token = process.argv[3];
 const IPJeedom = process.argv[2];
-const ClePlugin = process.argv[5];
 const logLevel = process.argv[4];
 
 
@@ -280,6 +279,7 @@ if (err)
 		
 }
 
+/*
 function httpPost(nom, jsonaenvoyer) {
 
 var url=IPJeedom+"/plugins/discordlink/core/php/jeeAlexaapi.php?apikey="+ClePlugin+"&nom="+nom;
@@ -313,10 +313,10 @@ config.logger && config.logger('DATA envoyé:'+jsonaenvoyer,'DEBUG');
 					//error err est une erreur html
 				}
 			});
- /**/
+ 
     }
 		//  config.logger(JSON.stringify(devices));
-
+*/
 
 function error(status, source, title, detail) {
 	let error = {
