@@ -221,6 +221,38 @@ app.get('/sendMsgTTS', (req, res) => {
     });
     res.status(200).json(toReturn);	
 });
+
+app.get('/sendEmbed', (req, res) => {
+    res.type('json');
+    var toReturn = [];
+
+	config.logger('DiscordLink: sendEmbed');
+	
+	var color = req.query.color;
+	var title = req.query.title;
+	var url = req.query.url;
+	var description = req.query.description;
+	var field = req.query.field;
+	var footer = req.query.footer;
+
+	if (color ==null)color = "#ff0000";
+
+	const Embed = new Discord.RichEmbed()
+	.setColor(color)
+	.setTimestamp();
+	if(title != null)Embed.setTitle(title);
+	if(url != null)Embed.setURL(url);
+	if(description != null)Embed.setDescription(description);
+	if(field != null)Embed.addField(field);
+	if(footer != null)Embed.setFooter(footer);
+	   
+    client.channels.get(req.query.channelID).send(Embed);
+
+    toReturn.push({
+		'id': req.query
+    });
+    res.status(200).json(toReturn);	
+});
 /* Main */
 
 startServer();
@@ -277,54 +309,4 @@ if (err)
 }		
 
 		
-}
-
-/*
-function httpPost(nom, jsonaenvoyer) {
-
-var url=IPJeedom+"/plugins/discordlink/core/php/jeeAlexaapi.php?apikey="+ClePlugin+"&nom="+nom;
-
-config.logger && config.logger('URL envoyée: '+url, "DEBUG");
- 
-jsonaenvoyer=JSON.stringify(jsonaenvoyer);
-config.logger && config.logger('DATA envoyé:'+jsonaenvoyer,'DEBUG');
-
-	request.post(url, {
-
-			json : true,
-			gzip : false,
-			multipart: [
-				  {
-					body: jsonaenvoyer
-				  }
-				]
-		}, function (err, response, json) {
-
-			if (!err && response.statusCode == 200) {
-					//if(!json.result && json.error)
-					//{
-				//		//error json.error
-				//	}
-				//	else {
-				//		//json.result;
-				//	}
-				} else 
-				{
-					//error err est une erreur html
-				}
-			});
- 
-    }
-		//  config.logger(JSON.stringify(devices));
-*/
-
-function error(status, source, title, detail) {
-	let error = {
-		'status': status,
-		'title': title,
-		'detail': detail
-	};
-
-	config.logger('DiscordLink: ' + title + ': ' + detail);
-	return error;
 }
