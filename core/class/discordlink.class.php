@@ -173,11 +173,53 @@ class discordlink extends eqLogic {
 
     public function preSave() {
         
-    }
+	}
+	
+	public static function CreateRefreshCmd() {
+
+		$eqLogics = eqLogic::byType('discordlink');
+		foreach ($eqLogics as $eqLogic) {
+
+				$TabCmd = array(
+					'sendMsg'=>array('Libelle'=>'Send message', 'Type'=>'action', 'request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => ''),
+					'sendMsgTTS'=>array('Libelle'=>'Send message TTS', 'Type'=>'action', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => '')
+				);
+				//Chaque commande
+				foreach ($TabCmd as $CmdKey => $Cmd){
+					$Cmddiscordlink = $eqLogic->getCmd(null, $CmdKey);
+					if (!is_object($Cmddiscordlink) ) {
+						$Cmddiscordlink = new discordlinkCmd();
+						$Cmddiscordlink->setName($Cmd['Libelle']);
+						$Cmddiscordlink->setEqLogic_id($eqLogic->getId());
+						$Cmddiscordlink->setType($Cmd['Type']);
+						$Cmddiscordlink->setSubType('other');
+						$Cmddiscordlink->setLogicalId($CmdKey);
+						$Cmddiscordlink->setEventOnly(1);
+						$Cmddiscordlink->setIsVisible($Cmd['visible']);
+						$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
+						$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3456/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
+						$Cmddiscordlink->setDisplay('generic_type','GENERIC_INFO');
+						$Cmddiscordlink->setTemplate('dashboard', 'badge');
+						$Cmddiscordlink->setTemplate('mobile', 'badge');
+						if (!empty($Cmd['Template'])) {
+							$Cmddiscordlink->setTemplate("dashboard", $Cmd['Template']);
+							$Cmddiscordlink->setTemplate("mobile", $Cmd['Template']);
+						}
+						if (($CmdKey == 'sendMsg') || ($CmdKey == 'sendMsgTTS')){
+							$Cmddiscordlink->setDisplay('message_placeholder', 'Phrase à faire lire par Alexa');
+						}
+						$Cmddiscordlink->save();
+					} else {
+							$Cmddiscordlink->setCollectDate(date('Y-m-d H:i:s'));
+							$Cmddiscordlink->event($value);
+					}		
+				}
+			}
+	}
 
     public function postSave() {
-        
-    }
+		discordlink::CreateRefreshCmd();
+	}
 
     public function preUpdate() {
         
@@ -218,26 +260,28 @@ class discordlink extends eqLogic {
 }
 
 class discordlinkCmd extends cmd {
-    /*     * *************************Attributs****************************** */
-
-
-    /*     * ***********************Methode static*************************** */
-
-
-    /*     * *********************Methode d'instance************************* */
-
-    /*
-     * Non obligatoire permet de demander de ne pas supprimer les commandes même si elles ne sont pas dans la nouvelle configuration de l'équipement envoyé en JS
-      public function dontRemoveCmd() {
-      return true;
-      }
-     */
-
-    public function execute($_options = array()) {
-        
-    }
-
-    /*     * **********************Getteur Setteur*************************** */
-}
-
+	
+		/*     * *************************Attributs****************************** */
+	
+	
+		/*     * ***********************Methode static*************************** */
+	
+	
+		/*     * *********************Methode d'instance************************* */
+	
+		/*
+		 * Non obligatoire permet de demander de ne pas supprimer les commandes même si elles ne sont pas dans la nouvelle configuration de l'équipement envoyé en JS
+		  public function dontRemoveCmd() {
+		  return true;
+		  }
+		 */
+	
+		public function execute($_options = array())
+		{
+		return;
+		}
+	
+		/*     * **********************Getteur Setteur*************************** */
+	}
+?>	
 
