@@ -121,20 +121,26 @@ foreach ($eqLogics as $eqLogic) {
 </form>
 </div>
       <div role="tabpanel" class="tab-pane" id="commandtab">
-<a class="btn btn-success btn-sm cmdAction pull-right" data-action="add" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Commandes}}</a><br/><br/>
-<table id="table_cmd" class="table table-bordered table-condensed">
-    <thead>
+<!--<a class="btn btn-success btn-sm cmdAction pull-right" data-action="add" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Commandes}}</a><br/><br/>-->
+<div role="tabpanel" class="tab-pane active" id="commandtab">
+    <table id="table_cmd" class="table table-bordered table-condensed ui-sortable">
+        <thead>
         <tr>
-            <th>{{Nom}}</th><th>{{Type}}</th><th>{{Action}}</th>
+            <th style="width: 40px;">#</th>
+            <th style="width: 200px;">{{Nom}}</th>
+            <th style="width: 150px;">{{Type}}</th>
+            <th style="width: 300px;">{{Commande & Variable}}</th>
+            <th style="width: 40px;">{{Min}}</th>
+            <th style="width: 40px;">{{Max}}</th>
+            <th style="width: 150px;">{{Paramètres}}</th>
+            <th style="width: 100px;"></th>
         </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-</div>
-</div>
+        </thead>
+        <tbody>
 
-</div>
+        </tbody>
+    </table>
+    </div>
 </div>
 
 <?php include_file('desktop', 'discordlink', 'js', 'discordlink');?>
