@@ -235,16 +235,16 @@ app.get('/sendEmbed', (req, res) => {
 	var field = req.query.field;
 	var footer = req.query.footer;
 
-	if (color ==null)color = "#ff0000";
+	if (color =="null")color = "#ff0000";
 
 	const Embed = new Discord.RichEmbed()
 	.setColor(color)
 	.setTimestamp();
-	if(title != null)Embed.setTitle(title);
-	if(url != null)Embed.setURL(url);
-	if(description != null)Embed.setDescription(description);
-	if(field != null)Embed.addField(field);
-	if(footer != null)Embed.setFooter(footer);
+	if(title != "null")Embed.setTitle(title);
+	if(url != "null")Embed.setURL(url);
+	if(description != "null")Embed.setDescription(description);
+	if(field != "null")Embed.addField(field);
+	if(footer != "null")Embed.setFooter(footer);
 	   
     client.channels.get(req.query.channelID).send(Embed);
 

@@ -27,6 +27,10 @@ class discordlink extends eqLogic {
 				'template' => 'message',
 				'replace' => array("#_desktop_width_#" => "100","#_mobile_width_#" => "50", "#title_disable#" => "1", "#message_disable#" => "0")
 		);
+		$return['action']['message']['embed'] =    array(
+			'template' => 'embed',
+			'replace' => array("#_desktop_width_#" => "100","#_mobile_width_#" => "50", "#title_disable#" => "1", "#message_disable#" => "0")
+	);
 		return $return;
 	}	
 
@@ -317,6 +321,9 @@ class discordlinkCmd extends cmd {
 				case 'sendMsg':
 				case 'sendMsgTTS':
 					$request = $this->build_ControledeSliderSelectMessage($_options);
+				break;	
+				case 'sendEmbed':
+					$request = $this->build_ControledeSliderSelectEmbed($_options);
 				break;			
 				default:
 					$request = '';
@@ -335,6 +342,28 @@ class discordlinkCmd extends cmd {
 			if (!(isset($_options['message']))) $_options['message'] = "";
 			$request = str_replace(array('#message#'), 
 			array(urlencode(self::decodeTexteAleatoire($_options['message']))), $request);
+			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
+			return $request;
+
+		}	
+
+		private function build_ControledeSliderSelectEmbed($_options = array(), $default = "Ceci est un message de test") {
+
+			$request = $this->getConfiguration('request');
+			if ((isset($_options['description'])) && ($_options['description'] == "")) $_options['description'] = $default;
+			if (!(isset($_options['description']))) $_options['description'] = "";
+			$request = str_replace(array('#title#'), 
+			array(urlencode(self::decodeTexteAleatoire($_options['Titre']))), $request);
+			$request = str_replace(array('#url#'), 
+			array(urlencode(self::decodeTexteAleatoire($_options['url']))), $request);
+			$request = str_replace(array('#description#'), 
+			array(urlencode(self::decodeTexteAleatoire($_options['description']))), $request);
+			$request = str_replace(array('#footer#'), 
+			array(urlencode(self::decodeTexteAleatoire($_options['footer']))), $request);
+			$request = str_replace(array('#field#'), 
+			array(urlencode(self::decodeTexteAleatoire($_options['field']))), $request);
+			$request = str_replace(array('#color#'), 
+			array(urlencode(self::decodeTexteAleatoire($_options['colors']))), $request);
 			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
 			return $request;
 		}	
@@ -359,7 +388,14 @@ class discordlinkCmd extends cmd {
 			return str_replace(array_keys($replace), $replace, $return);
 		}
 	
-	
+		public function getWidgetTemplateCode($_version = 'dashboard', $_noCustom = false) {
+			if ($_version != 'scenario') return parent::getWidgetTemplateCode($_version, $_noCustom);
+			list($command, $arguments) = explode('?', $this->getConfiguration('request'), 2);
+			if ($command == 'sendEmbed')
+				return getTemplate('core', 'scenario', 'cmd.sendEmbed', 'discordlink');
+			return parent::getWidgetTemplateCode($_version, $_noCustom);
+		}
+
 		/*     * **********************Getteur Setteur*************************** */
 	}
 ?>	
