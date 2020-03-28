@@ -22,7 +22,13 @@ require_once __DIR__  . '/../../../../core/php/core.inc.php';
 class discordlink extends eqLogic {
     /*     * *************************Attributs****************************** */
 
-
+	public static function templateWidget() {
+		$return['action']['message']['message'] =    array(
+				'template' => 'message',
+				'replace' => array("#_desktop_width_#" => "100","#_mobile_width_#" => "50", "#title_disable#" => "1", "#message_disable#" => "0")
+		);
+		return $return;
+	}	
 
     /*     * ***********************Methode static*************************** */
 
@@ -181,8 +187,8 @@ class discordlink extends eqLogic {
 		foreach ($eqLogics as $eqLogic) {
 
 				$TabCmd = array(
-					'sendMsg'=>array('Libelle'=>'Send message', 'Type'=>'action', 'request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => ''),
-					'sendMsgTTS'=>array('Libelle'=>'Send message TTS', 'Type'=>'action', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => '')
+					'sendMsg'=>array('Libelle'=>'Send message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
+					'sendMsgTTS'=>array('Libelle'=>'Send message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message')
 				);
 				//Chaque commande
 				foreach ($TabCmd as $CmdKey => $Cmd){
@@ -192,22 +198,19 @@ class discordlink extends eqLogic {
 						$Cmddiscordlink->setName($Cmd['Libelle']);
 						$Cmddiscordlink->setEqLogic_id($eqLogic->getId());
 						$Cmddiscordlink->setType($Cmd['Type']);
-						$Cmddiscordlink->setSubType('other');
+						$Cmddiscordlink->setSubType($Cmd['SubType']);
 						$Cmddiscordlink->setLogicalId($CmdKey);
 						$Cmddiscordlink->setEventOnly(1);
 						$Cmddiscordlink->setIsVisible($Cmd['visible']);
 						$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
-						$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3456/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
+						$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
 						$Cmddiscordlink->setDisplay('generic_type','GENERIC_INFO');
-						$Cmddiscordlink->setTemplate('dashboard', 'badge');
-						$Cmddiscordlink->setTemplate('mobile', 'badge');
 						if (!empty($Cmd['Template'])) {
 							$Cmddiscordlink->setTemplate("dashboard", $Cmd['Template']);
 							$Cmddiscordlink->setTemplate("mobile", $Cmd['Template']);
 						}
-						if (($CmdKey == 'sendMsg') || ($CmdKey == 'sendMsgTTS')){
-							$Cmddiscordlink->setDisplay('message_placeholder', 'Phrase à faire lire par Alexa');
-						}
+						$Cmddiscordlink->setDisplay('message_placeholder', 'Message a envoyer sur discord');
+						$Cmddiscordlink->setDisplay('forceReturnLineBefore', true);
 						$Cmddiscordlink->save();
 					} else {
 							$Cmddiscordlink->setCollectDate(date('Y-m-d H:i:s'));
@@ -237,6 +240,7 @@ class discordlink extends eqLogic {
         
     }
 
+
     /*
      * Non obligatoire mais permet de modifier l'affichage du widget si vous en avez besoin
       public function toHtml($_version = 'dashboard') {
@@ -258,7 +262,6 @@ class discordlink extends eqLogic {
 
     /*     * **********************Getteur Setteur*************************** */
 }
-
 class discordlinkCmd extends cmd {
 	
 		/*     * *************************Attributs****************************** */
@@ -276,10 +279,84 @@ class discordlinkCmd extends cmd {
 		  }
 		 */
 	
-		public function execute($_options = array())
-		{
-		return;
+		public function execute($_options = null) {
+			if ($this->getLogicalId() == 'refresh') {
+				$this->getEqLogic()->refresh();
+				return;
+			}
+
+			$request = $this->buildRequest($_options);
+			log::add('discordlink', 'info', 'Envoi de ' . $request);
+			$request_http = new com_http($request);
+			$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
+			if ($this->getConfiguration('noSslCheck') == 1) $request_http->setNoSslCheck(true);
+			if ($this->getConfiguration('doNotReportHttpError') == 1) $request_http->setNoReportError(true);
+			if (isset($_options['speedAndNoErrorReport']) && $_options['speedAndNoErrorReport'] == true) {// option non activée 
+				$request_http->setNoReportError(true);
+				$request_http->exec(0.1, 1);
+				return;
+			}
+			$result = $request_http->exec($this->getConfiguration('timeout', 3), $this->getConfiguration('maxHttpRetry', 3));//Time out à 3s 3 essais
+			if (!$result) throw new Exception(__('Serveur injoignable', __FILE__));
+		
+			return true;
 		}
+
+		private function buildRequest($_options = array()) {
+			if ($this->getType() != 'action') return $this->getConfiguration('request');
+			$cmdANDarg = explode('?', $this->getConfiguration('request'), 2);
+			if (count($cmdANDarg) > 1) 
+				list($command, $arguments) = $cmdANDarg;
+			else {
+				$command=$this->getConfiguration('request');
+				$arguments="";
+			}
+			switch ($command) {		
+				case 'sendMsg':
+				case 'sendMsgTTS':
+					$request = $this->build_ControledeSliderSelectMessage($_options);
+				break;			
+				default:
+					$request = '';
+				break;
+			}
+			$request = scenarioExpression::setTags($request);
+			if (trim($request) == '') throw new Exception(__('Commande inconnue ou requête vide : ', __FILE__) . print_r($this, true));
+			$channelID=str_replace("_player", "", $this->getEqLogic()->getConfiguration('channelid'));
+			return 'http://' . config::byKey('internalAddr') . ':3466/' . $request . '&channelID=' . $channelID;
+		}
+	
+		private function build_ControledeSliderSelectMessage($_options = array(), $default = "Ceci est un message de test") {
+
+			$request = $this->getConfiguration('request');
+			if ((isset($_options['message'])) && ($_options['message'] == "")) $_options['message'] = $default;
+			if (!(isset($_options['message']))) $_options['message'] = "";
+			$request = str_replace(array('#message#'), 
+			array(urlencode(self::decodeTexteAleatoire($_options['message']))), $request);
+			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
+			return $request;
+		}	
+	
+		public static function decodeTexteAleatoire($_text) {
+			$return = $_text;
+			if (strpos($_text, '|') !== false && strpos($_text, '[') !== false && strpos($_text, ']') !== false) {
+				$replies = interactDef::generateTextVariant($_text);
+				$random = rand(0, count($replies) - 1);
+				$return = $replies[$random];
+			}
+			preg_match_all('/{\((.*?)\) \?(.*?):(.*?)}/', $return, $matches, PREG_SET_ORDER, 0);
+			$replace = array();
+			if (is_array($matches) && count($matches) > 0) {
+				foreach ($matches as $match) {
+					if (count($match) != 4) {
+						continue;
+					}
+					$replace[$match[0]] = (jeedom::evaluateExpression($match[1])) ? trim($match[2]) : trim($match[3]);
+				}
+			}
+			return str_replace(array_keys($replace), $replace, $return);
+		}
+	
 	
 		/*     * **********************Getteur Setteur*************************** */
 	}
