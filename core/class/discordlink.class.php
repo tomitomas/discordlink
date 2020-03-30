@@ -350,20 +350,33 @@ class discordlinkCmd extends cmd {
 		private function build_ControledeSliderSelectEmbed($_options = array(), $default = "Ceci est un message de test") {
 
 			$request = $this->getConfiguration('request');
-			if ((isset($_options['description'])) && ($_options['description'] == "")) $_options['description'] = $default;
-			if (!(isset($_options['description']))) $_options['description'] = "";
+
+			$titre = "null";
+			$url = "null";
+			$description = "null";
+			$footer = "null";
+			$field = "null";
+			$colors = "null";
+
+			if (("" != ($_options['Titre']))) $titre = $_options['Titre']; 
+			if (("" != ($_options['url']))) $url = $_options['url'];
+			if (("" != ($_options['description']))) $description = $_options['description'];
+			if (("" != ($_options['footer']))) $footer = $_options['footer'];
+			if (("" != ($_options['field'])))  $field = $_options['field'];
+			if (("" != ($_options['colors']))) $colors = $_options['colors'];
+
 			$request = str_replace(array('#title#'), 
-			array(urlencode(self::decodeTexteAleatoire($_options['Titre']))), $request);
+			array(urlencode(self::decodeTexteAleatoire($titre))), $request);
 			$request = str_replace(array('#url#'), 
-			array(urlencode(self::decodeTexteAleatoire($_options['url']))), $request);
+			array(urlencode(self::decodeTexteAleatoire($url))), $request);
 			$request = str_replace(array('#description#'), 
-			array(urlencode(self::decodeTexteAleatoire($_options['description']))), $request);
+			array(urlencode(self::decodeTexteAleatoire($description))), $request);
 			$request = str_replace(array('#footer#'), 
-			array(urlencode(self::decodeTexteAleatoire($_options['footer']))), $request);
+			array(urlencode(self::decodeTexteAleatoire($footer))), $request);
 			$request = str_replace(array('#field#'), 
-			array(urlencode(self::decodeTexteAleatoire($_options['field']))), $request);
+			array(urlencode(self::decodeTexteAleatoire($field))), $request);
 			$request = str_replace(array('#color#'), 
-			array(urlencode(self::decodeTexteAleatoire($_options['colors']))), $request);
+			array(urlencode(self::decodeTexteAleatoire($colors))), $request);
 			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
 			return $request;
 		}	
