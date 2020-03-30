@@ -25,18 +25,26 @@ if (!isConnect()) {
 <form class="form-horizontal">
     <fieldset>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Token}}</label>
-            <div class="col-lg-2">
+            <label class="col-lg-4 control-label">{{Token : }}</label>
+            <div class="col-lg-6">
                 <input class="configKey form-control" data-l1key="Token" />
             </div>
         </div>
+        </br>
         <div class="form-group">
-            <label class="col-lg-4 control-label">{{Guild}}</label>
-            <div class="col-lg-2">
-                <select class="configKey form-control" data-l1key="guild">
-                    <option value="guild1">guild1</option>
-                    <option value="guild2">guild2</option>
-                </select>
+            <label class="col-lg-4 control-label">{{Bot Invite : }}</label>
+            <div class="col-lg-6">
+                    <?php
+                
+                include_file('desktop', 'configuration', 'js', 'discordlink');
+
+                if (discordlink::deamon_info()['state'] == "ok") {
+                    echo '<a class="btn btn-success btn-sm bt_getinvite">Ajouter votre bot a votre serveur discord</a>';
+                    sendVarToJS('invitebotdiscord',discordlink::getinvite());
+                } else {
+                    echo '<a class="btn btn-danger btn-sm bt_errorinvite">Erreur, lance ton deamon et si tu y arrive pas cliques sur moi :)</a>';
+                }
+                ?>
             </div>
         </div>
     </fieldset>

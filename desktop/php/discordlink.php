@@ -22,7 +22,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
     <span>{{Configuration}}</span>
   </div>
   </div>
-  <legend><i class="fas fa-table"></i> {{Mes templates}}</legend>
+  <legend><i class="fas fa-table"></i> {{Mes Channels}}</legend>
 	   <input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
 <div class="eqLogicThumbnailContainer">
     <?php
@@ -55,10 +55,10 @@ foreach ($eqLogics as $eqLogic) {
     <form class="form-horizontal">
         <fieldset>
             <div class="form-group">
-                <label class="col-sm-3 control-label">{{Nom de l'équipement template}}</label>
+                <label class="col-sm-3 control-label">{{Nom du channels}}</label>
                 <div class="col-sm-3">
                     <input type="text" class="eqLogicAttr form-control" data-l1key="id" style="display : none;" />
-                    <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de l'équipement template}}"/>
+                    <input type="text" class="eqLogicAttr form-control" data-l1key="name" placeholder="{{Nom de channels}}"/>
                 </div>
             </div>
             <div class="form-group">
@@ -67,10 +67,10 @@ foreach ($eqLogics as $eqLogic) {
                     <select id="sel_object" class="eqLogicAttr form-control" data-l1key="object_id">
                         <option value="">{{Aucun}}</option>
                         <?php
-foreach (jeeObject::all() as $object) {
-	echo '<option value="' . $object->getId() . '">' . $object->getName() . '</option>';
-}
-?>
+                            foreach (jeeObject::all() as $object) {
+                                echo '<option value="' . $object->getId() . '">' . $object->getName() . '</option>';
+                            }
+                        ?>
                    </select>
                </div>
            </div>
@@ -91,32 +91,56 @@ foreach (jeeObject::all() as $object) {
 		<div class="col-sm-9">
 			<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Activer}}</label>
 			<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
+            <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="interactionjeedom"/>{{Interation Avec Jeedom}}</label>
 		</div>
 	</div>
        <div class="form-group">
-        <label class="col-sm-3 control-label">{{template param 1}}</label>
+        <label class="col-sm-3 control-label">{{Channel : }}</label>
         <div class="col-sm-3">
-            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="city" placeholder="param1"/>
+            <select class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="channelid">       
+                <?php
+                    $channels = discordlink::getchannel();
+                    $channelssize = sizeof($channels);
+                    $channelssize1 =  $channelssize - 1;
+                    if ($channelssize != 0) {
+                        $i = 0;
+                        echo ($channelssize1 >= $i);
+                        while ($channelssize1 >= $i) {
+                            $chann = $channels[$i];
+                            echo '<option value="'.$chann['id'].'">'.$chann['name'].'</option>';
+                            $i++;
+                        }
+                    } else {
+                        echo '<option value="null">Pas de channel disponible</option>';
+                    }
+                ?>
+            </select>
         </div>
     </div>
 </fieldset>
 </form>
 </div>
       <div role="tabpanel" class="tab-pane" id="commandtab">
-<a class="btn btn-success btn-sm cmdAction pull-right" data-action="add" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Commandes}}</a><br/><br/>
-<table id="table_cmd" class="table table-bordered table-condensed">
-    <thead>
+<!--<a class="btn btn-success btn-sm cmdAction pull-right" data-action="add" style="margin-top:5px;"><i class="fa fa-plus-circle"></i> {{Commandes}}</a><br/><br/>-->
+<div role="tabpanel" class="tab-pane active" id="commandtab">
+    <table id="table_cmd" class="table table-bordered table-condensed ui-sortable">
+        <thead>
         <tr>
-            <th>{{Nom}}</th><th>{{Type}}</th><th>{{Action}}</th>
+            <th style="width: 40px;">#</th>
+            <th style="width: 200px;">{{Nom}}</th>
+            <th style="width: 150px;">{{Type}}</th>
+            <th style="width: 300px;">{{Commande & Variable}}</th>
+            <th style="width: 40px;">{{Min}}</th>
+            <th style="width: 40px;">{{Max}}</th>
+            <th style="width: 150px;">{{Paramètres}}</th>
+            <th style="width: 100px;"></th>
         </tr>
-    </thead>
-    <tbody>
-    </tbody>
-</table>
-</div>
-</div>
+        </thead>
+        <tbody>
 
-</div>
+        </tbody>
+    </table>
+    </div>
 </div>
 
 <?php include_file('desktop', 'discordlink', 'js', 'discordlink');?>
