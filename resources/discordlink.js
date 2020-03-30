@@ -244,13 +244,13 @@ app.get('/sendEmbed', (req, res) => {
 	if(url != "null")Embed.setURL(url);
 	if(description != "null")Embed.setDescription(description);
 	if(field != "null") {
-		var fields = field.split(",,");	
+		var fields = field.split("||");	
 		a = 0;
 		console.log(fields.length);
 		while (a < fields.length) {
 			var fields3 = fields[a];
 			config.logger(fields3);
-			var field2 = fields3.split(",");
+			var field2 = fields3.split("|");
 			var fieldsbool = false;
 			if(field2[2].includes("true")){
 				fieldsbool = true;
