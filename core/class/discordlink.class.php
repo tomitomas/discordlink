@@ -303,7 +303,7 @@ class discordlinkCmd extends cmd {
 				return;
 			}
 			if (isset($_options['answer'])) {
-				$return = $request_http->exec($this->getConfiguration('timeout', 310), $this->getConfiguration('maxHttpRetry', 1));//Time out à 300s 1 essais
+				$return = $request_http->exec($this->getConfiguration('timeout', 320), $this->getConfiguration('maxHttpRetry', 1));//Time out à 300s 1 essais
 				$return = substr($return, 1, -1);
 
 				$result = json_decode($return , true);
