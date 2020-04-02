@@ -294,7 +294,11 @@ app.get('/sendEmbed', (req, res) => {
 					res.status(200).json(toReturn);	
 				})
 			.catch(collected => {
-				m.reply('Une erreur est survenue.');
+				m.reply('Une erreur est survenue. Ou le temps maximum de reponse a été depasser.');
+				toReturn.push({
+					'querry': req.query
+				});
+				res.status(200).json(toReturn);	
 			});
 		}
 	}).catch(console.error);
