@@ -243,25 +243,18 @@ app.get('/sendEmbed', (req, res) => {
 	if(title != "null")Embed.setTitle(title);
 	if(url != "null")Embed.setURL(url);
 	if(description != "null")Embed.setDescription(description);
-	if(field != "null") {
-		var fields = field.split("||");	
-		a = 0;
-		console.log(fields.length);
-		while (a < fields.length) {
-			var fields3 = fields[a];
-			config.logger(fields3);
-			var field2 = fields3.split("|");
-			var fieldsbool = false;
-			if(field2[2].includes("true")){
-				fieldsbool = true;
-			}
-			Embed.addField(field2[0], field2[1], fieldsbool);
-			a++;
-		}
-	}
 	if(footer != "null")Embed.setFooter(footer);
 	   
-    client.channels.get(req.query.channelID).send(Embed);
+    client.channels.get(req.query.channelID).send(Embed).then(async m => {
+		if(field != "null") {
+			var emojy = ["🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","🇯","🇰","🇱","🇲","🇳","🇴","🇵","🇶","🇷","🇸","🇹","🇺","🇻","🇼","🇽","🇾","🇿"]
+			a = 0;
+			while (a < field) {
+				await m.react(emojy[a]);
+				a++
+			}
+		}
+	}).catch(console.error);;
 
     toReturn.push({
 		'id': req.query
