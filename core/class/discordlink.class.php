@@ -358,12 +358,31 @@ class discordlinkCmd extends cmd {
 			$field = "null";
 			$colors = "null";
 
-			if (("" != ($_options['Titre']))) $titre = $_options['Titre']; 
-			if (("" != ($_options['url']))) $url = $_options['url'];
-			if (("" != ($_options['description']))) $description = $_options['description'];
-			if (("" != ($_options['footer']))) $footer = $_options['footer'];
-			if (("" != ($_options['field'])))  $field = $_options['field'];
-			if (("" != ($_options['colors']))) $colors = $_options['colors'];
+			if (isset($_options['answer'])) {
+				if (("" != ($_options['title']))) $titre = $_options['title'];
+
+				$answer = $_options['answer'];
+
+				$description = "";
+				
+				$a = 0;
+				$choix = [":regional_indicator_a:",":regional_indicator_b:",":regional_indicator_c:",":regional_indicator_d:",":regional_indicator_e:","regional_indicator_f","regional_indicator_g","regional_indicator_h","regional_indicator_i","regional_indicator_j","regional_indicator_k","regional_indicator_l","regional_indicator_m","regional_indicator_n","regional_indicator_o","regional_indicator_p","regional_indicator_q","regional_indicator_r","regional_indicator_s","regional_indicator_t","regional_indicator_u","regional_indicator_v","regional_indicator_w","regional_indicator_x","regional_indicator_y","regional_indicator_z"];
+				while ($a < count($answer)) {
+
+					$description .=	$choix[$a] . " : ". $answer[$a];
+					$description .= "
+					";
+
+					$a ++;
+				}
+
+			} else {
+				if (("" != ($_options['Titre']))) $titre = $_options['Titre']; 
+				if (("" != ($_options['url']))) $url = $_options['url'];
+				if (("" != ($_options['description']))) $description = $_options['description'];
+				if (("" != ($_options['footer']))) $footer = $_options['footer'];
+				if (("" != ($_options['colors']))) $colors = $_options['colors'];
+			}
 
 			$request = str_replace(array('#title#'), 
 			array(urlencode(self::decodeTexteAleatoire($titre))), $request);
@@ -377,6 +396,7 @@ class discordlinkCmd extends cmd {
 			array(urlencode(self::decodeTexteAleatoire($field))), $request);
 			$request = str_replace(array('#color#'), 
 			array(urlencode(self::decodeTexteAleatoire($colors))), $request);
+
 			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
 			return $request;
 		}	
