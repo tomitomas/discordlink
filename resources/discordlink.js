@@ -260,7 +260,7 @@ app.get('/sendEmbed', (req, res) => {
 				return ["🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","🇯","🇰","🇱","🇲","🇳","🇴","🇵","🇶","🇷","🇸","🇹","🇺","🇻","🇼","🇽","🇾","🇿"].includes(reaction.emoji.name) && user.id !== m.author.id;
 			};
 
-			m.awaitReactions(filter, { max: 1, time: 12000, errors: ['time'] })
+			m.awaitReactions(filter, { max: 1, time: 300000, errors: ['time'] })
 				.then(collected => {
 					const reaction = collected.first();
 
