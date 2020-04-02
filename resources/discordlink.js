@@ -225,7 +225,7 @@ app.get('/sendMsgTTS', (req, res) => {
 
 app.get('/sendEmbed', (req, res) => {
     res.type('json');
-    var toReturn = [];
+    var toReturn = new Array();
 
 	config.logger('DiscordLink: sendEmbed');
 	
@@ -304,7 +304,7 @@ app.get('/sendEmbed', (req, res) => {
 		}).catch(console.error);
 	if(field == "null") {
 		toReturn.push({
-			'reponse': reponse
+			'querry': req.query
 		});
 		res.status(200).json(toReturn);	
 	}

@@ -292,7 +292,7 @@ class discordlinkCmd extends cmd {
 			}
 
 			$request = $this->buildRequest($_options);
-			log::add('discordlink', 'info', 'Envoi de ' . $request);
+			log::add('discordlink', 'debug', 'Envoi de ' . $request);
 			$request_http = new com_http($request);
 			$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
 			if ($this->getConfiguration('noSslCheck') == 1) $request_http->setNoSslCheck(true);
@@ -303,9 +303,13 @@ class discordlinkCmd extends cmd {
 				return;
 			}
 			if (isset($_options['answer'])) {
-				$result = $request_http->exec($this->getConfiguration('timeout', 310), $this->getConfiguration('maxHttpRetry', 1));//Time out à 300s 1 essais
+				$return = $request_http->exec($this->getConfiguration('timeout', 310), $this->getConfiguration('maxHttpRetry', 1));//Time out à 300s 1 essais
+				$return = substr($return, 1, -1);
 
+				$result = json_decode($return , true);
 				$answer = $_options['answer'];
+
+				$this->askResponse($answer[$result['reponse']]);
 
 			} else {
 				$result = $request_http->exec($this->getConfiguration('timeout', 3), $this->getConfiguration('maxHttpRetry', 3));//Time out à 3s 3 essais
