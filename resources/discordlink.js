@@ -257,7 +257,7 @@ app.get('/sendEmbed', (req, res) => {
 			}
 			
 			const filter = (reaction, user) => {
-				return emojy.includes(reaction.emoji.name) && user.id !== m.author.id;
+				return ["🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","🇯","🇰","🇱","🇲","🇳","🇴","🇵","🇶","🇷","🇸","🇹","🇺","🇻","🇼","🇽","🇾","🇿"].includes(reaction.emoji.name) && user.id !== m.author.id;
 			};
 
 			m.awaitReactions(filter, { max: 1, time: 12000, errors: ['time'] })
