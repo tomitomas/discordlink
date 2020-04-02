@@ -235,6 +235,7 @@ app.get('/sendEmbed', (req, res) => {
 	var description = req.query.description;
 	var field = req.query.field;
 	var footer = req.query.footer;
+	var reponse = "null";
 
 	if (color =="null")color = "#ff0000";
 
@@ -255,12 +256,58 @@ app.get('/sendEmbed', (req, res) => {
 				a++;
 			}
 		}
-	}).catch(console.error);
 
-    toReturn.push({
-		'id': req.query
-    });
-    res.status(200).json(toReturn);	
+		const filter = (reaction, user) => {
+			return ["🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","🇯","🇰","🇱","🇲","🇳","🇴","🇵","🇶","🇷","🇸","🇹","🇺","🇻","🇼","🇽","🇾","🇿"].includes(reaction.emoji.name) && user.id !== m.author.id;
+		};
+
+		m.awaitReactions(filter, { max: 1, time: 6000, errors: ['time'] })
+			.then(collected => {
+				const reaction = collected.first();
+
+				if (reaction.emoji.name === '🇦') reponse = 0;	
+				else if (reaction.emoji.name === '🇧') reponse = 1;	
+				else if (reaction.emoji.name === '🇨') reponse = 2;	
+				else if (reaction.emoji.name === '🇩') reponse = 3;	
+				else if (reaction.emoji.name === '🇪') reponse = 4;	
+				else if (reaction.emoji.name === '🇫') reponse = 5;	
+				else if (reaction.emoji.name === '🇬') reponse = 6;	
+				else if (reaction.emoji.name === '🇭') reponse = 7;	
+				else if (reaction.emoji.name === '🇮') reponse = 8;	
+				else if (reaction.emoji.name === '🇯') reponse = 9;	
+				else if (reaction.emoji.name === '🇰') reponse = 10;	
+				else if (reaction.emoji.name === '🇱') reponse = 11;	
+				else if (reaction.emoji.name === '🇲') reponse = 12;	
+				else if (reaction.emoji.name === '🇳') reponse = 13;	
+				else if (reaction.emoji.name === '🇴') reponse = 14;	
+				else if (reaction.emoji.name === '🇵') reponse = 15;	
+				else if (reaction.emoji.name === '🇶') reponse = 16;	
+				else if (reaction.emoji.name === '🇷') reponse = 17;	
+				else if (reaction.emoji.name === '🇸') reponse = 18;	
+				else if (reaction.emoji.name === '🇹') reponse = 19;	
+				else if (reaction.emoji.name === '🇺') reponse = 20;	
+				else if (reaction.emoji.name === '🇻') reponse = 21;	
+				else if (reaction.emoji.name === '🇼') reponse = 22;	
+				else if (reaction.emoji.name === '🇽') reponse = 23;	
+				else if (reaction.emoji.name === '🇾') reponse = 24;	
+				else if (reaction.emoji.name === '🇿') reponse = 25;	
+
+				toReturn.push({
+					'reponse': reponse
+				});
+				res.status(200).json(toReturn);	
+
+			})
+		.catch(collected => {
+			m.reply('Vous avez pas fournie une reponse valide');
+		});
+		}).catch(console.error);
+	if(field == "null") {
+		toReturn.push({
+			'reponse': reponse
+		});
+		res.status(200).json(toReturn);	
+	}
 });
 /* Main */
 
@@ -284,36 +331,3 @@ function startServer() {
 client.on("ready", async () => {
     client.user.setActivity(`Travailler main dans la main avec votre Jeedom`);
 });
-
-function traiteErreur(err, commandesEnErreur=null, queryEnErreur=null) {
-			
-if (err)
-{
-
-		
-		if (Array.isArray(commandesEnErreur)) {
-		config.logger("DiscordLink: "+err+" Commands: "+JSON.stringify(commandesEnErreur)+" Query: "+JSON.stringify(queryEnErreur), 'ERROR');
-			if (!(queryEnErreur.replay)) { // si c'est pas défini c'est que c'est le premier essai, donc on rejoue
-					var listeCommandesEnErreur=[];
-					listeCommandesEnErreur.push(commandesEnErreur);
-					httpPost('commandesEnErreur', {
-										queryEnErreur: queryEnErreur,
-										listeCommandesEnErreur: commandesEnErreur
-									});
-				config.logger("DiscordLink: "+commandesEnErreur.length+" commandes en erreur: "+JSON.stringify(commandesEnErreur)+" query: "+JSON.stringify(queryEnErreur), 'WARNING');
-			}
-		}
-		else if (typeof (commandesEnErreur) == "string") {
-		config.logger("DiscordLink: "+err+" Command: "+commandesEnErreur+" Query: "+JSON.stringify(queryEnErreur), 'ERROR');
-			if (!(queryEnErreur.replay)) { // si c'est pas défini c'est que c'est le premier essai, donc on rejoue
-					httpPost('commandesEnErreur', {
-										queryEnErreur: queryEnErreur,
-										listeCommandesEnErreur: commandesEnErreur
-									});
-				config.logger("DiscordLink: commande en erreur: "+commandesEnErreur+" query: "+JSON.stringify(queryEnErreur), 'WARNING');
-			}
-		}			
-}		
-
-		
-}
