@@ -225,7 +225,7 @@ app.get('/sendMsgTTS', (req, res) => {
 
 app.get('/sendEmbed', (req, res) => {
     res.type('json');
-    var toReturn = new Array();
+    var toReturn = [];
 
 	config.logger('DiscordLink: sendEmbed');
 	
@@ -257,10 +257,10 @@ app.get('/sendEmbed', (req, res) => {
 			}
 			
 			const filter = (reaction, user) => {
-				return ["🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","🇯","🇰","🇱","🇲","🇳","🇴","🇵","🇶","🇷","🇸","🇹","🇺","🇻","🇼","🇽","🇾","🇿"].includes(reaction.emoji.name) && user.id !== m.author.id;
+				return emojy.includes(reaction.emoji.name) && user.id !== m.author.id;
 			};
 
-			m.awaitReactions(filter, { max: 1, time: 6000, errors: ['time'] })
+			m.awaitReactions(filter, { max: 1, time: 12000, errors: ['time'] })
 				.then(collected => {
 					const reaction = collected.first();
 
@@ -298,7 +298,7 @@ app.get('/sendEmbed', (req, res) => {
 
 				})
 			.catch(collected => {
-				m.reply('Vous avez pas fournie une reponse valide');
+				m.reply('Une erreur est survenue.');
 			});
 		}
 	}).catch(console.error);
