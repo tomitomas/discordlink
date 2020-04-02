@@ -255,15 +255,12 @@ app.get('/sendEmbed', (req, res) => {
 				await m.react(emojy[a]);
 				a++;
 			}
-			
 			const filter = (reaction, user) => {
 				return ["🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","🇯","🇰","🇱","🇲","🇳","🇴","🇵","🇶","🇷","🇸","🇹","🇺","🇻","🇼","🇽","🇾","🇿"].includes(reaction.emoji.name) && user.id !== m.author.id;
 			};
-
 			m.awaitReactions(filter, { max: 1, time: 300000, errors: ['time'] })
 				.then(collected => {
 					const reaction = collected.first();
-
 					if (reaction.emoji.name === '🇦') reponse = 0;	
 					else if (reaction.emoji.name === '🇧') reponse = 1;	
 					else if (reaction.emoji.name === '🇨') reponse = 2;	
@@ -295,7 +292,6 @@ app.get('/sendEmbed', (req, res) => {
 						'reponse': reponse
 					});
 					res.status(200).json(toReturn);	
-
 				})
 			.catch(collected => {
 				m.reply('Une erreur est survenue.');
