@@ -11,6 +11,7 @@ const request = require('request');
 const token = process.argv[3];
 //const IPJeedom = process.argv[2];
 const logLevel = process.argv[4];
+const urlreponse = process.argv[5];
 
 
 /* Configuration */
@@ -247,14 +248,14 @@ app.get('/sendEmbed', (req, res) => {
 	   
     client.channels.get(req.query.channelID).send(Embed).then(async m => {
 		if(field != "null") {
-			var emojy = ["🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","🇯","🇰","🇱","🇲","🇳","🇴","🇵","🇶","🇷","🇸","🇹","🇺","🇻","🇼","🇽","🇾","🇿"]
+			var emojy = ["🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","🇯","🇰","🇱","🇲","🇳","🇴","🇵","🇶","🇷","🇸","🇹","🇺","🇻","🇼","🇽","🇾","🇿"];
 			a = 0;
 			while (a < field) {
 				await m.react(emojy[a]);
-				a++
+				a++;
 			}
 		}
-	}).catch(console.error);;
+	}).catch(console.error);
 
     toReturn.push({
 		'id': req.query
@@ -281,9 +282,7 @@ function startServer() {
 }
 
 client.on("ready", async () => {
-    config.logger(`Bot has started, with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds.`,'INFO');
-
-    client.user.setActivity(`Discute avec votre jeedom`);
+    client.user.setActivity(`Travailler main dans la main avec votre Jeedom`);
 });
 
 function traiteErreur(err, commandesEnErreur=null, queryEnErreur=null) {
