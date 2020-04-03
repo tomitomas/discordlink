@@ -127,10 +127,10 @@ class discordlink extends eqLogic {
 		$deamon_info = self::deamon_info();
 		if ($deamon_info['launchable'] != 'ok') throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
 		log::add('discordlink', 'info', 'Lancement du bot');
-		$url = network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/discordlink/core/api/jeediscordlink.php?apikey=' . jeedom::getApiKey('discordlink');
+		$url = network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/discordlink/core/api/jeeDiscordlink.php?apikey=' . jeedom::getApiKey('discordlink');
 		$log = $_debug ? '1' : '0';
 		$sensor_path = realpath(dirname(__FILE__) . '/../../resources');
-		$cmd = 'nice -n 19 nodejs ' . $sensor_path . '/discordlink.js ' . network::getNetworkAccess('internal') . ' ' . config::byKey('Token', 'discordlink') . ' '.log::getLogLevel('discordlink');
+		$cmd = 'nice -n 19 nodejs ' . $sensor_path . '/discordlink.js ' . network::getNetworkAccess('internal') . ' ' . config::byKey('Token', 'discordlink') . ' '.log::getLogLevel('discordlink') . ' ' . $url;
 		log::add('discordlink', 'debug', 'Lancement démon discordlink : ' . $cmd);
 		$result = exec('NODE_ENV=production nohup ' . $cmd . ' >> ' . log::getPathToLog('discordlink_node') . ' 2>&1 &');
 		if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
@@ -292,7 +292,7 @@ class discordlinkCmd extends cmd {
 			}
 
 			$request = $this->buildRequest($_options);
-			log::add('discordlink', 'info', 'Envoi de ' . $request);
+			log::add('discordlink', 'debug', 'Envoi de ' . $request);
 			$request_http = new com_http($request);
 			$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
 			if ($this->getConfiguration('noSslCheck') == 1) $request_http->setNoSslCheck(true);
@@ -302,7 +302,19 @@ class discordlinkCmd extends cmd {
 				$request_http->exec(0.1, 1);
 				return;
 			}
-			$result = $request_http->exec($this->getConfiguration('timeout', 3), $this->getConfiguration('maxHttpRetry', 3));//Time out à 3s 3 essais
+			if (isset($_options['answer'])) {
+				$return = $request_http->exec($this->getConfiguration('timeout', 320), $this->getConfiguration('maxHttpRetry', 1));//Time out à 300s 1 essais
+				$return = substr($return, 1, -1);
+
+				$result = json_decode($return , true);
+				$answer = $_options['answer'];
+
+				$this->askResponse($answer[$result['reponse']]);
+
+			} else {
+				$result = $request_http->exec($this->getConfiguration('timeout', 3), $this->getConfiguration('maxHttpRetry', 3));//Time out à 3s 3 essais
+			}
+			
 			if (!$result) throw new Exception(__('Serveur injoignable', __FILE__));
 		
 			return true;
@@ -358,12 +370,30 @@ class discordlinkCmd extends cmd {
 			$field = "null";
 			$colors = "null";
 
-			if (("" != ($_options['Titre']))) $titre = $_options['Titre']; 
-			if (("" != ($_options['url']))) $url = $_options['url'];
-			if (("" != ($_options['description']))) $description = $_options['description'];
-			if (("" != ($_options['footer']))) $footer = $_options['footer'];
-			if (("" != ($_options['field'])))  $field = $_options['field'];
-			if (("" != ($_options['colors']))) $colors = $_options['colors'];
+			if (isset($_options['answer'])) {
+				if (("" != ($_options['title']))) $titre = $_options['title'];
+				$colors = "#1100FF";
+
+				$answer = $_options['answer'];
+				$description = "";
+				
+				$a = 0;
+				$choix = [":regional_indicator_a:",":regional_indicator_b:",":regional_indicator_c:",":regional_indicator_d:",":regional_indicator_e:",":regional_indicator_f:",":regional_indicator_g:",":regional_indicator_h:",":regional_indicator_i:",":regional_indicator_j:",":regional_indicator_k:",":regional_indicator_l:",":regional_indicator_m:",":regional_indicator_n:",":regional_indicator_o:",":regional_indicator_p:",":regional_indicator_q:",":regional_indicator_r:",":regional_indicator_s:",":regional_indicator_t:",":regional_indicator_u:",":regional_indicator_v:",":regional_indicator_w:",":regional_indicator_x:",":regional_indicator_y:",":regional_indicator_z:"];
+				while ($a < count($answer)) {
+					$description .=	$choix[$a] . " : ". $answer[$a];
+					$description .= "
+					";
+					$a ++;
+				}
+				$field = count($answer);
+
+			} else {
+				if (("" != ($_options['Titre']))) $titre = $_options['Titre']; 
+				if (("" != ($_options['url']))) $url = $_options['url'];
+				if (("" != ($_options['description']))) $description = $_options['description'];
+				if (("" != ($_options['footer']))) $footer = $_options['footer'];
+				if (("" != ($_options['colors']))) $colors = $_options['colors'];
+			}
 
 			$request = str_replace(array('#title#'), 
 			array(urlencode(self::decodeTexteAleatoire($titre))), $request);
@@ -377,6 +407,7 @@ class discordlinkCmd extends cmd {
 			array(urlencode(self::decodeTexteAleatoire($field))), $request);
 			$request = str_replace(array('#color#'), 
 			array(urlencode(self::decodeTexteAleatoire($colors))), $request);
+
 			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
 			return $request;
 		}	
