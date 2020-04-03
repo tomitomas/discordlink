@@ -9,8 +9,8 @@
 	"hasDependency" : true,
 	"hasOwnDeamon" : true,
 	"maxDependancyInstallTime" : 300,
-	"changelog" : "https://jeedom.github.io/plugin-template/#language#/changelog",
-	"documentation" : "https://jeedom.github.io/plugin-template/#language#/",
+	"changelog" : "https://trmaud.github.io/Docs/discordlink/#language#/changelog",
+	"documentation" : "https://trmaud.github.io/Docs/discordlink/#language#/",
 	"link" : {
 		"forum":"Lien vers le forum"
 	},
