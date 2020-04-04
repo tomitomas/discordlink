@@ -18,17 +18,17 @@
 
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
-function template_install() {
-    
+function discordlink_install() {
+    discordlink::CreateRefreshCmd();
 }
 
-function template_update() {
-    
+function discordlink_update() {
+    discordlink::CreateRefreshCmd();
 }
 
 
-function template_remove() {
-    
+function discordlink_remove() {
+    discordlink::CreateRefreshCmd();
 }
 
 ?>
