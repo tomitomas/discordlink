@@ -236,7 +236,7 @@ class discordlink extends eqLogic {
     }
 
     public function postUpdate() {
-        
+        CreateRefreshCmd();
     }
 
     public function preRemove() {
