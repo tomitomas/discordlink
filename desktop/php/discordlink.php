@@ -107,7 +107,7 @@ foreach ($eqLogics as $eqLogic) {
                         echo ($channelssize1 >= $i);
                         while ($channelssize1 >= $i) {
                             $chann = $channels[$i];
-                            echo '<option value="'.$chann['id'].'">'.$chann['name'].'</option>';
+                            echo '<option value="'.$chann['id'].'">('.$chann['guildName'].') '.$chann['name'].'</option>';
                             $i++;
                         }
                     } else {

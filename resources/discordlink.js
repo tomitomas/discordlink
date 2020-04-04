@@ -186,7 +186,8 @@ app.get('/getchannel', (req, res) => {
             toReturn.push({
                 'id': channel.id,
                 'name': channel.name,
-                'guildID': channel.guild.id
+				'guildID': channel.guild.id,
+				'guildName' : channel.guild.name
             });
         }
     }
