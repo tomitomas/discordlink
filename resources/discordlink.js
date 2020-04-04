@@ -208,6 +208,25 @@ app.get('/sendMsg', (req, res) => {
     res.status(200).json(toReturn);	
 });
 
+app.get('/sendFile', (req, res) => {
+    res.type('json');
+    var toReturn = [];
+
+    config.logger('DiscordLink: sendMsg');
+    
+    client.channels.get(req.query.channelID).send({
+		files: [{
+		  attachment: req.query.patch,
+		  name: req.query.name
+		}]
+	});
+	
+    toReturn.push({
+        'id': req.query
+    });
+    res.status(200).json(toReturn);	
+});
+
 app.get('/sendMsgTTS', (req, res) => {
     res.type('json');
     var toReturn = [];

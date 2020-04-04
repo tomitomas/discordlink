@@ -193,7 +193,8 @@ class discordlink extends eqLogic {
 				$TabCmd = array(
 					'sendMsg'=>array('Libelle'=>'Send message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
 					'sendMsgTTS'=>array('Libelle'=>'Send message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
-					'sendEmbed'=>array('Libelle'=>'Send Embed Message', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#', 'visible' => 0, 'Template' => 'discordlink::message')
+					'sendEmbed'=>array('Libelle'=>'Send Embed Message', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#', 'visible' => 0, 'Template' => 'discordlink::message'),
+					'sendFile'=>array('Libelle'=>'Send File', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#', 'visible' => 0, 'Template' => 'discordlink::message')
 				);
 
 				//Chaque commande
@@ -336,7 +337,10 @@ class discordlinkCmd extends cmd {
 				break;	
 				case 'sendEmbed':
 					$request = $this->build_ControledeSliderSelectEmbed($_options);
-				break;			
+				break;	
+				case 'sendFile':
+					$request = $this->build_ControledeSliderSelectFile($_options);
+				break;					
 				default:
 					$request = '';
 				break;
@@ -356,7 +360,22 @@ class discordlinkCmd extends cmd {
 			array(urlencode(self::decodeTexteAleatoire($_options['message']))), $request);
 			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
 			return $request;
+		}	
 
+		private function build_ControledeSliderSelectFile($_options = array(), $default = "Ceci est un message de test") {
+
+			$request = $this->getConfiguration('request');
+			if ((isset($_options['patch'])) && ($_options['patch'] == "")) $_options['patch'] = $default;
+			if (!(isset($_options['patch']))) $_options['patch'] = "";
+
+
+			$request = str_replace(array('#patch#'), 
+			array(urlencode(self::decodeTexteAleatoire($_options['patch']))), $request);
+			$request = str_replace(array('#name#'), 
+			array(urlencode(self::decodeTexteAleatoire($_options['Name_File']))), $request);
+
+			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
+			return $request;
 		}	
 
 		private function build_ControledeSliderSelectEmbed($_options = array(), $default = "Ceci est un message de test") {
@@ -437,6 +456,8 @@ class discordlinkCmd extends cmd {
 			list($command, $arguments) = explode('?', $this->getConfiguration('request'), 2);
 			if ($command == 'sendEmbed')
 				return getTemplate('core', 'scenario', 'cmd.sendEmbed', 'discordlink');
+			if ($command == 'sendFile')
+				return getTemplate('core', 'scenario', 'cmd.sendFile', 'discordlink');
 			return parent::getWidgetTemplateCode($_version, $_noCustom);
 		}
 
