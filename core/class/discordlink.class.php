@@ -372,12 +372,15 @@ class discordlinkCmd extends cmd {
 			if ((isset($_options['patch'])) && ($_options['patch'] == "")) $_options['patch'] = $default;
 			if (!(isset($_options['patch']))) $_options['patch'] = "";
 
+			log::add('discordlink', 'DEBUG', '1 '.$options['file']);
+
 			if (isset($options['file'])) {
 				$_options['files'] = explode(',', $options['file']);
+				log::add('discordlink', 'DEBUG', '2 Coucou');
 			}
 
 			if (isset($_options['files']) && is_array($_options['files'])) {
-
+				log::add('discordlink', 'DEBUG', '3 Je vient de passez la');
 				$file = $_options['files'][1];
 				$text = ($_options['message'] == '') ? pathinfo($file, PATHINFO_FILENAME) : $_options['message'];
 				$ext = pathinfo($file, PATHINFO_EXTENSION);
