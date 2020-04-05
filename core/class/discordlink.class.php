@@ -373,33 +373,23 @@ class discordlinkCmd extends cmd {
 			if (!(isset($_options['patch']))) $_options['patch'] = "";
 
 			if (isset($_options['files']) && is_array($_options['files'])) {
-				log::add('discordlink', 'DEBUG', '1 Je vient de passez la');
 				foreach ($_options['files'] as $file) {
-					log::add('discordlink', 'DEBUG', '2 Ou Ici');
 					if (version_compare(phpversion(), '5.5.0', '>=')) {
 						$patch = $file;
 						$files = new CurlFile($file);
 						$nameFile = $files->getFilename();
-						log::add('discordlink', 'DEBUG', '3 Ou La');
 					} else {
 						$patch = '@' . $file;
 						$nameFile = trim($_options['title'] . ' ' . $_options['message']);
-						log::add('discordlink', 'DEBUG', '3 Bis Ou la bas');
 					}
-					log::add('discordlink', 'DEBUG', '4 Puis la');
 				}
-				log::add('discordlink', 'DEBUG', '5 Puis la');
 			} else {
 					$patch = $_options['patch'];
 					$nameFile = $_options['Name_File'];
 			}
 
-			log::add('discordlink', 'DEBUG', '6 Puis la');
-
 			$request = str_replace(array('#name#'), 
 			array(urlencode(self::decodeTexteAleatoire($nameFile))), $request);
-			
-			log::add('discordlink', 'DEBUG', '7 Puis la');
 			$request = str_replace(array('#patch#'), 
 			array(urlencode(self::decodeTexteAleatoire($patch))), $request);
 
