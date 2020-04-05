@@ -193,8 +193,9 @@ class discordlink extends eqLogic {
 				$TabCmd = array(
 					'sendMsg'=>array('Libelle'=>'Send message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
 					'sendMsgTTS'=>array('Libelle'=>'Send message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
-					'sendEmbed'=>array('Libelle'=>'Send Embed Message', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#', 'visible' => 0, 'Template' => 'discordlink::message'),
-					'sendFile'=>array('Libelle'=>'Send File', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#', 'visible' => 0, 'Template' => 'discordlink::message')
+					'sendEmbed'=>array('Libelle'=>'Send Embed Message', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#', 'visible' => 0),
+					'sendFile'=>array('Libelle'=>'Send File', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#', 'visible' => 0),
+					'1oldmsg'=>array('Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0)
 				);
 
 				//Chaque commande
@@ -209,8 +210,10 @@ class discordlink extends eqLogic {
 						$Cmddiscordlink->setLogicalId($CmdKey);
 						$Cmddiscordlink->setEventOnly(1);
 						$Cmddiscordlink->setIsVisible($Cmd['visible']);
-						$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
-						$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
+						if ($Cmd['Type'] == "action") {
+							$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
+							$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
+						}
 						$Cmddiscordlink->setDisplay('generic_type','GENERIC_INFO');
 						if (!empty($Cmd['Template'])) {
 							$Cmddiscordlink->setTemplate("dashboard", $Cmd['Template']);
@@ -384,19 +387,9 @@ class discordlinkCmd extends cmd {
 						copy($file, substr($file, 0, -3) . 'mkv');
 						$file = substr($file, 0, -3) . 'mkv';
 					}
-					if (in_array($ext, array('gif', 'jpeg', 'jpg', 'png'))) {
-						$data['patch'] = new CURLFile(realpath($file));
-						$data['Name_File'] = $text.".".$ext;
-					} else if (in_array($ext, array('ogg', 'mp3'))) {
-						$data['patch'] = new CURLFile(realpath($file));
-						$data['Name_File'] = $text.".".$ext;
-					} else if (in_array($ext, array('avi', 'mpeg', 'mpg', 'mkv', 'mp4', 'mpe'))) {
-						$data['patch'] = new CURLFile(realpath($file));
-						$data['Name_File'] = $text.".".$ext;
-					} else {
-						$data['patch'] = new CURLFile(realpath($file));
-						$data['Name_File'] = $text.".".$ext;
-					}
+
+					$data['patch'] = new CURLFile(realpath($file));
+					$data['Name_File'] = $text.".".$ext;
 
 					$patch = $data['patch'];
 					$Name_File = $data['Name_File'];
