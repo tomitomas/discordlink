@@ -373,37 +373,22 @@ class discordlinkCmd extends cmd {
 			if (!(isset($_options['patch']))) $_options['patch'] = "";
 
 			log::add('discordlink', 'DEBUG', '1 '.$options['file']);
-
-			if (isset($options['file'])) {
-				$_options['files'] = explode(',', $options['file']);
-				log::add('discordlink', 'DEBUG', '2 Coucou');
-			}
+			log::add('discordlink', 'DEBUG', '2 '.$options['files']);
 
 			if (isset($_options['files']) && is_array($_options['files'])) {
 				log::add('discordlink', 'DEBUG', '3 Je vient de passez la');
-				$file = $_options['files'][1];
-				$text = ($_options['message'] == '') ? pathinfo($file, PATHINFO_FILENAME) : $_options['message'];
-				$ext = pathinfo($file, PATHINFO_EXTENSION);
-				if ($ext == 'mp4') {
-					copy($file, substr($file, 0, -3) . 'mkv');
-					$file = substr($file, 0, -3) . 'mkv';
+				foreach ($_options['files'] as $file) {
+					if (version_compare(phpversion(), '5.5.0', '>=')) {
+						$data['patch'] = new CurlFile($file);
+						$data['Name_File'] = trim($_options['title'] . ' ' . $_options['message']);
+					} else {
+						$data['patch'] = '@' . $file;
+						$data['Name_File'] = trim($_options['title'] . ' ' . $_options['message']);
+					}
+					$patch = $data['patch'];
+					$Name_File = $data['Name_File'];
+					
 				}
-				if (in_array($ext, array('gif', 'jpeg', 'jpg', 'png'))) {
-					$data['patch'] = new CURLFile(realpath($file));
-					$data['Name_File'] = $text.".".$ext;
-				} else if (in_array($ext, array('ogg', 'mp3'))) {
-					$data['patch'] = new CURLFile(realpath($file));
-					$data['Name_File'] = $text.".".$ext;
-				} else if (in_array($ext, array('avi', 'mpeg', 'mpg', 'mkv', 'mp4', 'mpe'))) {
-					$data['patch'] = new CURLFile(realpath($file));
-					$data['Name_File'] = $text.".".$ext;
-				} else {
-					$data['patch'] = new CURLFile(realpath($file));
-					$data['Name_File'] = $text.".".$ext;
-				}
-
-				$patch = $data['patch'];
-				$Name_File = $data['Name_File'];		
 				
 				log::add('discordlink', 'DEBUG', '1 patch = ' . $patch . '|| Name : ' . $Name_File);
 
@@ -418,7 +403,6 @@ class discordlinkCmd extends cmd {
 			array(urlencode(self::decodeTexteAleatoire($patch))), $request);
 			$request = str_replace(array('#name#'), 
 			array(urlencode(self::decodeTexteAleatoire($Name_File))), $request);
-
 
 			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
 			return $request;
