@@ -393,11 +393,6 @@ class discordlinkCmd extends cmd {
 
 					$patch = $data['patch'];
 					$Name_File = $data['Name_File'];
-					
-					$this->sendTelegram($url, 'file', $to, $data);
-					if ($ext == 'mp4') {
-						unlink($file);
-					}
 				}
 			} else {
 					$patch = $_options['patch'];
