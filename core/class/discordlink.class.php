@@ -377,40 +377,39 @@ class discordlinkCmd extends cmd {
 			}
 
 			if (isset($_options['files']) && is_array($_options['files'])) {
-				foreach ($_options['files'] as $file) {
-					if (trim($file) == '') {
-						continue;
-					}
-					$text = ($_options['message'] == '') ? pathinfo($file, PATHINFO_FILENAME) : $_options['message'];
-					$ext = pathinfo($file, PATHINFO_EXTENSION);
-					if ($ext == 'mp4') {
-						copy($file, substr($file, 0, -3) . 'mkv');
-						$file = substr($file, 0, -3) . 'mkv';
-					}
-					if (in_array($ext, array('gif', 'jpeg', 'jpg', 'png'))) {
-						$data['patch'] = new CURLFile(realpath($file));
-						$data['Name_File'] = $text.".".$ext;
-					} else if (in_array($ext, array('ogg', 'mp3'))) {
-						$data['patch'] = new CURLFile(realpath($file));
-						$data['Name_File'] = $text.".".$ext;
-					} else if (in_array($ext, array('avi', 'mpeg', 'mpg', 'mkv', 'mp4', 'mpe'))) {
-						$data['patch'] = new CURLFile(realpath($file));
-						$data['Name_File'] = $text.".".$ext;
-					} else {
-						$data['patch'] = new CURLFile(realpath($file));
-						$data['Name_File'] = $text.".".$ext;
-					}
 
-					$patch = $data['patch'];
-					$Name_File = $data['Name_File'];
-					
+				$file = $_options['files'][1];
+				$text = ($_options['message'] == '') ? pathinfo($file, PATHINFO_FILENAME) : $_options['message'];
+				$ext = pathinfo($file, PATHINFO_EXTENSION);
+				if ($ext == 'mp4') {
+					copy($file, substr($file, 0, -3) . 'mkv');
+					$file = substr($file, 0, -3) . 'mkv';
 				}
+				if (in_array($ext, array('gif', 'jpeg', 'jpg', 'png'))) {
+					$data['patch'] = new CURLFile(realpath($file));
+					$data['Name_File'] = $text.".".$ext;
+				} else if (in_array($ext, array('ogg', 'mp3'))) {
+					$data['patch'] = new CURLFile(realpath($file));
+					$data['Name_File'] = $text.".".$ext;
+				} else if (in_array($ext, array('avi', 'mpeg', 'mpg', 'mkv', 'mp4', 'mpe'))) {
+					$data['patch'] = new CURLFile(realpath($file));
+					$data['Name_File'] = $text.".".$ext;
+				} else {
+					$data['patch'] = new CURLFile(realpath($file));
+					$data['Name_File'] = $text.".".$ext;
+				}
+
+				$patch = $data['patch'];
+				$Name_File = $data['Name_File'];		
+				
+				log::add('discordlink', 'DEBUG', '1 patch = ' . $patch . '|| Name : ' . $Name_File);
+
 			} else {
 					$patch = $_options['patch'];
 					$Name_File = $_options['Name_File'];
 			}
 
-			log::add('discordlink', 'DEBUG', 'patch = ' . $patch . '|| Name : ' . $Name_File);
+			log::add('discordlink', 'DEBUG', '2 patch = ' . $patch . '|| Name : ' . $Name_File);
 
 			$request = str_replace(array('#patch#'), 
 			array(urlencode(self::decodeTexteAleatoire($patch))), $request);
