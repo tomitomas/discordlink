@@ -395,11 +395,12 @@ class discordlinkCmd extends cmd {
 
 			log::add('discordlink', 'DEBUG', '6 Puis la');
 
-			$request = str_replace(array('#patch#'), 
-			array(urlencode(self::decodeTexteAleatoire($patch))), $request);
-			log::add('discordlink', 'DEBUG', '7 Puis la');
 			$request = str_replace(array('#name#'), 
 			array(urlencode(self::decodeTexteAleatoire($nameFile))), $request);
+			
+			log::add('discordlink', 'DEBUG', '7 Puis la');
+			$request = str_replace(array('#patch#'), 
+			array(urlencode(self::decodeTexteAleatoire($patch))), $request);
 
 			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
 			return $request;
