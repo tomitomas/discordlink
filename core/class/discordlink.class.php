@@ -385,15 +385,15 @@ class discordlinkCmd extends cmd {
 						$Name_File = trim($_options['title'] . ' ' . $_options['message']);
 						log::add('discordlink', 'DEBUG', '3 Bis Ou la bas');
 					}
-					log::add('discordlink', 'DEBUG', '5 patch = ' . $patch . '|| Name : ' . $Name_File);
 					log::add('discordlink', 'DEBUG', '4 Puis la');
 				}
+				log::add('discordlink', 'DEBUG', '5 Puis la');
 			} else {
 					$patch = $_options['patch'];
 					$Name_File = $_options['Name_File'];
 			}
 
-			log::add('discordlink', 'DEBUG', '2 patch = ' . $patch . '|| Name : ' . $Name_File);
+			log::add('discordlink', 'DEBUG', '6 Puis la');
 
 			$request = str_replace(array('#patch#'), 
 			array(urlencode(self::decodeTexteAleatoire($patch))), $request);
