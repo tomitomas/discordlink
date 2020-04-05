@@ -372,22 +372,22 @@ class discordlinkCmd extends cmd {
 			if ((isset($_options['patch'])) && ($_options['patch'] == "")) $_options['patch'] = $default;
 			if (!(isset($_options['patch']))) $_options['patch'] = "";
 
-			log::add('discordlink', 'DEBUG', '1 '.$options['file']);
-			log::add('discordlink', 'DEBUG', '2 '.$options['files']);
-
 			if (isset($_options['files']) && is_array($_options['files'])) {
-				log::add('discordlink', 'DEBUG', '3 Je vient de passez la');
+				log::add('discordlink', 'DEBUG', '1 Je vient de passez la');
 				foreach ($_options['files'] as $file) {
+					log::add('discordlink', 'DEBUG', '2 Ou Ici');
 					if (version_compare(phpversion(), '5.5.0', '>=')) {
 						$data['patch'] = new CurlFile($file);
 						$data['Name_File'] = trim($_options['title'] . ' ' . $_options['message']);
+						log::add('discordlink', 'DEBUG', '3 Ou La');
 					} else {
 						$data['patch'] = '@' . $file;
 						$data['Name_File'] = trim($_options['title'] . ' ' . $_options['message']);
+						log::add('discordlink', 'DEBUG', '5 Ou la bas');
 					}
+					log::add('discordlink', 'DEBUG', '6 Puis la');
 					$patch = $data['patch'];
 					$Name_File = $data['Name_File'];
-					
 				}
 				
 				log::add('discordlink', 'DEBUG', '1 patch = ' . $patch . '|| Name : ' . $Name_File);
