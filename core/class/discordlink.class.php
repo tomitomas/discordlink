@@ -383,12 +383,13 @@ class discordlinkCmd extends cmd {
 					} else {
 						$data['patch'] = '@' . $file;
 						$data['Name_File'] = trim($_options['title'] . ' ' . $_options['message']);
-						log::add('discordlink', 'DEBUG', '4 Ou la bas');
+						log::add('discordlink', 'DEBUG', '3 Bis Ou la bas');
 					}
-					log::add('discordlink', 'DEBUG', '5 Puis la');
+					log::add('discordlink', 'DEBUG', '4 Puis la');
 					
 					$patch = $data['patch'];
 					$Name_File = $data['Name_File'];
+					log::add('discordlink', 'DEBUG', '5 patch '.$data['patch']." || " .$data['Name_File']);
 					log::add('discordlink', 'DEBUG', '6 Puis par la');
 				}
 				
