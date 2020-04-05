@@ -377,7 +377,7 @@ class discordlinkCmd extends cmd {
 				foreach ($_options['files'] as $file) {
 					log::add('discordlink', 'DEBUG', '2 Ou Ici');
 					if (version_compare(phpversion(), '5.5.0', '>=')) {
-						$patch = new CurlFile($file);
+						$patch = $file;
 						$nameFile = trim($_options['title'] . ' ' . $_options['message']);
 						log::add('discordlink', 'DEBUG', '3 Ou La');
 					} else {
@@ -397,7 +397,7 @@ class discordlinkCmd extends cmd {
 
 			$request = str_replace(array('#name#'), 
 			array(urlencode(self::decodeTexteAleatoire($nameFile))), $request);
-			
+
 			log::add('discordlink', 'DEBUG', '7 Puis la');
 			$request = str_replace(array('#patch#'), 
 			array(urlencode(self::decodeTexteAleatoire($patch))), $request);
