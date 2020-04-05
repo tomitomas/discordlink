@@ -377,23 +377,18 @@ class discordlinkCmd extends cmd {
 				foreach ($_options['files'] as $file) {
 					log::add('discordlink', 'DEBUG', '2 Ou Ici');
 					if (version_compare(phpversion(), '5.5.0', '>=')) {
-						$data['patch'] = new CurlFile($file);
-						$data['Name_File'] = trim($_options['title'] . ' ' . $_options['message']);
+						$patch = new CurlFile($file);
+						$Name_File = trim($_options['title'] . ' ' . $_options['message']);
 						log::add('discordlink', 'DEBUG', '3 Ou La');
 					} else {
-						$data['patch'] = '@' . $file;
-						$data['Name_File'] = trim($_options['title'] . ' ' . $_options['message']);
+						$patch = '@' . $file;
+						$Name_File = trim($_options['title'] . ' ' . $_options['message']);
 						log::add('discordlink', 'DEBUG', '3 Bis Ou la bas');
 					}
 					log::add('discordlink', 'DEBUG', '4 Puis la');
-					
-					$patch = $data['patch'];
-					$Name_File = $data['Name_File'];
-					log::add('discordlink', 'DEBUG', '5 patch '.$data['patch']." || " .$data['Name_File']);
-					log::add('discordlink', 'DEBUG', '6 Puis par la');
 				}
 				
-				log::add('discordlink', 'DEBUG', '1 patch = ' . $patch . '|| Name : ' . $Name_File);
+				log::add('discordlink', 'DEBUG', '5 patch = ' . $patch . '|| Name : ' . $Name_File);
 
 			} else {
 					$patch = $_options['patch'];
