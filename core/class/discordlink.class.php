@@ -366,7 +366,7 @@ class discordlinkCmd extends cmd {
 
 		private function build_ControledeSliderSelectFile($_options = array(), $default = "Ceci est un message de test") {
 			$patch = "null";
-			$Name_File = "null";
+			$nameFile = "null";
 
 			$request = $this->getConfiguration('request');
 			if ((isset($_options['patch'])) && ($_options['patch'] == "")) $_options['patch'] = $default;
@@ -378,11 +378,11 @@ class discordlinkCmd extends cmd {
 					log::add('discordlink', 'DEBUG', '2 Ou Ici');
 					if (version_compare(phpversion(), '5.5.0', '>=')) {
 						$patch = new CurlFile($file);
-						$Name_File = trim($_options['title'] . ' ' . $_options['message']);
+						$nameFile = trim($_options['title'] . ' ' . $_options['message']);
 						log::add('discordlink', 'DEBUG', '3 Ou La');
 					} else {
 						$patch = '@' . $file;
-						$Name_File = trim($_options['title'] . ' ' . $_options['message']);
+						$nameFile = trim($_options['title'] . ' ' . $_options['message']);
 						log::add('discordlink', 'DEBUG', '3 Bis Ou la bas');
 					}
 					log::add('discordlink', 'DEBUG', '4 Puis la');
@@ -390,15 +390,16 @@ class discordlinkCmd extends cmd {
 				log::add('discordlink', 'DEBUG', '5 Puis la');
 			} else {
 					$patch = $_options['patch'];
-					$Name_File = $_options['Name_File'];
+					$nameFile = $_options['Name_File'];
 			}
 
 			log::add('discordlink', 'DEBUG', '6 Puis la');
 
 			$request = str_replace(array('#patch#'), 
 			array(urlencode(self::decodeTexteAleatoire($patch))), $request);
+			log::add('discordlink', 'DEBUG', '7 Puis la');
 			$request = str_replace(array('#name#'), 
-			array(urlencode(self::decodeTexteAleatoire($Name_File))), $request);
+			array(urlencode(self::decodeTexteAleatoire($nameFile))), $request);
 
 			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
 			return $request;
