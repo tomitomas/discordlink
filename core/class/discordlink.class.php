@@ -362,16 +362,59 @@ class discordlinkCmd extends cmd {
 		}	
 
 		private function build_ControledeSliderSelectFile($_options = array(), $default = "Ceci est un message de test") {
+			$patch = "null";
+			$Name_File = "null";
 
 			$request = $this->getConfiguration('request');
 			if ((isset($_options['patch'])) && ($_options['patch'] == "")) $_options['patch'] = $default;
 			if (!(isset($_options['patch']))) $_options['patch'] = "";
 
+			if (isset($options['file'])) {
+				$_options['files'] = explode(',', $options['file']);
+			}
+
+			if (isset($_options['files']) && is_array($_options['files'])) {
+				foreach ($_options['files'] as $file) {
+					if (trim($file) == '') {
+						continue;
+					}
+					$text = ($_options['message'] == '') ? pathinfo($file, PATHINFO_FILENAME) : $_options['message'];
+					$ext = pathinfo($file, PATHINFO_EXTENSION);
+					if ($ext == 'mp4') {
+						copy($file, substr($file, 0, -3) . 'mkv');
+						$file = substr($file, 0, -3) . 'mkv';
+					}
+					if (in_array($ext, array('gif', 'jpeg', 'jpg', 'png'))) {
+						$data['patch'] = new CURLFile(realpath($file));
+						$data['Name_File'] = $text.".".$ext;
+					} else if (in_array($ext, array('ogg', 'mp3'))) {
+						$data['patch'] = new CURLFile(realpath($file));
+						$data['Name_File'] = $text.".".$ext;
+					} else if (in_array($ext, array('avi', 'mpeg', 'mpg', 'mkv', 'mp4', 'mpe'))) {
+						$data['patch'] = new CURLFile(realpath($file));
+						$data['Name_File'] = $text.".".$ext;
+					} else {
+						$data['patch'] = new CURLFile(realpath($file));
+						$data['Name_File'] = $text.".".$ext;
+					}
+
+					$patch = $data['patch'];
+					$Name_File = $data['Name_File'];
+					
+					$this->sendTelegram($url, 'file', $to, $data);
+					if ($ext == 'mp4') {
+						unlink($file);
+					}
+				}
+			} else {
+					$patch = $_options['patch'];
+					$Name_File = $_options['Name_File'];
+			}
 
 			$request = str_replace(array('#patch#'), 
-			array(urlencode(self::decodeTexteAleatoire($_options['patch']))), $request);
+			array(urlencode(self::decodeTexteAleatoire($patch))), $request);
 			$request = str_replace(array('#name#'), 
-			array(urlencode(self::decodeTexteAleatoire($_options['Name_File']))), $request);
+			array(urlencode(self::decodeTexteAleatoire($Name_File))), $request);
 
 			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
 			return $request;
