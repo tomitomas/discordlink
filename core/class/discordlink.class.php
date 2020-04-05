@@ -387,22 +387,36 @@ class discordlinkCmd extends cmd {
 						copy($file, substr($file, 0, -3) . 'mkv');
 						$file = substr($file, 0, -3) . 'mkv';
 					}
-
-					$data['patch'] = new CURLFile(realpath($file));
-					$data['Name_File'] = $text.".".$ext;
+					if (in_array($ext, array('gif', 'jpeg', 'jpg', 'png'))) {
+						$data['patch'] = new CURLFile(realpath($file));
+						$data['Name_File'] = $text.".".$ext;
+					} else if (in_array($ext, array('ogg', 'mp3'))) {
+						$data['patch'] = new CURLFile(realpath($file));
+						$data['Name_File'] = $text.".".$ext;
+					} else if (in_array($ext, array('avi', 'mpeg', 'mpg', 'mkv', 'mp4', 'mpe'))) {
+						$data['patch'] = new CURLFile(realpath($file));
+						$data['Name_File'] = $text.".".$ext;
+					} else {
+						$data['patch'] = new CURLFile(realpath($file));
+						$data['Name_File'] = $text.".".$ext;
+					}
 
 					$patch = $data['patch'];
 					$Name_File = $data['Name_File'];
+					
 				}
 			} else {
 					$patch = $_options['patch'];
 					$Name_File = $_options['Name_File'];
 			}
 
+			log::add('discordlink', 'DEBUG', 'patch = ' . $patch . '|| Name : ' . $Name_File);
+
 			$request = str_replace(array('#patch#'), 
 			array(urlencode(self::decodeTexteAleatoire($patch))), $request);
 			$request = str_replace(array('#name#'), 
 			array(urlencode(self::decodeTexteAleatoire($Name_File))), $request);
+
 
 			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
 			return $request;
