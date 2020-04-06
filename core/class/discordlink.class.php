@@ -130,7 +130,7 @@ class discordlink extends eqLogic {
 		$url = network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/discordlink/core/api/jeeDiscordlink.php?apikey=' . jeedom::getApiKey('discordlink');
 		$log = $_debug ? '1' : '0';
 		$sensor_path = realpath(dirname(__FILE__) . '/../../resources');
-		$cmd = 'nice -n 19 nodejs ' . $sensor_path . '/discordlink.js ' . network::getNetworkAccess('internal') . ' ' . config::byKey('Token', 'discordlink') . ' '.log::getLogLevel('discordlink') . ' ' . $url;
+		$cmd = 'nice -n 19 nodejs ' . $sensor_path . '/discordlink.js ' . network::getNetworkAccess('internal') . ' ' . config::byKey('Token', 'discordlink') . ' '.log::getLogLevel('discordlink') . ' ' . $url . ' ' . jeedom::getApiKey('discordlink');
 		log::add('discordlink', 'debug', 'Lancement démon discordlink : ' . $cmd);
 		$result = exec('NODE_ENV=production nohup ' . $cmd . ' >> ' . log::getPathToLog('discordlink_node') . ' 2>&1 &');
 		if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
@@ -182,7 +182,11 @@ class discordlink extends eqLogic {
     }
 
     public function preSave() {
-        
+        $channel = $this->getConfiguration('channelid');
+			if (isset($channel)) {
+				$this->setLogicalId($channel);
+				log::add('discordlink', 'debug', 'setLogicalId : ' . $channel);
+			}
 	}
 	
 	public static function CreateRefreshCmd() {
@@ -190,44 +194,43 @@ class discordlink extends eqLogic {
 		$eqLogics = eqLogic::byType('discordlink');
 		foreach ($eqLogics as $eqLogic) {
 
-				$TabCmd = array(
-					'sendMsg'=>array('Libelle'=>'Send message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
-					'sendMsgTTS'=>array('Libelle'=>'Send message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
-					'sendEmbed'=>array('Libelle'=>'Send Embed Message', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#', 'visible' => 0),
-					'sendFile'=>array('Libelle'=>'Send File', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#', 'visible' => 0),
-					'1oldmsg'=>array('Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0)
-				);
-
-				//Chaque commande
-				foreach ($TabCmd as $CmdKey => $Cmd){
-					$Cmddiscordlink = $eqLogic->getCmd(null, $CmdKey);
-					if (!is_object($Cmddiscordlink) ) {
-						$Cmddiscordlink = new discordlinkCmd();
-						$Cmddiscordlink->setName($Cmd['Libelle']);
-						$Cmddiscordlink->setEqLogic_id($eqLogic->getId());
-						$Cmddiscordlink->setType($Cmd['Type']);
-						$Cmddiscordlink->setSubType($Cmd['SubType']);
-						$Cmddiscordlink->setLogicalId($CmdKey);
-						$Cmddiscordlink->setEventOnly(1);
-						$Cmddiscordlink->setIsVisible($Cmd['visible']);
-						if ($Cmd['Type'] == "action") {
-							$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
-							$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
-						}
-						$Cmddiscordlink->setDisplay('generic_type','GENERIC_INFO');
-						if (!empty($Cmd['Template'])) {
-							$Cmddiscordlink->setTemplate("dashboard", $Cmd['Template']);
-							$Cmddiscordlink->setTemplate("mobile", $Cmd['Template']);
-						}
-						$Cmddiscordlink->setDisplay('message_placeholder', 'Message a envoyer sur discord');
-						$Cmddiscordlink->setDisplay('forceReturnLineBefore', true);
-						$Cmddiscordlink->save();
-					} else {
-							$Cmddiscordlink->setCollectDate(date('Y-m-d H:i:s'));
-							$Cmddiscordlink->event($value);
-					}		
-				}
+			$TabCmd = array(
+				'sendMsg'=>array('Libelle'=>'Send message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
+				'sendMsgTTS'=>array('Libelle'=>'Send message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
+				'sendEmbed'=>array('Libelle'=>'Send Embed Message', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#', 'visible' => 0),
+				'sendFile'=>array('Libelle'=>'Send File', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#', 'visible' => 0),
+				'1oldmsg'=>array('Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0)
+			);
+			//Chaque commande
+			foreach ($TabCmd as $CmdKey => $Cmd){
+				$Cmddiscordlink = $eqLogic->getCmd(null, $CmdKey);
+				if (!is_object($Cmddiscordlink) ) {
+					$Cmddiscordlink = new discordlinkCmd();
+					$Cmddiscordlink->setName($Cmd['Libelle']);
+					$Cmddiscordlink->setEqLogic_id($eqLogic->getId());
+					$Cmddiscordlink->setType($Cmd['Type']);
+					$Cmddiscordlink->setSubType($Cmd['SubType']);
+					$Cmddiscordlink->setLogicalId($CmdKey);
+					$Cmddiscordlink->setEventOnly(1);
+					$Cmddiscordlink->setIsVisible($Cmd['visible']);
+					if ($Cmd['Type'] == "action") {
+						$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
+						$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
+					}
+					$Cmddiscordlink->setDisplay('generic_type','GENERIC_INFO');
+					if (!empty($Cmd['Template'])) {
+						$Cmddiscordlink->setTemplate("dashboard", $Cmd['Template']);
+						$Cmddiscordlink->setTemplate("mobile", $Cmd['Template']);
+					}
+					$Cmddiscordlink->setDisplay('message_placeholder', 'Message a envoyer sur discord');
+					$Cmddiscordlink->setDisplay('forceReturnLineBefore', true);
+					$Cmddiscordlink->save();
+				} else {
+						$Cmddiscordlink->setCollectDate(date('Y-m-d H:i:s'));
+						$Cmddiscordlink->event($value);
+				}		
 			}
+		}
 	}
 
     public function postSave() {

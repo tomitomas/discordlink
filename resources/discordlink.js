@@ -9,9 +9,10 @@ const client = new Discord.Client();
 const request = require('request');
 
 const token = process.argv[3];
-//const IPJeedom = process.argv[2];
+const IPJeedom = process.argv[2];
 const logLevel = process.argv[4];
 const urlreponse = process.argv[5];
+const ClePlugin =  process.argv[6];
 
 
 /* Configuration */
@@ -348,6 +349,45 @@ function startServer() {
     });
 }
 
-client.on("ready", async () => {
+function httpPost(nom, jsonaenvoyer) {
+
+	var url=IPJeedom+"/plugins/discordlink/core/php/jeediscordlink.php?apikey="+ClePlugin+"&nom="+nom;
+		
+	config.logger && config.logger('URL envoyée: '+url, "DEBUG");
+		
+	jsonaenvoyer=JSON.stringify(jsonaenvoyer);
+	config.logger && config.logger('DATA envoyé:'+jsonaenvoyer,'DEBUG');
+
+	request.post(url, {
+		json : true,
+		gzip : false,
+		multipart: [
+			{
+			body: jsonaenvoyer
+			}
+		]
+	}, function (err, response, json) {
+
+		if (!err && response.statusCode == 200) {
+
+		} else 
+		{
+
+		}
+	});
+}
+
+client.on("ready", async() => {
     client.user.setActivity(`Travailler main dans la main avec votre Jeedom`);
+});
+
+client.on('message', (receivedMessage) => {
+
+    if (receivedMessage.author == client.user) {
+        return;
+    }
+	httpPost("messagerecu",{
+		idchannel: receivedMessage.channel.id,
+		message: receivedMessage.content
+	});
 });
