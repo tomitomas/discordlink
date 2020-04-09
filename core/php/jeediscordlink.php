@@ -70,7 +70,6 @@ switch ($nom) {
 			} else {
 				log::add('discordlink', 'debug',  'Device trouvé: '.$logical_id);
 			}
-	
 }
 
 function getdevicepuisupdate($nom, $variable, $commandejeedom, $_idchannel) {
@@ -78,10 +77,25 @@ function getdevicepuisupdate($nom, $variable, $commandejeedom, $_idchannel) {
 	if (is_object($discordlinkeqlogic)) updatecommande($nom, $variable, $commandejeedom, $discordlinkeqlogic);
 }
 
-function updatecommande($nom, $variable, $commandejeedom, $_discordlinkeqlogic) {
+function updatecommande($nom, $_value, $_logicalId, $_discordlinkeqlogic, $_updateTime = null) {
 	try {
-		if (isset($variable)) {
-			$_discordlinkeqlogic->checkAndUpdateCmd($commandejeedom, $variable);
+		log::add('discordlink', 'info',  'Coucou 1');	
+		if (isset($_value)) {
+			log::add('discordlink', 'info',  'Coucou 2');
+			if ($_discordlinkeqlogic->getIsEnable() == 1) {
+				log::add('discordlink', 'info',  'Coucou 3');
+				$cmd = is_object($_logicalId) ? $_logicalId : $_discordlinkeqlogic->getCmd('info', $_logicalId);
+				if (is_object($cmd)) {
+					log::add('discordlink', 'info',  'Coucou 4');
+					$oldValue = $cmd->execCmd();
+					if ($oldValue !== $cmd->formatValue($_value) || $oldValue === '') {
+						$cmd->event($_value, $_updateTime);
+					} else {
+						$cmd->event(" ", $_updateTime);
+						$cmd->event($_value, $_updateTime);
+					}
+				}
+			}	
 		}
 	} catch (Exception $e) {
 		log::add('discordlink', 'info',  ' ['.$nom.':'.$commandejeedom.'] erreur_1: '.$e);		
