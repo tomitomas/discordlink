@@ -381,7 +381,8 @@ class discordlinkCmd extends cmd {
 						$patch = $file;
 						$files = new CurlFile($file);
 						$nameexplode = explode('.',$files->getFilename());
-						$nameFile = (isset($_options['title']) ? $_options['title'].$nameexplode[sizeof($nameexplode)] : $files->getFilename());
+						log::add('discordlink', 'info', $_options['title'].$nameexplode[sizeof($nameexplode-1)]);
+						$nameFile = (isset($_options['title']) ? $_options['title'].$nameexplode[sizeof($nameexplode-1)] : $files->getFilename());
 					} 
 				}
 			} else {
