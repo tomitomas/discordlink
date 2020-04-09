@@ -75,6 +75,18 @@ switch ($nom) {
 function getdevicepuisupdate($nom, $variable, $commandejeedom, $_idchannel) {
 	$discordlinkeqlogic=eqLogic::byLogicalId($_idchannel, 'discordlink'); 
 	if (is_object($discordlinkeqlogic)) updatecommande($nom, $variable, $commandejeedom, $discordlinkeqlogic);
+	log::add('discordlink', 'debug', $discordlinkeqlogic->getConfiguration('interactionjeedom'));
+	if ($discordlinkeqlogic->getConfiguration('interactionjeedom') == 1) {
+		$parameters['plugin'] = 'discordlink';
+		$reply = interactQuery::tryToReply(trim($variable), $parameters);
+		log::add('discordlink', 'debug', 'Interaction ' . print_r($reply, true));
+		if ($reply['reply'] != "Aucune valeur" ) {
+			$cmd = $discordlinkeqlogic->getCmd('action', 'sendMsg');
+			$option = array('message' => $reply['reply']);
+			$cmd->execute($option);
+		}
+	}
+
 }
 
 function updatecommande($nom, $_value, $_logicalId, $_discordlinkeqlogic, $_updateTime = null) {
