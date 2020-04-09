@@ -79,14 +79,10 @@ function getdevicepuisupdate($nom, $variable, $commandejeedom, $_idchannel) {
 
 function updatecommande($nom, $_value, $_logicalId, $_discordlinkeqlogic, $_updateTime = null) {
 	try {
-		log::add('discordlink', 'info',  'Coucou 1');	
 		if (isset($_value)) {
-			log::add('discordlink', 'info',  'Coucou 2');
 			if ($_discordlinkeqlogic->getIsEnable() == 1) {
-				log::add('discordlink', 'info',  'Coucou 3');
 				$cmd = is_object($_logicalId) ? $_logicalId : $_discordlinkeqlogic->getCmd('info', $_logicalId);
 				if (is_object($cmd)) {
-					log::add('discordlink', 'info',  'Coucou 4');
 					$oldValue = $cmd->execCmd();
 					if ($oldValue !== $cmd->formatValue($_value) || $oldValue === '') {
 						$cmd->event($_value, $_updateTime);
