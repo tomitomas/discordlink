@@ -380,11 +380,9 @@ class discordlinkCmd extends cmd {
 					if (version_compare(phpversion(), '5.5.0', '>=')) {
 						$patch = $file;
 						$files = new CurlFile($file);
-						$nameFile = $files->getFilename();
-					} else {
-						$patch = '@' . $file;
-						$nameFile = trim($_options['title'] . ' ' . $_options['message']);
-					}
+						$nameexplode = explode('.',$files->getFilename());
+						$nameFile = (isset($_options['title']) ? $_options['title'].$nameexplode[sizeof($nameexplode)] : $files->getFilename());
+					} 
 				}
 			} else {
 					$patch = $_options['patch'];
