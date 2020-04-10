@@ -100,7 +100,7 @@ foreach ($eqLogics as $eqLogic) {
             <select class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="channelid">       
                 <?php
                     $deamon = discordlink::deamon_info()
-                    if ($deamon['launchable'] == 'ok') {
+                    if ($deamon['state'] == 'ok') {
                         $channels = discordlink::getchannel();
                         $channelssize = sizeof($channels);
                         $channelssize1 =  $channelssize - 1;
