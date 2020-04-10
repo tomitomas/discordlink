@@ -63,7 +63,7 @@ class discordlink extends eqLogic {
     /*     * *********************Méthodes d'instance************************* */
 
 	public static function getchannel() {
-		$deamon = discordlink::deamon_info()
+		$deamon = discordlink::deamon_info();
 		if ($deamon['state'] == 'ok') {
 			$json = file_get_contents("http://" . config::byKey('internalAddr') . ":3466/getchannel");
 			$json = json_decode($json, true);
@@ -72,7 +72,7 @@ class discordlink extends eqLogic {
 	}
 
 	public static function getinvite() {
-		$deamon = discordlink::deamon_info()
+		$deamon = discordlink::deamon_info();
 		if ($deamon['state'] == 'ok') {
 			$json = file_get_contents("http://" . config::byKey('internalAddr') . ":3466/getinvite");
 			$json = json_decode($json, true);
