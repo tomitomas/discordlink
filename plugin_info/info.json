@@ -9,8 +9,8 @@
 	"hasDependency" : true,
 	"hasOwnDeamon" : true,
 	"maxDependancyInstallTime" : 300,
-	"changelog" : "https://trmaud.github.io/Docs/discordlink/#language#/changelog",
-	"documentation" : "https://trmaud.github.io/Docs/discordlink/#language#/",
+	"changelog" : "https://trmaud.github.io/Docs/discordlink/fr_FR/changelog",
+	"documentation" : "https://trmaud.github.io/Docs/discordlink/fr_FR/",
 	"link" : {
 		"forum":"https://community.jeedom.com/t/plugin-tiers-discord-link-sujet-principal/23663?u=titi_titi"
 	},
