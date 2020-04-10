@@ -12,8 +12,8 @@
 	"changelog" : "https://trmaud.github.io/Docs/discordlink/#language#/changelog",
 	"documentation" : "https://trmaud.github.io/Docs/discordlink/#language#/",
 	"link" : {
-		"forum":"Lien vers le forum"
+		"forum":"https://community.jeedom.com/t/plugin-tiers-discord-link-sujet-principal/23663?u=titi_titi"
 	},
 	"language" : ["fr_FR"],
-	"compatibility" : ["miniplus","smart","rpi","docker","diy"]
+	"compatibility" : ["miniplus","smart","rpi","docker","diy", "v4"]
 }
