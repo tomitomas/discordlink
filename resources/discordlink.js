@@ -385,7 +385,10 @@ client.on('message', (receivedMessage) => {
 
     if (receivedMessage.author == client.user) {
         return;
-    }
+	}
+	if (receivedMessage.author.bot) {
+		return;
+	}
 	httpPost("messagerecu",{
 		idchannel: receivedMessage.channel.id,
 		message: receivedMessage.content
