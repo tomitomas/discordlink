@@ -91,7 +91,7 @@ foreach ($eqLogics as $eqLogic) {
 		<div class="col-sm-9">
 			<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Activer}}</label>
 			<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
-            <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="interactionjeedom"/>{{Interations Avec Jeedom}}</label>
+            <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="interactionjeedom"/>{{Interactions Avec Jeedom}}</label>
         </div>
 	</div>
        <div class="form-group">
