@@ -121,7 +121,7 @@ function updatecommande($nom, $_value, $_logicalId, $_discordlinkeqlogic, $_upda
 function getASK($_value, $_idchannel) {
 	$discordlinkeqlogic=eqLogic::byLogicalId($_idchannel, 'discordlink');
 	$cmd = $discordlinkeqlogic->getCmd('action', "sendEmbed");
-	$this->askResponse($_value);
+	$cmd->askResponse($_value);
 }
 
 ?>
