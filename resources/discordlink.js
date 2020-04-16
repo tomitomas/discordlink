@@ -215,7 +215,7 @@ app.get('/sendFile', (req, res) => {
 
     config.logger('DiscordLink: sendMsg');
     
-    client.channels.get(req.query.channelID).send({
+    client.channels.get(req.query.channelID).send(req.query.message, {
 		files: [{
 		  attachment: req.query.patch,
 		  name: req.query.name
