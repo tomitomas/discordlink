@@ -381,13 +381,11 @@ class discordlinkCmd extends cmd {
 						$nameFile = (isset($_options['title']) ? $_options['title'].'.'.$nameexplode[sizeof($nameexplode)-1] : $files->getFilename());
 					} 
 				}
+				$message = $_options['message'];
 
-				$message = $_options['title'];
 			} else {
 				$patch = $_options['patch'];
 				$nameFile = $_options['Name_File'];
-				$message = $_options['message'];
-				$message = $_options['title'];
 			}
 			
 			$request = str_replace(array('#message#'), 
