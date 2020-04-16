@@ -204,40 +204,36 @@ class discordlink extends eqLogic {
 				'sendMsg'=>array('Libelle'=>'Send message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
 				'sendMsgTTS'=>array('Libelle'=>'Send message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
 				'sendEmbed'=>array('Libelle'=>'Send Embed Message', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
-				'sendFile'=>array('Libelle'=>'Send File', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#', 'visible' => 0),
+				'sendFile'=>array('Libelle'=>'Send File', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#&message=#message#', 'visible' => 0),
 				'1oldmsg'=>array('Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0)
 			);
 			//Chaque commande
 			foreach ($TabCmd as $CmdKey => $Cmd){
 				$Cmddiscordlink = $eqLogic->getCmd(null, $CmdKey);
+				
 				if (!is_object($Cmddiscordlink) ) {
 					$Cmddiscordlink = new discordlinkCmd();
-					$Cmddiscordlink->setName($Cmd['Libelle']);
-					$Cmddiscordlink->setEqLogic_id($eqLogic->getId());
-					$Cmddiscordlink->setType($Cmd['Type']);
-					$Cmddiscordlink->setSubType($Cmd['SubType']);
-					$Cmddiscordlink->setLogicalId($CmdKey);
-					$Cmddiscordlink->setEventOnly(1);
-					$Cmddiscordlink->setIsVisible($Cmd['visible']);
-					if ($Cmd['Type'] == "action") {
-						$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
-						$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
-					}
-					$Cmddiscordlink->setDisplay('generic_type','GENERIC_INFO');
-					if (!empty($Cmd['Template'])) {
-						$Cmddiscordlink->setTemplate("dashboard", $Cmd['Template']);
-						$Cmddiscordlink->setTemplate("mobile", $Cmd['Template']);
-					}
-					$Cmddiscordlink->setDisplay('message_placeholder', 'Message a envoyer sur discord');
-					$Cmddiscordlink->setDisplay('forceReturnLineBefore', true);
-					$Cmddiscordlink->save();
-				} else {
-						$Cmddiscordlink->setCollectDate(date('Y-m-d H:i:s'));
-						$Cmddiscordlink->event($value);
-						$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
-						$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
-						$Cmddiscordlink->save();
-				}		
+				}
+
+				$Cmddiscordlink->setName($Cmd['Libelle']);
+				$Cmddiscordlink->setEqLogic_id($eqLogic->getId());
+				$Cmddiscordlink->setType($Cmd['Type']);
+				$Cmddiscordlink->setSubType($Cmd['SubType']);
+				$Cmddiscordlink->setLogicalId($CmdKey);
+				$Cmddiscordlink->setEventOnly(1);
+				$Cmddiscordlink->setIsVisible($Cmd['visible']);
+				if ($Cmd['Type'] == "action") {
+					$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
+					$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
+				}
+				$Cmddiscordlink->setDisplay('generic_type','GENERIC_INFO');
+				if (!empty($Cmd['Template'])) {
+					$Cmddiscordlink->setTemplate("dashboard", $Cmd['Template']);
+					$Cmddiscordlink->setTemplate("mobile", $Cmd['Template']);
+				}
+				$Cmddiscordlink->setDisplay('message_placeholder', 'Message a envoyer sur discord');
+				$Cmddiscordlink->setDisplay('forceReturnLineBefore', true);
+				$Cmddiscordlink->save();
 			}
 		}
 	}
@@ -369,6 +365,7 @@ class discordlinkCmd extends cmd {
 		private function build_ControledeSliderSelectFile($_options = array(), $default = "Ceci est un message de test") {
 			$patch = "null";
 			$nameFile = "null";
+			$message = "null";
 
 			$request = $this->getConfiguration('request');
 			if ((isset($_options['patch'])) && ($_options['patch'] == "")) $_options['patch'] = $default;
@@ -384,11 +381,17 @@ class discordlinkCmd extends cmd {
 						$nameFile = (isset($_options['title']) ? $_options['title'].'.'.$nameexplode[sizeof($nameexplode)-1] : $files->getFilename());
 					} 
 				}
-			} else {
-					$patch = $_options['patch'];
-					$nameFile = $_options['Name_File'];
-			}
 
+				$message = $_options['title'];
+			} else {
+				$patch = $_options['patch'];
+				$nameFile = $_options['Name_File'];
+				$message = $_options['message'];
+				$message = $_options['title'];
+			}
+			
+			$request = str_replace(array('#message#'), 
+			array(urlencode(self::decodeTexteAleatoire($message))), $request);
 			$request = str_replace(array('#name#'), 
 			array(urlencode(self::decodeTexteAleatoire($nameFile))), $request);
 			$request = str_replace(array('#patch#'), 
