@@ -19,16 +19,17 @@
 require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 function discordlink_install() {
-    discordlink::CreateRefreshCmd();
+    discordlink::CreateCmd();
 }
 
 function discordlink_update() {
-    discordlink::CreateRefreshCmd();
+    discordlink::CreateCmd();
+    discordlink::RefreshCmd();
 }
 
 
 function discordlink_remove() {
-    discordlink::CreateRefreshCmd();
+    discordlink::CreateCmd();
 }
 
 ?>

@@ -1,121 +1,148 @@
 <?php
-
 /* This file is part of Jeedom.
-*
-* Jeedom is free software: you can redistribute it and/or modify
-* it under the terms of the GNU General Public License as published by
-* the Free Software Foundation, either version 3 of the License, or
-* (at your option) any later version.
-*
-* Jeedom is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-* GNU General Public License for more details.
-*
-* You should have received a copy of the GNU General Public License
-* along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
-*/
-
+ *
+ * Jeedom is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Jeedom is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
+ */
+http_response_code(200);
+header("Content-Type: application/json");
 require_once dirname(__FILE__) . "/../../../../core/php/core.inc.php";
-					
-					
-
 if (!jeedom::apiAccess(init('apikey'), 'discordlink')) {
-	echo __('Vous n\'êtes pas autorisé à effectuer cette action', __FILE__);
-	log::add('discordlink', 'debug',  'Clé Plugin Invalide');
+	echo __('Clef API non valide, vous n\'êtes pas autorisé à effectuer cette action (discordlink)', __FILE__);
 	die();
 }
-
-if (init('test') != '') {
-	echo 'OK';
+$content = file_get_contents('php://input');
+$json = json_decode($content, true);
+log::add('discordlink', 'debug', $content);
+$id = init('id');
+$eqLogic = discordlink::byId($id);
+if (!is_object($eqLogic)) {
+	echo json_encode(array('text' => __('Id inconnu : ', __FILE__) . init('id')));
 	die();
 }
-
-$chaineRecuperee=file_get_contents("php://input");
-$nom=$_GET["nom"];
-log::add('discordlink', 'debug',  'Réception données sur jeediscordlink ['.$nom.']');
-
-log::add('discordlink', 'debug',  "chaineRecuperee: ".$chaineRecuperee);
-
-$debut=strpos($chaineRecuperee, "{");
-$fin=strrpos($chaineRecuperee, "}");
-$longeur=1+intval($fin)-intval($debut);
-$chaineRecupereeCorrigee=substr($chaineRecuperee, $debut, $longeur);
-
-log::add('discordlink', 'debug',  "chaineRecupereeCorrigee: ".$chaineRecupereeCorrigee);
-log::add('discordlink', 'debug',  "nom: ".$nom);
-
-$result = json_decode($chaineRecupereeCorrigee, true);
-
-
-if (!is_array($result)) {
-	log::add('discordlink', 'debug', 'Format Invalide');
+$parameters = array();
+if (isset($json["edited_message"])) {
+	$json["message"] = $json["edited_message"];
+}
+if ($json["message"]["chat"]["type"] == 'private') {
+	$username = isset($json["message"]["from"]["username"]) ? $json["message"]["from"]["username"] : $json["message"]["from"]["first_name"];
+} else if ($json["message"]["chat"]["type"] == 'group') {
+	$username = $json["message"]["chat"]["title"];
+} else {
+	log::add('discordlink', 'debug', 'Message non supporté');
 	die();
 }
-
-$logical_id = $result['idchannel']."_player";
-
-$discordlinkeqlogic=eqLogic::byLogicalId($result['idchannel'], 'discordlink');
-
-switch ($nom) {
-	
-		case 'messagerecu':
-			getdevicepuisupdate("1oldmsg", $result['message'], '1oldmsg', $result['idchannel']);
-		break;	
-					
-		default:
-			if (!is_object($discordlinkeqlogic)) {
-				log::add('discordlink', 'debug',  'Device non trouvé: '.$logical_id);
-				die();
-			} else {
-				log::add('discordlink', 'debug',  'Device trouvé: '.$logical_id);
-			}
-}
-
-function getdevicepuisupdate($nom, $variable, $commandejeedom, $_idchannel) {
-	$discordlinkeqlogic=eqLogic::byLogicalId($_idchannel, 'discordlink'); 
-	if (is_object($discordlinkeqlogic)) updatecommande($nom, $variable, $commandejeedom, $discordlinkeqlogic);
-	log::add('discordlink', 'debug', $discordlinkeqlogic->getConfiguration('interactionjeedom'));
-	if ($discordlinkeqlogic->getConfiguration('interactionjeedom') == 1) {
-		$parameters['plugin'] = 'discordlink';
-		$reply = interactQuery::tryToReply(trim($variable), $parameters);
-		log::add('discordlink', 'debug', 'Interaction ' . print_r($reply, true));
-		if ($reply['reply'] != "Désolé je n'ai pas compris" && $reply['reply'] != "Désolé je n'ai pas compris la demande" && $reply['reply'] != "Désolé je ne comprends pas la demande" && $reply['reply'] != "Je ne comprends pas" && $reply['reply'] != "ceci est un message de test") {
-			log::add('discordlink', 'debug',  "La reponse : '".$reply['reply']. "' est valide je vous l'ai donc renvoyée");
-			$cmd = $discordlinkeqlogic->getCmd('action', 'sendMsg');
-			$option = array('message' => $reply['reply']);
-			$cmd->execute($option);
-		} else {
-			log::add('discordlink', 'debug',  "La reponse : '".$reply['reply']. "' est une reponse générique je vous l'ai donc pas renvoyée");
+log::add('discordlink', 'debug', 'Recu message de ' . $username);
+if (isset($json["message"]["text"])) {
+	foreach ($eqLogic->getCmd('action') as $cmd) {
+		if ($cmd->askResponse($json["message"]["text"])) {
+			echo json_encode(array('text' => ''));
+			die();
 		}
 	}
-
 }
 
-function updatecommande($nom, $_value, $_logicalId, $_discordlinkeqlogic, $_updateTime = null) {
-	try {
-		if (isset($_value)) {
-			if ($_discordlinkeqlogic->getIsEnable() == 1) {
-				$cmd = is_object($_logicalId) ? $_logicalId : $_discordlinkeqlogic->getCmd('info', $_logicalId);
-				if (is_object($cmd)) {
-					$oldValue = $cmd->execCmd();
-					if ($oldValue !== $cmd->formatValue($_value) || $oldValue === '') {
-						$cmd->event($_value, $_updateTime);
-					} else {
-						$cmd->event(" ", $_updateTime);
-						$cmd->event($_value, $_updateTime);
-					}
-				}
-			}	
+$cmd_user = $eqLogic->getCmd('action', $json["message"]["chat"]["id"]);
+if (is_object($cmd_user)) {
+	$parameters['reply_cmd'] = $cmd_user;
+	$user = user::byId($cmd_user->getConfiguration('user'));
+	if (is_object($user)) {
+		$parameters['profile'] = $user->getLogin();
+	}
+}
+$eqLogic->checkAndUpdateCmd('sender', trim($json["message"]["from"]["id"]));
+$eqLogic->checkAndUpdateCmd('chat', trim($json["message"]["chat"]["id"]));
+$interactAnswer = 0;
+if (isset($json["message"]["text"])) {
+	$eqLogic->checkAndUpdateCmd('text', $json["message"]["text"]);
+	if (!is_object($cmd_user)) {
+		if ($eqLogic->getConfiguration('isAccepting') != 1) {
+			die();
 		}
-	} catch (Exception $e) {
-		log::add('discordlink', 'info',  ' ['.$nom.':'.$commandejeedom.'] erreur_1: '.$e);		
-	} catch (Error $e) {
-		log::add('discordlink', 'info',  ' ['.$nom.':'.$commandejeedom.'] erreur_2: '.$e);
-    }	
+		$cmd_user = new discordlinkCmd();
+		$cmd_user->setLogicalId($json["message"]["chat"]["id"]);
+		$cmd_user->setIsVisible(1);
+		$cmd_user->setName($username . ' - ' . $json["message"]["chat"]["id"]);
+		$cmd_user->setConfiguration('interact', 1);
+		$cmd_user->setConfiguration('chatid', $json["message"]["chat"]["id"]);
+		$cmd_user->setType('action');
+		$cmd_user->setSubType('message');
+		$cmd_user->setEqLogic_id($eqLogic->getId());
+		$cmd_user->setDisplay('title_placeholder', __('Options', __FILE__));
+		$cmd_user->setDisplay('message_placeholder', __('Message', __FILE__));
+	}
+	if (isset($json["message"]["chat"]["title"])) {
+		$cmd_user->setConfiguration('title', $json["message"]["chat"]["title"]);
+	} else {
+		if (isset($json["message"]["from"]["username"])) {
+			$cmd_user->setConfiguration('username', $json["message"]["from"]["username"]);
+		}
+		if (isset($json["message"]["from"]["first_name"])) {
+			$cmd_user->setConfiguration('first_name', $json["message"]["from"]["first_name"]);
+		}
+		if (isset($json["message"]["from"]["last_name"])) {
+			$cmd_user->setConfiguration('last_name', $json["message"]["from"]["last_name"]);
+		}
+	}
+	$cmd_user->save();
+	if (isset($json["message"]["reply_to_message"])) {
+		die();
+	}
+	if ($cmd_user->getConfiguration('interact') == 1) {
+		$interactAnswer = 1;
+		$parameters['plugin'] = 'discordlink';
+		$reply = interactQuery::tryToReply(trim($json["message"]["text"]), $parameters);
+		log::add('discordlink', 'debug', 'Interaction ' . print_r($reply, true));
+	} else {
+		$reply['reply'] = $eqLogic->getConfiguration('reply', 'Message recu');
+	}
+	$file_id = '';
+} else if (isset($json["message"]["document"])) {
+	$file_id = $json["message"]["document"]["file_id"];
+	$file_name = $json["message"]["document"]["file_name"];
+	$reply['reply'] = $eqLogic->getConfiguration('reply', 'Message recu') . ' (Document)';
+} else if (isset($json["message"]["photo"])) {
+	$file_id = $json["message"]["photo"]["file_id"];
+	$file_name = $username . '.png';
+	$reply['reply'] = $eqLogic->getConfiguration('reply', 'Message recu') . ' (Photo)';
+} else if (isset($json["message"]["video"])) {
+	$file_id = $json["message"]["video"]["file_id"];
+	$file_name = $username . '.mp4';
+	$reply['reply'] = $eqLogic->getConfiguration('reply', 'Message recu') . ' (Vidéo)';
+} else if (isset($json["message"]["location"])) {
+	$file_id = '';
+	$cmd_user = $eqLogic->getCmd('action', $json["message"]["chat"]["id"]);
+	if (is_object($cmd_user)) {
+		$geolocCmd = geotravCmd::byEqLogicIdAndLogicalId(str_replace('#', '', str_replace('eqLogic', '', $cmd_user->getConfiguration('cmdgeoloc', ''))),'location:updateCoo');
+		$option = array('message' => $json["message"]["location"]["latitude"] . ',' . $json["message"]["location"]["longitude"]);
+		if (is_object($geolocCmd)) {
+			$geolocCmd->execute($option);
+		}
+	}
+	$reply['reply'] = $eqLogic->getConfiguration('reply', 'Message recu') . ' (Localisation)';
 }
-
-?>
-
-
-
+if (isset($reply['file']) && count($reply['file']) > 0) {
+	if (!is_array($reply['file'])) {
+		$reply['file'] = array($reply['file']);
+	}
+	$cmd_user->execCmd(array('files' => $reply['file'], 'message' => $reply['reply']));
+} else if (!$eqLogic->getConfiguration('noreply', 0) || $interactAnswer == 1) {
+	$answer = array(
+		'method' => 'sendMessage',
+		'chat_id' => $json['message']['chat']['id'],
+		'text' => $reply['reply'],
+	);
+	$cmd_user->execCmd(array('message' => $reply['reply']));
+} else {
+	echo json_encode(array('text' => ''));
+}

@@ -195,7 +195,7 @@ class discordlink extends eqLogic {
 			}
 	}
 	
-	public static function CreateRefreshCmd() {
+	public static function CreateCmd() {
 
 		$eqLogics = eqLogic::byType('discordlink');
 		foreach ($eqLogics as $eqLogic) {
@@ -203,7 +203,7 @@ class discordlink extends eqLogic {
 			$TabCmd = array(
 				'sendMsg'=>array('Libelle'=>'Send message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
 				'sendMsgTTS'=>array('Libelle'=>'Send message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
-				'sendEmbed'=>array('Libelle'=>'Send Embed Message', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#', 'visible' => 0),
+				'sendEmbed'=>array('Libelle'=>'Send Embed Message', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
 				'sendFile'=>array('Libelle'=>'Send File', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#', 'visible' => 0),
 				'1oldmsg'=>array('Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0)
 			);
@@ -239,8 +239,34 @@ class discordlink extends eqLogic {
 		}
 	}
 
+	public static function RefreshCmd() {
+
+		$eqLogics = eqLogic::byType('discordlink');
+		foreach ($eqLogics as $eqLogic) {
+
+			$TabCmd = array(
+				'sendMsg'=>array('Libelle'=>'Send message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
+				'sendMsgTTS'=>array('Libelle'=>'Send message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
+				'sendEmbed'=>array('Libelle'=>'Send Embed Message', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
+				'sendFile'=>array('Libelle'=>'Send File', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#', 'visible' => 0),
+				'1oldmsg'=>array('Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0)
+			);
+			//Chaque commande
+			foreach ($TabCmd as $CmdKey => $Cmd){
+				$Cmddiscordlink = $eqLogic->getCmd(null, $CmdKey);
+
+				if ($Cmd['Type'] == "action") {
+					$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
+					$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
+				}
+				
+				$Cmddiscordlink->save();
+			}
+		}
+	}
+
     public function postSave() {
-		discordlink::CreateRefreshCmd();
+		discordlink::CreateCmd();
 	}
 
     public function preUpdate() {
@@ -314,18 +340,8 @@ class discordlinkCmd extends cmd {
 				$request_http->exec(0.1, 1);
 				return;
 			}
-			if (isset($_options['answer'])) {
-				$return = $request_http->exec($this->getConfiguration('timeout', 320), $this->getConfiguration('maxHttpRetry', 1));//Time out à 300s 1 essais
-				$return = substr($return, 1, -1);
 
-				$result = json_decode($return , true);
-				$answer = $_options['answer'];
-
-				$this->askResponse($answer[$result['reponse']]);
-
-			} else {
-				$result = $request_http->exec($this->getConfiguration('timeout', 3), $this->getConfiguration('maxHttpRetry', 3));//Time out à 3s 3 essais
-			}
+			$result = $request_http->exec($this->getConfiguration('timeout', 3), $this->getConfiguration('maxHttpRetry', 3));//Time out à 3s 3 essais
 			
 			if (!$result) throw new Exception(__('Serveur injoignable', __FILE__));
 		
@@ -415,12 +431,14 @@ class discordlinkCmd extends cmd {
 			$footer = "null";
 			$field = "null";
 			$colors = "null";
+			$timeout = "null";
 
 			if (isset($_options['answer'])) {
 				if (("" != ($_options['title']))) $titre = $_options['title'];
 				$colors = "#1100FF";
 
 				$answer = $_options['answer'];
+				$timeout = $_options['timeout'];
 				$description = "";
 				
 				$a = 0;
@@ -428,7 +446,7 @@ class discordlinkCmd extends cmd {
 				while ($a < count($answer)) {
 					$description .=	$choix[$a] . " : ". $answer[$a];
 					$description .= "
-					";
+";
 					$a ++;
 				}
 				$field = count($answer);
@@ -443,6 +461,8 @@ class discordlinkCmd extends cmd {
 
 			$request = str_replace(array('#title#'), 
 			array(urlencode(self::decodeTexteAleatoire($titre))), $request);
+			$request = str_replace(array('#title#'), 
+			array(urlencode(self::decodeTexteAleatoire($titre))), $request);
 			$request = str_replace(array('#url#'), 
 			array(urlencode(self::decodeTexteAleatoire($url))), $request);
 			$request = str_replace(array('#description#'), 
@@ -453,6 +473,8 @@ class discordlinkCmd extends cmd {
 			array(urlencode(self::decodeTexteAleatoire($field))), $request);
 			$request = str_replace(array('#color#'), 
 			array(urlencode(self::decodeTexteAleatoire($colors))), $request);
+			$request = str_replace(array('#timeout#'), 
+			array(urlencode(self::decodeTexteAleatoire($timeout))), $request);
 
 			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
 			return $request;

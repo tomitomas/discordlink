@@ -270,6 +270,7 @@ app.get('/sendEmbed', (req, res) => {
 	   
     client.channels.get(req.query.channelID).send(Embed).then(async m => {
 		if(field != "null") {
+
 			var emojy = ["🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","🇯","🇰","🇱","🇲","🇳","🇴","🇵","🇶","🇷","🇸","🇹","🇺","🇻","🇼","🇽","🇾","🇿"];
 			a = 0;
 			while (a < field) {
@@ -279,47 +280,54 @@ app.get('/sendEmbed', (req, res) => {
 			const filter = (reaction, user) => {
 				return ["🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","🇯","🇰","🇱","🇲","🇳","🇴","🇵","🇶","🇷","🇸","🇹","🇺","🇻","🇼","🇽","🇾","🇿"].includes(reaction.emoji.name) && user.id !== m.author.id;
 			};
-			m.awaitReactions(filter, { max: 1, time: 300000, errors: ['time'] })
-				.then(collected => {
-					const reaction = collected.first();
-					if (reaction.emoji.name === '🇦') reponse = 0;	
-					else if (reaction.emoji.name === '🇧') reponse = 1;	
-					else if (reaction.emoji.name === '🇨') reponse = 2;	
-					else if (reaction.emoji.name === '🇩') reponse = 3;	
-					else if (reaction.emoji.name === '🇪') reponse = 4;	
-					else if (reaction.emoji.name === '🇫') reponse = 5;	
-					else if (reaction.emoji.name === '🇬') reponse = 6;	
-					else if (reaction.emoji.name === '🇭') reponse = 7;	
-					else if (reaction.emoji.name === '🇮') reponse = 8;	
-					else if (reaction.emoji.name === '🇯') reponse = 9;	
-					else if (reaction.emoji.name === '🇰') reponse = 10;	
-					else if (reaction.emoji.name === '🇱') reponse = 11;	
-					else if (reaction.emoji.name === '🇲') reponse = 12;	
-					else if (reaction.emoji.name === '🇳') reponse = 13;	
-					else if (reaction.emoji.name === '🇴') reponse = 14;	
-					else if (reaction.emoji.name === '🇵') reponse = 15;	
-					else if (reaction.emoji.name === '🇶') reponse = 16;	
-					else if (reaction.emoji.name === '🇷') reponse = 17;	
-					else if (reaction.emoji.name === '🇸') reponse = 18;	
-					else if (reaction.emoji.name === '🇹') reponse = 19;	
-					else if (reaction.emoji.name === '🇺') reponse = 20;	
-					else if (reaction.emoji.name === '🇻') reponse = 21;	
-					else if (reaction.emoji.name === '🇼') reponse = 22;	
-					else if (reaction.emoji.name === '🇽') reponse = 23;	
-					else if (reaction.emoji.name === '🇾') reponse = 24;	
-					else if (reaction.emoji.name === '🇿') reponse = 25;	
 
-					toReturn.push({
-						'reponse': reponse
-					});
-					res.status(200).json(toReturn);	
-				})
+			var timecalcul = (req.query.timeout * 1000);
+
+			toReturn.push({
+				'querry': req.query,
+				'timeout':req.query.timeout,
+				'timecalcul': timecalcul
+			});
+			res.status(200).json(toReturn);	
+
+			m.awaitReactions(filter, { max: 1, time: timecalcul, errors: ['time'] })
+			.then(collected => {
+				const reaction = collected.first();
+				if (reaction.emoji.name === '🇦') reponse = 0;	
+				else if (reaction.emoji.name === '🇧') reponse = 1;	
+				else if (reaction.emoji.name === '🇨') reponse = 2;	
+				else if (reaction.emoji.name === '🇩') reponse = 3;	
+				else if (reaction.emoji.name === '🇪') reponse = 4;	
+				else if (reaction.emoji.name === '🇫') reponse = 5;	
+				else if (reaction.emoji.name === '🇬') reponse = 6;	
+				else if (reaction.emoji.name === '🇭') reponse = 7;	
+				else if (reaction.emoji.name === '🇮') reponse = 8;	
+				else if (reaction.emoji.name === '🇯') reponse = 9;	
+				else if (reaction.emoji.name === '🇰') reponse = 10;	
+				else if (reaction.emoji.name === '🇱') reponse = 11;	
+				else if (reaction.emoji.name === '🇲') reponse = 12;	
+				else if (reaction.emoji.name === '🇳') reponse = 13;	
+				else if (reaction.emoji.name === '🇴') reponse = 14;	
+				else if (reaction.emoji.name === '🇵') reponse = 15;	
+				else if (reaction.emoji.name === '🇶') reponse = 16;	
+				else if (reaction.emoji.name === '🇷') reponse = 17;	
+				else if (reaction.emoji.name === '🇸') reponse = 18;	
+				else if (reaction.emoji.name === '🇹') reponse = 19;	
+				else if (reaction.emoji.name === '🇺') reponse = 20;	
+				else if (reaction.emoji.name === '🇻') reponse = 21;	
+				else if (reaction.emoji.name === '🇼') reponse = 22;	
+				else if (reaction.emoji.name === '🇽') reponse = 23;	
+				else if (reaction.emoji.name === '🇾') reponse = 24;	
+				else if (reaction.emoji.name === '🇿') reponse = 25;	
+				
+				httpPost("ASK",{
+					idchannel: m.channel.id,
+					reponse: reponse
+				});
+
+			})
 			.catch(collected => {
 				m.reply('Une erreur est survenue. Ou le temps maximum de reponse a été depasser.');
-				toReturn.push({
-					'querry': req.query
-				});
-				res.status(200).json(toReturn);	
 			});
 		}
 	}).catch(console.error);
