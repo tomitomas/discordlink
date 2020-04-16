@@ -24,7 +24,6 @@ function discordlink_install() {
 
 function discordlink_update() {
     discordlink::CreateCmd();
-    discordlink::RefreshCmd();
 }
 
 

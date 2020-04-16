@@ -234,33 +234,10 @@ class discordlink extends eqLogic {
 				} else {
 						$Cmddiscordlink->setCollectDate(date('Y-m-d H:i:s'));
 						$Cmddiscordlink->event($value);
+						$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
+						$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
+						$Cmddiscordlink->save();
 				}		
-			}
-		}
-	}
-
-	public static function RefreshCmd() {
-
-		$eqLogics = eqLogic::byType('discordlink');
-		foreach ($eqLogics as $eqLogic) {
-
-			$TabCmd = array(
-				'sendMsg'=>array('Libelle'=>'Send message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
-				'sendMsgTTS'=>array('Libelle'=>'Send message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
-				'sendEmbed'=>array('Libelle'=>'Send Embed Message', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
-				'sendFile'=>array('Libelle'=>'Send File', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#', 'visible' => 0),
-				'1oldmsg'=>array('Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0)
-			);
-			//Chaque commande
-			foreach ($TabCmd as $CmdKey => $Cmd){
-				$Cmddiscordlink = $eqLogic->getCmd(null, $CmdKey);
-
-				if ($Cmd['Type'] == "action") {
-					$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
-					$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
-				}
-				
-				$Cmddiscordlink->save();
 			}
 		}
 	}
