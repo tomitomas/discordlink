@@ -12,7 +12,8 @@
 	"changelog" : "https://trmaud.github.io/Docs/discordlink/fr_FR/changelog",
 	"documentation" : "https://trmaud.github.io/Docs/discordlink/fr_FR/",
 	"link" : {
-		"forum":"https://community.jeedom.com/t/plugin-tiers-discord-link-sujet-principal/23663?u=titi_titi"
+		"forum":"https://community.jeedom.com/t/plugin-tiers-discord-link-sujet-principal/23663?u=titi_titi",
+		"video" : "https://www.youtube.com/watch?v=DinkR8TcGes"
 	},
 	"language" : ["fr_FR"],
 	"compatibility" : ["miniplus","smart","rpi","docker","diy", "v4"]
