@@ -1,7 +1,7 @@
 {
 	"id" : "discordlink",
 	"name" : "Discord Link",
-	"description" : "Le plugin va permettre d'envoyer des messages sur un serveur discord, et dans des channels séparés et dans un second temps d'utiliser les fonction ASK de jeedom. tu peut me passer le fichier de doc que tu a fait pour suivi conso que je reprenne un minimum..",
+	"description" : "Le plugin va permettre d'envoyer des messages sur un serveur discord, et dans des channels séparés et dans un second temps d'utiliser les fonction ASK de jeedom.<br/>Tu peut me passer le fichier de doc que tu a fait pour suivi conso que je reprenne un minimum.. <br/> Article By Nextdom : https://www.nextdom.org/presentation-du-plugin/",
 	"licence" : "AGPL",
 	"author" : "Thibaut.Trarbach",
 	"require" : "3.2",
@@ -13,8 +13,7 @@
 	"documentation" : "https://trmaud.github.io/Docs/discordlink/fr_FR/",
 	"link" : {
 		"forum":"https://community.jeedom.com/t/plugin-tiers-discord-link-sujet-principal/23663?u=titi_titi",
-		"video" : "https://www.youtube.com/watch?v=DinkR8TcGes",
-		"Article Nextdom": "https://www.nextdom.org/presentation-du-plugin/"
+		"video" : "https://www.youtube.com/watch?v=DinkR8TcGes"
 	},
 	"language" : ["fr_FR"],
 	"compatibility" : ["miniplus","smart","rpi","docker","diy", "v4"]
