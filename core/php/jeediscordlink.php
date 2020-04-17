@@ -63,7 +63,7 @@ switch ($nom) {
 			getdevicepuisupdate("1oldmsg", $result['message'], '1oldmsg', $result['idchannel']);
 		break;	
 		case 'ASK':
-			getASK($result['reponse'], $result['idchannel']);
+			getASK($result['reponse'], $result['idchannel'], $result['demande']);
 		break;
 					
 		default:
@@ -118,10 +118,10 @@ function updatecommande($nom, $_value, $_logicalId, $_discordlinkeqlogic, $_upda
     }	
 }
 
-function getASK($_value, $_idchannel) {
+function getASK($_value, $_idchannel, $_demande) {
 	$discordlinkeqlogic=eqLogic::byLogicalId($_idchannel, 'discordlink');
 	$cmd = $discordlinkeqlogic->getCmd('action', "sendEmbed");
-	$cmd->askResponse($_value);
+	$value = $_demande[$_value];
+	$cmd->askResponse($value);
 }
-
 ?>

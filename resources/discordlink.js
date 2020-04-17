@@ -264,7 +264,7 @@ app.get('/sendEmbed', (req, res) => {
 	.setColor(color)
 	.setTimestamp();
 	if(title != "null")Embed.setTitle(title);
-	if(url != "null")Embed.setURL(url);
+	if(url != "null" && field == "null")Embed.setURL(url);
 	if(description != "null")Embed.setDescription(description);
 	if(footer != "null")Embed.setFooter(footer);
 	   
@@ -320,9 +320,13 @@ app.get('/sendEmbed', (req, res) => {
 				else if (reaction.emoji.name === '🇾') reponse = 24;	
 				else if (reaction.emoji.name === '🇿') reponse = 25;	
 				
+				url = JSON.parse(url);
+
+
 				httpPost("ASK",{
 					idchannel: m.channel.id,
-					reponse: reponse
+					reponse: reponse,
+					demande: url
 				});
 
 			})
