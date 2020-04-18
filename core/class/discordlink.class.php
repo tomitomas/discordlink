@@ -205,6 +205,7 @@ class discordlink extends eqLogic {
 				'sendMsgTTS'=>array('Libelle'=>'Send message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
 				'sendEmbed'=>array('Libelle'=>'Send Embed Message', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
 				'sendFile'=>array('Libelle'=>'Send File', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#&message=#message#', 'visible' => 0),
+				'deamonInfo'=>array('Libelle'=>'Deamon Info', 'Type'=>'action', 'SubType'=>'message','request'=>'deamonInfo?null', 'visible' => 0),
 				'1oldmsg'=>array('Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0),
 				'2oldmsg'=>array('Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0),
 				'3oldmsg'=>array('Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0)
@@ -224,10 +225,15 @@ class discordlink extends eqLogic {
 				$Cmddiscordlink->setLogicalId($CmdKey);
 				$Cmddiscordlink->setEventOnly(1);
 				$Cmddiscordlink->setIsVisible($Cmd['visible']);
-				if ($Cmd['Type'] == "action") {
+				if ($Cmd['Type'] == "action" && $CmdKey != "deamonInfo") {
 					$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
 					$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
 				}
+				if ($Cmd['Type'] == "action" && $CmdKey == "deamonInfo") {
+					$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
+					$Cmddiscordlink->setConfiguration('value', $Cmd['request']);
+				}
+
 				$Cmddiscordlink->setDisplay('generic_type','GENERIC_INFO');
 				if (!empty($Cmd['Template'])) {
 					$Cmddiscordlink->setTemplate("dashboard", $Cmd['Template']);
@@ -306,21 +312,25 @@ class discordlinkCmd extends cmd {
 
 			$request = $this->buildRequest($_options);
 			log::add('discordlink', 'debug', 'Envoi de ' . $request);
-			$request_http = new com_http($request);
-			$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
-			if ($this->getConfiguration('noSslCheck') == 1) $request_http->setNoSslCheck(true);
-			if ($this->getConfiguration('doNotReportHttpError') == 1) $request_http->setNoReportError(true);
-			if (isset($_options['speedAndNoErrorReport']) && $_options['speedAndNoErrorReport'] == true) {// option non activée 
-				$request_http->setNoReportError(true);
-				$request_http->exec(0.1, 1);
-				return;
-			}
+			if ($request != 'deamonsend') {
+				$request_http = new com_http($request);
+				$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
+				if ($this->getConfiguration('noSslCheck') == 1) $request_http->setNoSslCheck(true);
+				if ($this->getConfiguration('doNotReportHttpError') == 1) $request_http->setNoReportError(true);
+				if (isset($_options['speedAndNoErrorReport']) && $_options['speedAndNoErrorReport'] == true) {// option non activée 
+					$request_http->setNoReportError(true);
+					$request_http->exec(0.1, 1);
+					return;
+				}
 
-			$result = $request_http->exec($this->getConfiguration('timeout', 3), $this->getConfiguration('maxHttpRetry', 3));//Time out à 3s 3 essais
+				$result = $request_http->exec($this->getConfiguration('timeout', 3), $this->getConfiguration('maxHttpRetry', 3));//Time out à 3s 3 essais
+				
+				if (!$result) throw new Exception(__('Serveur injoignable', __FILE__));
 			
-			if (!$result) throw new Exception(__('Serveur injoignable', __FILE__));
-		
-			return true;
+				return true;
+			} else {
+				return true;
+			}
 		}
 
 		private function buildRequest($_options = array()) {
@@ -342,18 +352,25 @@ class discordlinkCmd extends cmd {
 				break;	
 				case 'sendFile':
 					$request = $this->build_ControledeSliderSelectFile($_options);
-				break;					
+				break;		
+				case 'deamonInfo':
+					$request = $this->build_deamonInfo($_options);
+				break;	
 				default:
 					$request = '';
 				break;
 			}
-			$request = scenarioExpression::setTags($request);
-			if (trim($request) == '') throw new Exception(__('Commande inconnue ou requête vide : ', __FILE__) . print_r($this, true));
-			$channelID=str_replace("_player", "", $this->getEqLogic()->getConfiguration('channelid'));
-			return 'http://' . config::byKey('internalAddr') . ':3466/' . $request . '&channelID=' . $channelID;
+			if ($request != 'deamonsend') {
+				$request = scenarioExpression::setTags($request);
+				if (trim($request) == '') throw new Exception(__('Commande inconnue ou requête vide : ', __FILE__) . print_r($this, true));
+				$channelID=str_replace("_player", "", $this->getEqLogic()->getConfiguration('channelid'));
+				return 'http://' . config::byKey('internalAddr') . ':3466/' . $request . '&channelID=' . $channelID;
+			} else {
+				return $request;
+			}
 		}
 	
-		private function build_ControledeSliderSelectMessage($_options = array(), $default = "Ceci est un message de test") {
+		private function build_ControledeSliderSelectMessage($_options = array(), $default = "Une erreur est survenu") {
 
 			$request = $this->getConfiguration('request');
 			if ((isset($_options['message'])) && ($_options['message'] == "")) $_options['message'] = $default;
@@ -364,7 +381,7 @@ class discordlinkCmd extends cmd {
 			return $request;
 		}	
 
-		private function build_ControledeSliderSelectFile($_options = array(), $default = "Ceci est un message de test") {
+		private function build_ControledeSliderSelectFile($_options = array(), $default = "Une erreur est survenu") {
 			$patch = "null";
 			$nameFile = "null";
 			$message = "null";
@@ -401,7 +418,7 @@ class discordlinkCmd extends cmd {
 			return $request;
 		}	
 
-		private function build_ControledeSliderSelectEmbed($_options = array(), $default = "Ceci est un message de test") {
+		private function build_ControledeSliderSelectEmbed($_options = array(), $default = "Une erreur est survenu") {
 
 			$request = $this->getConfiguration('request');
 
@@ -494,6 +511,34 @@ class discordlinkCmd extends cmd {
 			return parent::getWidgetTemplateCode($_version, $_noCustom);
 		}
 
+		public function build_deamonInfo($_options = array(), $default = "Ceci est un message de test") {
+			$message='';
+
+			foreach(plugin::listPlugin(true) as $plugin){
+				if($plugin->getHasOwnDeamon() && config::byKey('deamonAutoMode', $plugin->getId(), 1) == 1) {
+					$deamon_info = $plugin->deamon_info();
+					if ($deamon_info['state'] != 'ok') {
+
+						$message .='|:x: '.$plugin->getName().' ('.$plugin->getId().')';
+						log::add('discordlink', 'DEBUG', 'Deamon Non OK : ' . $deamon_info['state']);	
+					} else {
+
+						$message .='|:white_check_mark: '.$plugin->getName().' ('.$plugin->getId().')';
+						log::add('discordlink', 'DEBUG', 'Deamon OK : ' . $deamon_info['state']);
+					}
+					
+				}
+			}
+
+			$message=str_replace("|","\n",$message);
+
+			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
+			
+			$_options = array('Titre'=>'Info des deamon', 'description'=> $message, 'colors'=> '#00ff08');
+			
+			$cmd->execCmd($_options);
+			return 'deamonsend';
+		}
 		/*     * **********************Getteur Setteur*************************** */
 	}
 ?>	
