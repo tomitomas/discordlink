@@ -568,11 +568,8 @@ class discordlinkCmd extends cmd {
 			}
 
 			$message=str_replace("|","\n",$message);
-
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-			
 			$_options = array('Titre'=>'Info des Dependance', 'description'=> $message, 'colors'=> $colors);
-			
 			$cmd->execCmd($_options);
 			return 'deamonsend';
 		}
