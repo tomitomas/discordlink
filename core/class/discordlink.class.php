@@ -205,7 +205,8 @@ class discordlink extends eqLogic {
 				'sendMsgTTS'=>array('Libelle'=>'Send message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
 				'sendEmbed'=>array('Libelle'=>'Send Embed Message', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
 				'sendFile'=>array('Libelle'=>'Send File', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#&message=#message#', 'visible' => 0),
-				'deamonInfo'=>array('Libelle'=>'Deamon Info', 'Type'=>'action', 'SubType'=>'message','request'=>'deamonInfo?null', 'visible' => 0),
+				'deamonInfo'=>array('Libelle'=>'Deamon Info', 'Type'=>'action', 'SubType'=>'other','request'=>'deamonInfo?null', 'visible' => 1),
+				'dependanceInfo'=>array('Libelle'=>'Dependance Info', 'Type'=>'action', 'SubType'=>'other','request'=>'dependanceInfo?null', 'visible' => 1),
 				'1oldmsg'=>array('Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0),
 				'2oldmsg'=>array('Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0),
 				'3oldmsg'=>array('Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0)
@@ -312,7 +313,7 @@ class discordlinkCmd extends cmd {
 
 			$request = $this->buildRequest($_options);
 			log::add('discordlink', 'debug', 'Envoi de ' . $request);
-			if ($request != 'deamonsend') {
+			if ($request != 'deamonsend' || $request != 'dependanceInfo') {
 				$request_http = new com_http($request);
 				$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
 				if ($this->getConfiguration('noSslCheck') == 1) $request_http->setNoSslCheck(true);
@@ -356,11 +357,14 @@ class discordlinkCmd extends cmd {
 				case 'deamonInfo':
 					$request = $this->build_deamonInfo($_options);
 				break;	
+				case 'dependanceInfo':
+					$request = $this->build_dependanceInfo($_options);
+				break;
 				default:
 					$request = '';
 				break;
 			}
-			if ($request != 'deamonsend') {
+			if ($request != 'deamonsend' || $request != 'dependanceInfo') {
 				$request = scenarioExpression::setTags($request);
 				if (trim($request) == '') throw new Exception(__('Commande inconnue ou requête vide : ', __FILE__) . print_r($this, true));
 				$channelID=str_replace("_player", "", $this->getEqLogic()->getConfiguration('channelid'));
@@ -535,6 +539,36 @@ class discordlinkCmd extends cmd {
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 			
 			$_options = array('Titre'=>'Info des deamon', 'description'=> $message, 'colors'=> '#00ff08');
+			
+			$cmd->execCmd($_options);
+			return 'deamonsend';
+		}
+
+		public function build_dependanceInfo($_options = array(), $default = "Ceci est un message de test") {
+			$message='';
+
+			foreach(plugin::listPlugin(true) as $plugin){
+				if($plugin->getHasDependency()) {
+					$dependency_info = $plugin->dependancy_info();
+					if ($dependency_info['state'] == 'ok') {
+						$message .='|:white_check_mark: '.$plugin->getName().' ('.$plugin->getId().')';
+						log::add('discordlink', 'DEBUG', 'Dependance OK : ' . $dependency_info['state']);
+					} elseif ($dependency_info['state'] == 'in_progress') {
+						$message .='|:arrows_counterclockwise:  '.$plugin->getName().' ('.$plugin->getId().')';
+						log::add('discordlink', 'DEBUG', 'Dependance En cours d\'install : ' . $dependency_info['state']);	
+					} else {
+						$message .='|:x: '.$plugin->getName().' ('.$plugin->getId().')';
+						log::add('discordlink', 'DEBUG', 'Dependance Non OK : ' . $dependency_info['state']);	
+					}
+					
+				}
+			}
+
+			$message=str_replace("|","\n",$message);
+
+			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
+			
+			$_options = array('Titre'=>'Info des Dependance', 'description'=> $message, 'colors'=> '#00ff08');
 			
 			$cmd->execCmd($_options);
 			return 'deamonsend';
