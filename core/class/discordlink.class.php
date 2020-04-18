@@ -517,16 +517,16 @@ class discordlinkCmd extends cmd {
 
 		public function build_deamonInfo($_options = array(), $default = "Ceci est un message de test") {
 			$message='';
+			$colors = '#00ff08';
 
 			foreach(plugin::listPlugin(true) as $plugin){
 				if($plugin->getHasOwnDeamon() && config::byKey('deamonAutoMode', $plugin->getId(), 1) == 1) {
 					$deamon_info = $plugin->deamon_info();
 					if ($deamon_info['state'] != 'ok') {
-
 						$message .='|:x: '.$plugin->getName().' ('.$plugin->getId().')';
+						if ($colors != '#ff0000') $colors = '#ff0000';
 						log::add('discordlink', 'DEBUG', 'Deamon Non OK : ' . $deamon_info['state']);	
 					} else {
-
 						$message .='|:white_check_mark: '.$plugin->getName().' ('.$plugin->getId().')';
 						log::add('discordlink', 'DEBUG', 'Deamon OK : ' . $deamon_info['state']);
 					}
@@ -538,7 +538,7 @@ class discordlinkCmd extends cmd {
 
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 			
-			$_options = array('Titre'=>'Info des deamon', 'description'=> $message, 'colors'=> '#00ff08');
+			$_options = array('Titre'=>'Info des deamon', 'description'=> $message, 'colors'=> $colors);
 			
 			$cmd->execCmd($_options);
 			return 'deamonsend';
@@ -546,6 +546,7 @@ class discordlinkCmd extends cmd {
 
 		public function build_dependanceInfo($_options = array(), $default = "Ceci est un message de test") {
 			$message='';
+			$colors = '#00ff08';
 
 			foreach(plugin::listPlugin(true) as $plugin){
 				if($plugin->getHasDependency()) {
@@ -555,9 +556,11 @@ class discordlinkCmd extends cmd {
 						log::add('discordlink', 'DEBUG', 'Dependance OK : ' . $dependency_info['state']);
 					} elseif ($dependency_info['state'] == 'in_progress') {
 						$message .='|:arrows_counterclockwise:  '.$plugin->getName().' ('.$plugin->getId().')';
+						if ($colors == '#00ff08') $colors = '#ffae00';
 						log::add('discordlink', 'DEBUG', 'Dependance En cours d\'install : ' . $dependency_info['state']);	
 					} else {
 						$message .='|:x: '.$plugin->getName().' ('.$plugin->getId().')';
+						if ($colors != '#ff0000') $colors = '#ff0000';
 						log::add('discordlink', 'DEBUG', 'Dependance Non OK : ' . $dependency_info['state']);	
 					}
 					
@@ -568,7 +571,7 @@ class discordlinkCmd extends cmd {
 
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 			
-			$_options = array('Titre'=>'Info des Dependance', 'description'=> $message, 'colors'=> '#00ff08');
+			$_options = array('Titre'=>'Info des Dependance', 'description'=> $message, 'colors'=> $colors);
 			
 			$cmd->execCmd($_options);
 			return 'deamonsend';
