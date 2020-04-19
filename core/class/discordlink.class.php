@@ -257,7 +257,7 @@ class discordlink extends eqLogic {
 					$icon = ":frame_photo: ";
 				break;
 				case 'lumiere':
-					$icon = ":bulb:v ";
+					$icon = ":bulb: ";
 				break;
 				case 'prise':
 					$icon = ":electric_plug: ";
