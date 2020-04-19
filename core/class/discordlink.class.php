@@ -285,16 +285,16 @@ class discordlink extends eqLogic {
 		foreach ($eqLogics as $eqLogic) {
 
 			$TabCmd = array(
-				'sendMsg'=>array('Libelle'=>'Send message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
-				'sendMsgTTS'=>array('Libelle'=>'Send message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
-				'sendEmbed'=>array('Libelle'=>'Send Embed Message', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
-				'sendFile'=>array('Libelle'=>'Send File', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#&message=#message#', 'visible' => 0),
-				'deamonInfo'=>array('Libelle'=>'Deamon Info', 'Type'=>'action', 'SubType'=>'other','request'=>'deamonInfo?null', 'visible' => 1),
-				'dependanceInfo'=>array('Libelle'=>'Dependance Info', 'Type'=>'action', 'SubType'=>'other','request'=>'dependanceInfo?null', 'visible' => 1),
-				'globalSummary'=>array('Libelle'=>'Global Summary', 'Type'=>'action', 'SubType'=>'other','request'=>'globalSummary?null', 'visible' => 1),
-				'1oldmsg'=>array('Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0),
-				'2oldmsg'=>array('Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0),
-				'3oldmsg'=>array('Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0)
+				'sendMsg'=>array('Order' => 0, 'Libelle'=>'Envoi message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
+				'sendMsgTTS'=>array('Order' => 1,'Libelle'=>'Envoi message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
+				'sendEmbed'=>array('Order' => 2,'Libelle'=>'Envoi message évolué', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
+				'sendFile'=>array('Order' => 3,'Libelle'=>'Envoi fichier', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#&message=#message#', 'visible' => 0),
+				'deamonInfo'=>array('Order' => 4,'Libelle'=>'Etat des démons', 'Type'=>'action', 'SubType'=>'other','request'=>'deamonInfo?null', 'visible' => 1),
+				'dependanceInfo'=>array('Order' => 5,'Libelle'=>'Etat des dépendances', 'Type'=>'action', 'SubType'=>'other','request'=>'dependanceInfo?null', 'visible' => 1),
+				'globalSummary'=>array('Order' => 6,'Libelle'=>'Résumé général', 'Type'=>'action', 'SubType'=>'other','request'=>'globalSummary?null', 'visible' => 1),
+				'1oldmsg'=>array('Order' => 7,'Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0),
+				'2oldmsg'=>array('Order' => 8,'Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0),
+				'3oldmsg'=>array('Order' => 9,'Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0)
 			);
 			//Chaque commande
 			foreach ($TabCmd as $CmdKey => $Cmd){
@@ -325,6 +325,7 @@ class discordlink extends eqLogic {
 					$Cmddiscordlink->setTemplate("dashboard", $Cmd['Template']);
 					$Cmddiscordlink->setTemplate("mobile", $Cmd['Template']);
 				}
+				$Cmddiscordlink->setOrder($Cmd['Order']);
 				$Cmddiscordlink->setDisplay('message_placeholder', 'Message a envoyer sur discord');
 				$Cmddiscordlink->setDisplay('forceReturnLineBefore', true);
 				$Cmddiscordlink->save();
