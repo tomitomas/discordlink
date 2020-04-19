@@ -719,7 +719,7 @@ class discordlinkCmd extends cmd {
 			
 				$message=str_replace("|","\n",$message);
 				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-				$_options = array('Titre'=>'Résumé général', 'description'=> $message, 'colors'=> '#00ff08', 'footer'=> 'By Thibaut');
+				$_options = array('Titre'=>'Résumé général', 'description'=> $message, 'colors'=> '#0033ff', 'footer'=> 'By Thibaut');
 				$cmd->execCmd($_options);
 
 			return 'truesendwithembed';
