@@ -195,17 +195,106 @@ class discordlink extends eqLogic {
 			}
 	}
 	
+	public static function geticon($_icon) {
+		$icon = "";
+		if (config::byKey('themeIcon', 'discordlink') == 2) {
+			switch ($_icon) {		
+				case 'ok':
+					$icon = ":green_circle: ";
+				break;	
+				case 'progress':
+					$icon = ":orange_circle: ";
+				break;	
+				case 'nok':
+					$icon = ":red_circle: ";
+				break;
+				case 'mouvement':
+					$icon = ":person_walking: ";
+				break;
+				case 'porte':
+					$icon = ":door: ";
+				break;
+				case 'fenetre':
+					$icon = ":frame_photo: ";
+				break;
+				case 'lumiere':
+					$icon = ":bulb: ";
+				break;
+				case 'prise':
+					$icon = ":electric_plug: ";
+				break;
+				case 'thermometer':
+					$icon = ":thermometer: ";
+				break;
+				case 'tint':
+					$icon = ":droplet: ";
+				break;
+				case 'luminosite':
+					$icon = ":sunny: ";
+				break;
+				case 'elect':
+					$icon = ":cloud_lightning: ";
+				break;
+			}
+		} else {
+			switch ($_icon) {		
+				case 'ok':
+					$icon = ":white_check_mark: ";
+				break;	
+				case 'progress':
+					$icon = ":arrows_counterclockwise: ";
+				break;	
+				case 'nok':
+					$icon = ":x: ";
+				break;
+				case 'mouvement':
+					$icon = ":person_walking: ";
+				break;
+				case 'porte':
+					$icon = ":door: ";
+				break;
+				case 'fenetre':
+					$icon = ":frame_photo: ";
+				break;
+				case 'lumiere':
+					$icon = ":bulb:v ";
+				break;
+				case 'prise':
+					$icon = ":electric_plug: ";
+				break;
+				case 'thermometer':
+					$icon = ":thermometer: ";
+				break;
+				case 'tint':
+					$icon = ":droplet: ";
+				break;
+				case 'luminosite':
+					$icon = ":sunny: ";
+				break;
+				case 'elect':
+					$icon = ":cloud_lightning: ";
+				break;
+			}
+		}
+		return $icon;
+	}
+	
 	public static function CreateCmd() {
 
 		$eqLogics = eqLogic::byType('discordlink');
 		foreach ($eqLogics as $eqLogic) {
 
 			$TabCmd = array(
-				'sendMsg'=>array('Libelle'=>'Send message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
-				'sendMsgTTS'=>array('Libelle'=>'Send message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
-				'sendEmbed'=>array('Libelle'=>'Send Embed Message', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
-				'sendFile'=>array('Libelle'=>'Send File', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#&message=#message#', 'visible' => 0),
-				'1oldmsg'=>array('Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0)
+				'sendMsg'=>array('Order' => 0, 'Libelle'=>'Envoi message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
+				'sendMsgTTS'=>array('Order' => 1,'Libelle'=>'Envoi message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
+				'sendEmbed'=>array('Order' => 2,'Libelle'=>'Envoi message évolué', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
+				'sendFile'=>array('Order' => 3,'Libelle'=>'Envoi fichier', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#&message=#message#', 'visible' => 0),
+				'deamonInfo'=>array('Order' => 4,'Libelle'=>'Etat des démons', 'Type'=>'action', 'SubType'=>'other','request'=>'deamonInfo?null', 'visible' => 1),
+				'dependanceInfo'=>array('Order' => 5,'Libelle'=>'Etat des dépendances', 'Type'=>'action', 'SubType'=>'other','request'=>'dependanceInfo?null', 'visible' => 1),
+				'globalSummary'=>array('Order' => 6,'Libelle'=>'Résumé général', 'Type'=>'action', 'SubType'=>'other','request'=>'globalSummary?null', 'visible' => 1),
+				'1oldmsg'=>array('Order' => 7,'Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
+				'2oldmsg'=>array('Order' => 8,'Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
+				'3oldmsg'=>array('Order' => 9,'Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1)
 			);
 			//Chaque commande
 			foreach ($TabCmd as $CmdKey => $Cmd){
@@ -222,15 +311,21 @@ class discordlink extends eqLogic {
 				$Cmddiscordlink->setLogicalId($CmdKey);
 				$Cmddiscordlink->setEventOnly(1);
 				$Cmddiscordlink->setIsVisible($Cmd['visible']);
-				if ($Cmd['Type'] == "action") {
+				if ($Cmd['Type'] == "action" && $CmdKey != "deamonInfo") {
 					$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
 					$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
 				}
+				if ($Cmd['Type'] == "action" && $CmdKey == "deamonInfo") {
+					$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
+					$Cmddiscordlink->setConfiguration('value', $Cmd['request']);
+				}
+
 				$Cmddiscordlink->setDisplay('generic_type','GENERIC_INFO');
 				if (!empty($Cmd['Template'])) {
 					$Cmddiscordlink->setTemplate("dashboard", $Cmd['Template']);
 					$Cmddiscordlink->setTemplate("mobile", $Cmd['Template']);
 				}
+				$Cmddiscordlink->setOrder($Cmd['Order']);
 				$Cmddiscordlink->setDisplay('message_placeholder', 'Message a envoyer sur discord');
 				$Cmddiscordlink->setDisplay('forceReturnLineBefore', true);
 				$Cmddiscordlink->save();
@@ -304,21 +399,25 @@ class discordlinkCmd extends cmd {
 
 			$request = $this->buildRequest($_options);
 			log::add('discordlink', 'debug', 'Envoi de ' . $request);
-			$request_http = new com_http($request);
-			$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
-			if ($this->getConfiguration('noSslCheck') == 1) $request_http->setNoSslCheck(true);
-			if ($this->getConfiguration('doNotReportHttpError') == 1) $request_http->setNoReportError(true);
-			if (isset($_options['speedAndNoErrorReport']) && $_options['speedAndNoErrorReport'] == true) {// option non activée 
-				$request_http->setNoReportError(true);
-				$request_http->exec(0.1, 1);
-				return;
-			}
+			if ($request != 'truesendwithembed') {
+				$request_http = new com_http($request);
+				$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
+				if ($this->getConfiguration('noSslCheck') == 1) $request_http->setNoSslCheck(true);
+				if ($this->getConfiguration('doNotReportHttpError') == 1) $request_http->setNoReportError(true);
+				if (isset($_options['speedAndNoErrorReport']) && $_options['speedAndNoErrorReport'] == true) {// option non activée 
+					$request_http->setNoReportError(true);
+					$request_http->exec(0.1, 1);
+					return;
+				}
 
-			$result = $request_http->exec($this->getConfiguration('timeout', 3), $this->getConfiguration('maxHttpRetry', 3));//Time out à 3s 3 essais
+				$result = $request_http->exec($this->getConfiguration('timeout', 3), $this->getConfiguration('maxHttpRetry', 3));//Time out à 3s 3 essais
+				
+				if (!$result) throw new Exception(__('Serveur injoignable', __FILE__));
 			
-			if (!$result) throw new Exception(__('Serveur injoignable', __FILE__));
-		
-			return true;
+				return true;
+			} else {
+				return true;
+			}
 		}
 
 		private function buildRequest($_options = array()) {
@@ -340,18 +439,31 @@ class discordlinkCmd extends cmd {
 				break;	
 				case 'sendFile':
 					$request = $this->build_ControledeSliderSelectFile($_options);
-				break;					
+				break;		
+				case 'deamonInfo':
+					$request = $this->build_deamonInfo($_options);
+				break;	
+				case 'dependanceInfo':
+					$request = $this->build_dependanceInfo($_options);
+				break;
+				case 'globalSummary':
+					$request = $this->build_globalSummary($_options);
+				break;
 				default:
 					$request = '';
 				break;
 			}
-			$request = scenarioExpression::setTags($request);
-			if (trim($request) == '') throw new Exception(__('Commande inconnue ou requête vide : ', __FILE__) . print_r($this, true));
-			$channelID=str_replace("_player", "", $this->getEqLogic()->getConfiguration('channelid'));
-			return 'http://' . config::byKey('internalAddr') . ':3466/' . $request . '&channelID=' . $channelID;
+			if ($request != 'truesendwithembed') {
+				$request = scenarioExpression::setTags($request);
+				if (trim($request) == '') throw new Exception(__('Commande inconnue ou requête vide : ', __FILE__) . print_r($this, true));
+				$channelID=str_replace("_player", "", $this->getEqLogic()->getConfiguration('channelid'));
+				return 'http://' . config::byKey('internalAddr') . ':3466/' . $request . '&channelID=' . $channelID;
+			} else {
+				return $request;
+			}
 		}
 	
-		private function build_ControledeSliderSelectMessage($_options = array(), $default = "Ceci est un message de test") {
+		private function build_ControledeSliderSelectMessage($_options = array(), $default = "Une erreur est survenu") {
 
 			$request = $this->getConfiguration('request');
 			if ((isset($_options['message'])) && ($_options['message'] == "")) $_options['message'] = $default;
@@ -362,7 +474,7 @@ class discordlinkCmd extends cmd {
 			return $request;
 		}	
 
-		private function build_ControledeSliderSelectFile($_options = array(), $default = "Ceci est un message de test") {
+		private function build_ControledeSliderSelectFile($_options = array(), $default = "Une erreur est survenu") {
 			$patch = "null";
 			$nameFile = "null";
 			$message = "null";
@@ -399,7 +511,7 @@ class discordlinkCmd extends cmd {
 			return $request;
 		}	
 
-		private function build_ControledeSliderSelectEmbed($_options = array(), $default = "Ceci est un message de test") {
+		private function build_ControledeSliderSelectEmbed($_options = array(), $default = "Une erreur est survenu") {
 
 			$request = $this->getConfiguration('request');
 
@@ -492,6 +604,126 @@ class discordlinkCmd extends cmd {
 			return parent::getWidgetTemplateCode($_version, $_noCustom);
 		}
 
+		public function build_deamonInfo($_options = array()) {
+			$message='';
+			$colors = '#00ff08';
+
+			foreach(plugin::listPlugin(true) as $plugin){
+				if($plugin->getHasOwnDeamon() && config::byKey('deamonAutoMode', $plugin->getId(), 1) == 1) {
+					$deamon_info = $plugin->deamon_info();
+					if ($deamon_info['state'] != 'ok') {
+						$message .='|'.discordlink::geticon("nok").$plugin->getName().' ('.$plugin->getId().')';
+						if ($colors != '#ff0000') $colors = '#ff0000';
+						log::add('discordlink', 'DEBUG', 'Deamon Non OK : ' . $deamon_info['state']);	
+					} else {
+						$message .='|'.discordlink::geticon("ok").$plugin->getName().' ('.$plugin->getId().')';
+						log::add('discordlink', 'DEBUG', 'Deamon OK : ' . $deamon_info['state']);
+					}
+					
+				}
+			}
+
+			$message=str_replace("|","\n",$message);
+
+			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
+			
+			$_options = array('Titre'=>'Etat des démons', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By Thibaut');
+			
+			$cmd->execCmd($_options);
+			return 'truesendwithembed';
+		}
+
+		public function build_dependanceInfo($_options = array()) {
+			$message='';
+			$colors = '#00ff08';
+
+			foreach(plugin::listPlugin(true) as $plugin){
+				if($plugin->getHasDependency()) {
+					$dependency_info = $plugin->dependancy_info();
+					if ($dependency_info['state'] == 'ok') {
+						$message .='|'.discordlink::geticon("ok").$plugin->getName().' ('.$plugin->getId().')';
+						log::add('discordlink', 'DEBUG', 'Dependance OK : ' . $dependency_info['state']);
+					} elseif ($dependency_info['state'] == 'in_progress') {
+						$message .='|'.discordlink::geticon("progress").$plugin->getName().' ('.$plugin->getId().')';
+						if ($colors == '#00ff08') $colors = '#ffae00';
+						log::add('discordlink', 'DEBUG', 'Dependance En cours d\'install : ' . $dependency_info['state']);	
+					} else {
+						$message .='|'.discordlink::geticon("nok").' ('.$plugin->getId().')';
+						if ($colors != '#ff0000') $colors = '#ff0000';
+						log::add('discordlink', 'DEBUG', 'Dependance Non OK : ' . $dependency_info['state']);	
+					}
+					
+				}
+			}
+
+			$message=str_replace("|","\n",$message);
+			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
+			$_options = array('Titre'=>'Etat des dépendances', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By Thibaut');
+			$cmd->execCmd($_options);
+			return 'truesendwithembed';
+		}
+
+		public function build_globalSummary($_options = array()) {
+			$objects = jeeObject::all();
+			$def = config::byKey('object:summary');
+			$values = array();
+			$message='';
+			
+			foreach ($def as $key => $value) {
+				foreach ($objects as $object) {
+					if ($object->getConfiguration('summary::global::' . $key, 0) == 0) {
+						continue;
+					}
+					if (!isset($values[$key])) {
+						$values[$key] = array();
+					}
+					$result = $object->getSummary($key, true);
+					if ($result === null || !is_array($result)) {
+						continue;
+					}
+					$values[$key] = array_merge($values[$key], $result);
+				}
+			}
+			foreach ($values as $key => $value) {
+				if (count($value) == 0) {
+					continue;
+				}
+				$allowDisplayZero = $def[$key]['allowDisplayZero'];
+				if ($def[$key]['calcul'] == 'text') {
+					$result = trim(implode(',', $value), ',');
+					$allowDisplayZero = 1;
+				} else {
+					$result = round(jeedom::calculStat($def[$key]['calcul'], $value), 1);
+				}
+
+				if (strpos($def[$key]['icon'], 'jeedom-mouvement')) {
+					$message .='|'.discordlink::geticon("mouvement").' ***'. $result.'***		(Mouvements)';
+				} elseif (strpos($def[$key]['icon'], 'jeedom-porte-ouverte')) {
+					$message .='|'.discordlink::geticon("porte").' ***'. $result.'***		(Portes)';
+				} elseif (strpos($def[$key]['icon'], 'jeedom-fenetre-ouverte')) {
+					$message .='|'.discordlink::geticon("fenetre").' ***'. $result.'***		(Fenêtres)';
+				} elseif (strpos($def[$key]['icon'], 'jeedom-lumiere-on')) {
+					$message .='|'.discordlink::geticon("lumiere").' ***'. $result.'***		(Lumières)';
+				} elseif (strpos($def[$key]['icon'], 'jeedom-prise')) {
+					$message .='|'.discordlink::geticon("prise").' ***'. $result.'***		(Prises)';
+				} elseif (strpos($def[$key]['icon'], 'divers-thermometer31')) {
+					$message .='|'.discordlink::geticon("thermometer").' ***'. $result.' '.$def[$key]['unit']. '***		(Température)';
+				} elseif (strpos($def[$key]['icon'], 'fa-tint')) {
+					$message .='|'.discordlink::geticon("tint").' ***'. $result.' '.$def[$key]['unit'].'***		(Humidité)';
+				} elseif (strpos($def[$key]['icon'], 'meteo-soleil')) {
+					$message .='|'.discordlink::geticon("luminosite").' ***'. $result.' '.$def[$key]['unit'].'***		(Luminosité)';
+				} elseif (strpos($def[$key]['icon'], 'fa-bolt')) {
+					$message .='|'.discordlink::geticon("elect").' ***'. $result.' '.$def[$key]['unit'] .'***		(Puissance)';
+				}
+			}
+			
+				$message=str_replace("|","\n",$message);
+				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
+				$_options = array('Titre'=>'Résumé général', 'description'=> $message, 'colors'=> '#00ff08', 'footer'=> 'By Thibaut');
+				$cmd->execCmd($_options);
+
+			return 'truesendwithembed';
+		}
 		/*     * **********************Getteur Setteur*************************** */
 	}
 ?>	

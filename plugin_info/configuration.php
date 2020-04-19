@@ -39,7 +39,7 @@ if (!isConnect()) {
                 include_file('desktop', 'configuration', 'js', 'discordlink');
 
                 if (discordlink::deamon_info()['state'] == "ok") {
-                    echo '<a class="btn btn-success btn-sm bt_getinvite">Ajouter votre bot a votre serveur discord</a>';
+                    echo '<a class="btn btn-success btn-sm bt_getinvite">Ajouter votre bot à votre serveur discord</a>';
                     sendVarToJS('invitebotdiscord',discordlink::getinvite());
                 } else {
                     echo '<a class="btn btn-danger btn-sm bt_errorinvite">Erreur, lance ton démon et si tu n\'y arrives pas, clique sur moi</a>';
@@ -47,6 +47,14 @@ if (!isConnect()) {
                 ?>
             </div>
         </div>
+        </br>
+        <label class="col-lg-4 control-label">{{Thème Icon}}</label>
+			<div class="col-lg-6">
+				<select id="sel_object" class="configKey form-control" data-l1key="themeIcon">
+					<option value="1">Theme 1</option>
+                    <option value="2">Theme 2</option>
+				</select>
+			</div>
     </fieldset>
 </form>
 
