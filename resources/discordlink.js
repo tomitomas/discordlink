@@ -331,7 +331,7 @@ app.get('/sendEmbed', (req, res) => {
 
 			})
 			.catch(collected => {
-				
+				m.delete();
 			});
 		}
 	}).catch(console.error);
