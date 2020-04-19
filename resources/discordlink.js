@@ -331,7 +331,7 @@ app.get('/sendEmbed', (req, res) => {
 
 			})
 			.catch(collected => {
-				m.reply('Une erreur est survenue. Ou le temps maximum de reponse a été depasser.');
+				
 			});
 		}
 	}).catch(console.error);
