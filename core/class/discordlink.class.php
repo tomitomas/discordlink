@@ -208,6 +208,33 @@ class discordlink extends eqLogic {
 				case 'nok':
 					$icon = ":red_circle: ";
 				break;
+				case 'mouvement':
+					$icon = ":person_walking: ";
+				break;
+				case 'porte':
+					$icon = ":door: ";
+				break;
+				case 'fenetre':
+					$icon = ":frame_photo: ";
+				break;
+				case 'lumiere':
+					$icon = ":flashlight: ";
+				break;
+				case 'prise':
+					$icon = ":electric_plug: ";
+				break;
+				case 'thermometer':
+					$icon = ":thermometer: ";
+				break;
+				case 'tint':
+					$icon = ":droplet: ";
+				break;
+				case 'luminosite':
+					$icon = ":sunny: ";
+				break;
+				case 'elect':
+					$icon = ":cloud_lightning: ";
+				break;
 			}
 		} else {
 			switch ($_icon) {		
@@ -219,6 +246,33 @@ class discordlink extends eqLogic {
 				break;	
 				case 'nok':
 					$icon = ":x: ";
+				break;
+				case 'mouvement':
+					$icon = ":person_walking: ";
+				break;
+				case 'porte':
+					$icon = ":door: ";
+				break;
+				case 'fenetre':
+					$icon = ":frame_photo: ";
+				break;
+				case 'lumiere':
+					$icon = ":flashlight: ";
+				break;
+				case 'prise':
+					$icon = ":electric_plug: ";
+				break;
+				case 'thermometer':
+					$icon = ":thermometer: ";
+				break;
+				case 'tint':
+					$icon = ":droplet: ";
+				break;
+				case 'luminosite':
+					$icon = ":sunny: ";
+				break;
+				case 'elect':
+					$icon = ":cloud_lightning: ";
 				break;
 			}
 		}
@@ -237,6 +291,7 @@ class discordlink extends eqLogic {
 				'sendFile'=>array('Libelle'=>'Send File', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#&message=#message#', 'visible' => 0),
 				'deamonInfo'=>array('Libelle'=>'Deamon Info', 'Type'=>'action', 'SubType'=>'other','request'=>'deamonInfo?null', 'visible' => 1),
 				'dependanceInfo'=>array('Libelle'=>'Dependance Info', 'Type'=>'action', 'SubType'=>'other','request'=>'dependanceInfo?null', 'visible' => 1),
+				'globalSummary'=>array('Libelle'=>'Global Summary', 'Type'=>'action', 'SubType'=>'other','request'=>'globalSummary?null', 'visible' => 1),
 				'1oldmsg'=>array('Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0),
 				'2oldmsg'=>array('Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0),
 				'3oldmsg'=>array('Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0)
@@ -343,7 +398,7 @@ class discordlinkCmd extends cmd {
 
 			$request = $this->buildRequest($_options);
 			log::add('discordlink', 'debug', 'Envoi de ' . $request);
-			if ($request != 'deamonsend' || $request != 'dependanceInfo') {
+			if ($request != 'truesendwithembed') {
 				$request_http = new com_http($request);
 				$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
 				if ($this->getConfiguration('noSslCheck') == 1) $request_http->setNoSslCheck(true);
@@ -390,11 +445,14 @@ class discordlinkCmd extends cmd {
 				case 'dependanceInfo':
 					$request = $this->build_dependanceInfo($_options);
 				break;
+				case 'globalSummary':
+					$request = $this->build_globalSummary($_options);
+				break;
 				default:
 					$request = '';
 				break;
 			}
-			if ($request != 'deamonsend' || $request != 'dependanceInfo') {
+			if ($request != 'truesendwithembed') {
 				$request = scenarioExpression::setTags($request);
 				if (trim($request) == '') throw new Exception(__('Commande inconnue ou requête vide : ', __FILE__) . print_r($this, true));
 				$channelID=str_replace("_player", "", $this->getEqLogic()->getConfiguration('channelid'));
@@ -545,7 +603,7 @@ class discordlinkCmd extends cmd {
 			return parent::getWidgetTemplateCode($_version, $_noCustom);
 		}
 
-		public function build_deamonInfo($_options = array(), $default = "Ceci est un message de test") {
+		public function build_deamonInfo($_options = array()) {
 			$message='';
 			$colors = '#00ff08';
 
@@ -571,10 +629,10 @@ class discordlinkCmd extends cmd {
 			$_options = array('Titre'=>'Info des deamon', 'description'=> $message, 'colors'=> $colors);
 			
 			$cmd->execCmd($_options);
-			return 'deamonsend';
+			return 'truesendwithembed';
 		}
 
-		public function build_dependanceInfo($_options = array(), $default = "Ceci est un message de test") {
+		public function build_dependanceInfo($_options = array()) {
 			$message='';
 			$colors = '#00ff08';
 
@@ -601,7 +659,70 @@ class discordlinkCmd extends cmd {
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 			$_options = array('Titre'=>'Info des Dependance', 'description'=> $message, 'colors'=> $colors);
 			$cmd->execCmd($_options);
-			return 'deamonsend';
+			return 'truesendwithembed';
+		}
+
+		public function build_globalSummary($_options = array()) {
+			$objects = jeeObject::all();
+			$def = config::byKey('object:summary');
+			$values = array();
+			$message='';
+			
+			foreach ($def as $key => $value) {
+				foreach ($objects as $object) {
+					if ($object->getConfiguration('summary::global::' . $key, 0) == 0) {
+						continue;
+					}
+					if (!isset($values[$key])) {
+						$values[$key] = array();
+					}
+					$result = $object->getSummary($key, true);
+					if ($result === null || !is_array($result)) {
+						continue;
+					}
+					$values[$key] = array_merge($values[$key], $result);
+				}
+			}
+			foreach ($values as $key => $value) {
+				if (count($value) == 0) {
+					continue;
+				}
+				$allowDisplayZero = $def[$key]['allowDisplayZero'];
+				if ($def[$key]['calcul'] == 'text') {
+					$result = trim(implode(',', $value), ',');
+					$allowDisplayZero = 1;
+				} else {
+					$result = round(jeedom::calculStat($def[$key]['calcul'], $value), 1);
+				}
+
+				if (strpos($def[$key]['icon'], 'jeedom-mouvement')) {
+					$message .='|'.discordlink::geticon("mouvement").' : '. $result;
+				} elseif (strpos($def[$key]['icon'], 'jeedom-porte-ouverte')) {
+					$message .='|'.discordlink::geticon("porte").' : '. $result;
+				} elseif (strpos($def[$key]['icon'], 'jeedom-fenetre-ouverte')) {
+					$message .='|'.discordlink::geticon("fenetre").' : '. $result;
+				} elseif (strpos($def[$key]['icon'], 'jeedom-lumiere-on')) {
+					$message .='|'.discordlink::geticon("lumiere").' : '. $result;
+				} elseif (strpos($def[$key]['icon'], 'jeedom-prise')) {
+					$message .='|'.discordlink::geticon("prise").' : '. $result;
+				} elseif (strpos($def[$key]['icon'], 'divers-thermometer31')) {
+					$message .='|'.discordlink::geticon("thermometer").' : '. $result.' '.$def[$key]['unit'];
+				} elseif (strpos($def[$key]['icon'], 'fa-tint')) {
+					$message .='|'.discordlink::geticon("tint").' : '. $result.' '.$def[$key]['unit'];
+				} elseif (strpos($def[$key]['icon'], 'meteo-soleil')) {
+					$message .='|'.discordlink::geticon("luminosite").' : '. $result.' '.$def[$key]['unit'];
+				} elseif (strpos($def[$key]['icon'], 'fa-bolt')) {
+					$message .='|'.discordlink::geticon("elect").' : '. $result.' '.$def[$key]['unit'];
+				}
+			}
+			
+				$message=str_replace("|","\n",$message);
+				log::add('discordlink', 'DEBUG', 'Result : ' . $message);
+				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
+				$_options = array('Titre'=>'Global Summary', 'description'=> $message, 'colors'=> '#00ff08');
+				$cmd->execCmd($_options);
+
+			return 'truesendwithembed';
 		}
 		/*     * **********************Getteur Setteur*************************** */
 	}
