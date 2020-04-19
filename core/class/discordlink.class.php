@@ -697,23 +697,23 @@ class discordlinkCmd extends cmd {
 				}
 
 				if (strpos($def[$key]['icon'], 'jeedom-mouvement')) {
-					$message .='|'.discordlink::geticon("mouvement").' '. $result.' (Mouvements)';
+					$message .='|'.discordlink::geticon("mouvement").' __***'. $result.'***__		(Mouvements)';
 				} elseif (strpos($def[$key]['icon'], 'jeedom-porte-ouverte')) {
-					$message .='|'.discordlink::geticon("porte").' '. $result.' (Portes)';
+					$message .='|'.discordlink::geticon("porte").' __***'. $result.'***__		(Portes)';
 				} elseif (strpos($def[$key]['icon'], 'jeedom-fenetre-ouverte')) {
-					$message .='|'.discordlink::geticon("fenetre").' '. $result.' (Fenêtres)';
+					$message .='|'.discordlink::geticon("fenetre").' __***'. $result.'***__		(Fenêtres)';
 				} elseif (strpos($def[$key]['icon'], 'jeedom-lumiere-on')) {
-					$message .='|'.discordlink::geticon("lumiere").' '. $result.' (Lumières)';
+					$message .='|'.discordlink::geticon("lumiere").' __***'. $result.'***__		(Lumières)';
 				} elseif (strpos($def[$key]['icon'], 'jeedom-prise')) {
-					$message .='|'.discordlink::geticon("prise").' '. $result.' (Prises)';
+					$message .='|'.discordlink::geticon("prise").' __***'. $result.'***__		(Prises)';
 				} elseif (strpos($def[$key]['icon'], 'divers-thermometer31')) {
-					$message .='|'.discordlink::geticon("thermometer").' '. $result.' '.$def[$key]['unit']. ' (Température)';
+					$message .='|'.discordlink::geticon("thermometer").' __***'. $result.' '.$def[$key]['unit']. '***__		(Température)';
 				} elseif (strpos($def[$key]['icon'], 'fa-tint')) {
-					$message .='|'.discordlink::geticon("tint").' '. $result.' '.$def[$key]['unit'].' (Humidité)';
+					$message .='|'.discordlink::geticon("tint").' __***'. $result.' '.$def[$key]['unit'].'***__		(Humidité)';
 				} elseif (strpos($def[$key]['icon'], 'meteo-soleil')) {
-					$message .='|'.discordlink::geticon("luminosite").' '. $result.' '.$def[$key]['unit'].' (Luminosité)';
+					$message .='|'.discordlink::geticon("luminosite").' __***'. $result.' '.$def[$key]['unit'].'***__		(Luminosité)';
 				} elseif (strpos($def[$key]['icon'], 'fa-bolt')) {
-					$message .='|'.discordlink::geticon("elect").' '. $result.' '.$def[$key]['unit'] .' (Puissance)';
+					$message .='|'.discordlink::geticon("elect").' __***'. $result.' '.$def[$key]['unit'] .'***__		(Puissance)';
 				}
 			}
 			
