@@ -292,9 +292,9 @@ class discordlink extends eqLogic {
 				'deamonInfo'=>array('Order' => 4,'Libelle'=>'Etat des démons', 'Type'=>'action', 'SubType'=>'other','request'=>'deamonInfo?null', 'visible' => 1),
 				'dependanceInfo'=>array('Order' => 5,'Libelle'=>'Etat des dépendances', 'Type'=>'action', 'SubType'=>'other','request'=>'dependanceInfo?null', 'visible' => 1),
 				'globalSummary'=>array('Order' => 6,'Libelle'=>'Résumé général', 'Type'=>'action', 'SubType'=>'other','request'=>'globalSummary?null', 'visible' => 1),
-				'1oldmsg'=>array('Order' => 7,'Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0),
-				'2oldmsg'=>array('Order' => 8,'Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0),
-				'3oldmsg'=>array('Order' => 9,'Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 0)
+				'1oldmsg'=>array('Order' => 7,'Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
+				'2oldmsg'=>array('Order' => 8,'Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
+				'3oldmsg'=>array('Order' => 9,'Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1)
 			);
 			//Chaque commande
 			foreach ($TabCmd as $CmdKey => $Cmd){
@@ -697,23 +697,23 @@ class discordlinkCmd extends cmd {
 				}
 
 				if (strpos($def[$key]['icon'], 'jeedom-mouvement')) {
-					$message .='|'.discordlink::geticon("mouvement").' Mouvements : '. $result;
+					$message .='|'.discordlink::geticon("mouvement").' '. $result.' (Mouvements)';
 				} elseif (strpos($def[$key]['icon'], 'jeedom-porte-ouverte')) {
-					$message .='|'.discordlink::geticon("porte").' Portes : '. $result;
+					$message .='|'.discordlink::geticon("porte").' '. $result.' (Portes)';
 				} elseif (strpos($def[$key]['icon'], 'jeedom-fenetre-ouverte')) {
-					$message .='|'.discordlink::geticon("fenetre").' Fenêtres : '. $result;
+					$message .='|'.discordlink::geticon("fenetre").' '. $result.' (Fenêtres)';
 				} elseif (strpos($def[$key]['icon'], 'jeedom-lumiere-on')) {
-					$message .='|'.discordlink::geticon("lumiere").' Lumières : '. $result;
+					$message .='|'.discordlink::geticon("lumiere").' '. $result.' (Lumières)';
 				} elseif (strpos($def[$key]['icon'], 'jeedom-prise')) {
-					$message .='|'.discordlink::geticon("prise").' Prises : '. $result;
+					$message .='|'.discordlink::geticon("prise").' '. $result.' (Prises)';
 				} elseif (strpos($def[$key]['icon'], 'divers-thermometer31')) {
-					$message .='|'.discordlink::geticon("thermometer").' Température : '. $result.' '.$def[$key]['unit'];
+					$message .='|'.discordlink::geticon("thermometer").' '. $result.' '.$def[$key]['unit']. ' (Température)';
 				} elseif (strpos($def[$key]['icon'], 'fa-tint')) {
-					$message .='|'.discordlink::geticon("tint").' Humidité : '. $result.' '.$def[$key]['unit'];
+					$message .='|'.discordlink::geticon("tint").' '. $result.' '.$def[$key]['unit'].' (Humidité)';
 				} elseif (strpos($def[$key]['icon'], 'meteo-soleil')) {
-					$message .='|'.discordlink::geticon("luminosite").' Luminosité : '. $result.' '.$def[$key]['unit'];
+					$message .='|'.discordlink::geticon("luminosite").' '. $result.' '.$def[$key]['unit'].' (Luminosité)';
 				} elseif (strpos($def[$key]['icon'], 'fa-bolt')) {
-					$message .='|'.discordlink::geticon("elect").' Puissance : '. $result.' '.$def[$key]['unit'];
+					$message .='|'.discordlink::geticon("elect").' '. $result.' '.$def[$key]['unit'] .' (Puissance)';
 				}
 			}
 			
