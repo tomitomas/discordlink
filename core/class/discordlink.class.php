@@ -195,6 +195,36 @@ class discordlink extends eqLogic {
 			}
 	}
 	
+	public static function geticon($_icon) {
+		$icon = "";
+		if (config::byKey('themeIcon', 'discordlink') == 2) {
+			switch ($_icon) {		
+				case 'ok':
+					$icon = ":green_circle: ";
+				break;	
+				case 'progress':
+					$icon = ":orange_circle: ";
+				break;	
+				case 'nok':
+					$icon = ":red_circle: ";
+				break;
+			}
+		} else {
+			switch ($_icon) {		
+				case 'ok':
+					$icon = ":white_check_mark: ";
+				break;	
+				case 'progress':
+					$icon = ":arrows_counterclockwise: ";
+				break;	
+				case 'nok':
+					$icon = ":x: ";
+				break;
+			}
+		}
+		return $icon;
+	}
+	
 	public static function CreateCmd() {
 
 		$eqLogics = eqLogic::byType('discordlink');
@@ -523,11 +553,11 @@ class discordlinkCmd extends cmd {
 				if($plugin->getHasOwnDeamon() && config::byKey('deamonAutoMode', $plugin->getId(), 1) == 1) {
 					$deamon_info = $plugin->deamon_info();
 					if ($deamon_info['state'] != 'ok') {
-						$message .='|:x: '.$plugin->getName().' ('.$plugin->getId().')';
+						$message .='|'.discordlink::geticon("nok").$plugin->getName().' ('.$plugin->getId().')';
 						if ($colors != '#ff0000') $colors = '#ff0000';
 						log::add('discordlink', 'DEBUG', 'Deamon Non OK : ' . $deamon_info['state']);	
 					} else {
-						$message .='|:white_check_mark: '.$plugin->getName().' ('.$plugin->getId().')';
+						$message .='|'.discordlink::geticon("ok").$plugin->getName().' ('.$plugin->getId().')';
 						log::add('discordlink', 'DEBUG', 'Deamon OK : ' . $deamon_info['state']);
 					}
 					
@@ -552,14 +582,14 @@ class discordlinkCmd extends cmd {
 				if($plugin->getHasDependency()) {
 					$dependency_info = $plugin->dependancy_info();
 					if ($dependency_info['state'] == 'ok') {
-						$message .='|:white_check_mark: '.$plugin->getName().' ('.$plugin->getId().')';
+						$message .='|'.discordlink::geticon("ok").$plugin->getName().' ('.$plugin->getId().')';
 						log::add('discordlink', 'DEBUG', 'Dependance OK : ' . $dependency_info['state']);
 					} elseif ($dependency_info['state'] == 'in_progress') {
-						$message .='|:arrows_counterclockwise:  '.$plugin->getName().' ('.$plugin->getId().')';
+						$message .='|'.discordlink::geticon("progress").$plugin->getName().' ('.$plugin->getId().')';
 						if ($colors == '#00ff08') $colors = '#ffae00';
 						log::add('discordlink', 'DEBUG', 'Dependance En cours d\'install : ' . $dependency_info['state']);	
 					} else {
-						$message .='|:x: '.$plugin->getName().' ('.$plugin->getId().')';
+						$message .='|'.discordlink::geticon("nok").' ('.$plugin->getId().')';
 						if ($colors != '#ff0000') $colors = '#ff0000';
 						log::add('discordlink', 'DEBUG', 'Dependance Non OK : ' . $dependency_info['state']);	
 					}
