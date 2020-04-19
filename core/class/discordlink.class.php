@@ -626,7 +626,7 @@ class discordlinkCmd extends cmd {
 
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 			
-			$_options = array('Titre'=>'Info des deamon', 'description'=> $message, 'colors'=> $colors);
+			$_options = array('Titre'=>'Etat des démons', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By Thibaut');
 			
 			$cmd->execCmd($_options);
 			return 'truesendwithembed';
@@ -657,7 +657,7 @@ class discordlinkCmd extends cmd {
 
 			$message=str_replace("|","\n",$message);
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-			$_options = array('Titre'=>'Info des Dependance', 'description'=> $message, 'colors'=> $colors);
+			$_options = array('Titre'=>'Etat des dépendances', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By Thibaut');
 			$cmd->execCmd($_options);
 			return 'truesendwithembed';
 		}
@@ -696,30 +696,29 @@ class discordlinkCmd extends cmd {
 				}
 
 				if (strpos($def[$key]['icon'], 'jeedom-mouvement')) {
-					$message .='|'.discordlink::geticon("mouvement").' : '. $result;
+					$message .='|'.discordlink::geticon("mouvement").' Mouvements : '. $result;
 				} elseif (strpos($def[$key]['icon'], 'jeedom-porte-ouverte')) {
-					$message .='|'.discordlink::geticon("porte").' : '. $result;
+					$message .='|'.discordlink::geticon("porte").' Portes : '. $result;
 				} elseif (strpos($def[$key]['icon'], 'jeedom-fenetre-ouverte')) {
-					$message .='|'.discordlink::geticon("fenetre").' : '. $result;
+					$message .='|'.discordlink::geticon("fenetre").' Fenêtres : '. $result;
 				} elseif (strpos($def[$key]['icon'], 'jeedom-lumiere-on')) {
-					$message .='|'.discordlink::geticon("lumiere").' : '. $result;
+					$message .='|'.discordlink::geticon("lumiere").' Lumières : '. $result;
 				} elseif (strpos($def[$key]['icon'], 'jeedom-prise')) {
-					$message .='|'.discordlink::geticon("prise").' : '. $result;
+					$message .='|'.discordlink::geticon("prise").' Prises : '. $result;
 				} elseif (strpos($def[$key]['icon'], 'divers-thermometer31')) {
-					$message .='|'.discordlink::geticon("thermometer").' : '. $result.' '.$def[$key]['unit'];
+					$message .='|'.discordlink::geticon("thermometer").' Température : '. $result.' '.$def[$key]['unit'];
 				} elseif (strpos($def[$key]['icon'], 'fa-tint')) {
-					$message .='|'.discordlink::geticon("tint").' : '. $result.' '.$def[$key]['unit'];
+					$message .='|'.discordlink::geticon("tint").' Humidité : '. $result.' '.$def[$key]['unit'];
 				} elseif (strpos($def[$key]['icon'], 'meteo-soleil')) {
-					$message .='|'.discordlink::geticon("luminosite").' : '. $result.' '.$def[$key]['unit'];
+					$message .='|'.discordlink::geticon("luminosite").' Luminosité : '. $result.' '.$def[$key]['unit'];
 				} elseif (strpos($def[$key]['icon'], 'fa-bolt')) {
-					$message .='|'.discordlink::geticon("elect").' : '. $result.' '.$def[$key]['unit'];
+					$message .='|'.discordlink::geticon("elect").' Puissance : '. $result.' '.$def[$key]['unit'];
 				}
 			}
 			
 				$message=str_replace("|","\n",$message);
-				log::add('discordlink', 'DEBUG', 'Result : ' . $message);
 				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-				$_options = array('Titre'=>'Global Summary', 'description'=> $message, 'colors'=> '#00ff08');
+				$_options = array('Titre'=>'Résumé général', 'description'=> $message, 'colors'=> '#00ff08', 'footer'=> 'By Thibaut');
 				$cmd->execCmd($_options);
 
 			return 'truesendwithembed';
