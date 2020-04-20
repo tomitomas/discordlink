@@ -271,6 +271,13 @@ app.get('/sendEmbed', (req, res) => {
     client.channels.get(req.query.channelID).send(Embed).then(async m => {
 		if(field != "null") {
 
+			toReturn.push({
+				'querry': req.query,
+				'timeout':req.query.timeout,
+				'timecalcul': timecalcul
+			});
+			res.status(200).json(toReturn);	
+
 			var emojy = ["🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","🇯","🇰","🇱","🇲","🇳","🇴","🇵","🇶","🇷","🇸","🇹","🇺","🇻","🇼","🇽","🇾","🇿"];
 			a = 0;
 			while (a < field) {
@@ -282,13 +289,6 @@ app.get('/sendEmbed', (req, res) => {
 			};
 
 			var timecalcul = (req.query.timeout * 1000);
-
-			toReturn.push({
-				'querry': req.query,
-				'timeout':req.query.timeout,
-				'timecalcul': timecalcul
-			});
-			res.status(200).json(toReturn);	
 
 			m.awaitReactions(filter, { max: 1, time: timecalcul, errors: ['time'] })
 			.then(collected => {
