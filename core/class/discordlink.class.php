@@ -410,7 +410,7 @@ class discordlinkCmd extends cmd {
 					return;
 				}
 
-				$result = $request_http->exec($this->getConfiguration('timeout', 3), $this->getConfiguration('maxHttpRetry', 3));//Time out à 3s 3 essais
+				$result = $request_http->exec($this->getConfiguration('timeout', 6), $this->getConfiguration('maxHttpRetry', 1));//Time out à 3s 3 essais
 				
 				if (!$result) throw new Exception(__('Serveur injoignable', __FILE__));
 			
