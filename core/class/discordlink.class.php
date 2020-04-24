@@ -645,7 +645,7 @@ class discordlinkCmd extends cmd {
 
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 			
-			$_options = array('Titre'=>'Etat des démons', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By Thibaut');
+			$_options = array('Titre'=>'Etat des démons', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
 			
 			$cmd->execCmd($_options);
 			return 'truesendwithembed';
@@ -676,7 +676,7 @@ class discordlinkCmd extends cmd {
 
 			$message=str_replace("|","\n",$message);
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-			$_options = array('Titre'=>'Etat des dépendances', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By Thibaut');
+			$_options = array('Titre'=>'Etat des dépendances', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
 			$cmd->execCmd($_options);
 			return 'truesendwithembed';
 		}
@@ -729,7 +729,7 @@ class discordlinkCmd extends cmd {
 			}		
 				$message=str_replace("|","\n",$message);
 				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-				$_options = array('Titre'=>'Résumé général', 'description'=> $message, 'colors'=> '#0033ff', 'footer'=> 'By Thibaut');
+				$_options = array('Titre'=>'Résumé général', 'description'=> $message, 'colors'=> '#0033ff', 'footer'=> 'By DiscordLink');
 				$cmd->execCmd($_options);
 
 			return 'truesendwithembed';
