@@ -238,6 +238,12 @@ class discordlink extends eqLogic {
 				case 'other':
 					$icon = ":interrobang: ";
 				break;
+				case 'alerte':
+					$icon = ":rotating_light: ";
+				break;
+				case 'volet':
+					$icon = ":beginner: ";
+				break;
 			}
 		} else {
 			switch ($_icon) {		
@@ -279,6 +285,12 @@ class discordlink extends eqLogic {
 				break;
 				case 'other':
 					$icon = ":interrobang: ";
+				break;
+				case 'alerte':
+					$icon = ":rotating_light: ";
+				break;
+				case 'volet':
+					$icon = ":beginner: ";
 				break;
 			}
 		}
@@ -706,6 +718,10 @@ class discordlinkCmd extends cmd {
 					$message .='|'.discordlink::geticon("luminosite").' *** '. $result.' '.$def[$key]['unit'].' ***		(Luminosité)';
 				} elseif ($key == "power") {
 					$message .='|'.discordlink::geticon("elect").' *** '. $result.' '.$def[$key]['unit'] .' ***		(Puissance)';
+				} elseif ($key == "security") {
+					$message .='|'.discordlink::geticon("alerte").' *** '. $result.' '.$def[$key]['unit'] .' ***		(Alerte)';
+				} elseif ($key == "shutter") {
+					$message .='|'.discordlink::geticon("volet").' *** '. $result.' '.$def[$key]['unit'] .' ***		(Volet)';
 				} else {
 					$message .='|'.discordlink::geticon("other").' *** '. $result.' '.$def[$key]['unit'] .' ***		('.$def[$key]['name'].')';
 				}
