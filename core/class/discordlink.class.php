@@ -235,6 +235,9 @@ class discordlink extends eqLogic {
 				case 'elect':
 					$icon = ":cloud_lightning: ";
 				break;
+				case 'other':
+					$icon = ":interrobang: ";
+				break;
 			}
 		} else {
 			switch ($_icon) {		
@@ -273,6 +276,9 @@ class discordlink extends eqLogic {
 				break;
 				case 'elect':
 					$icon = ":cloud_lightning: ";
+				break;
+				case 'other':
+					$icon = ":interrobang: ";
 				break;
 			}
 		}
@@ -664,59 +670,48 @@ class discordlinkCmd extends cmd {
 		}
 
 		public function build_globalSummary($_options = array()) {
+
+
+			
+
+
+
 			$objects = jeeObject::all();
 			$def = config::byKey('object:summary');
 			$values = array();
 			$message='';
 			
 			foreach ($def as $key => $value) {
-				foreach ($objects as $object) {
-					if ($object->getConfiguration('summary::global::' . $key, 0) == 0) {
-						continue;
-					}
-					if (!isset($values[$key])) {
-						$values[$key] = array();
-					}
-					$result = $object->getSummary($key, true);
-					if ($result === null || !is_array($result)) {
-						continue;
-					}
-					$values[$key] = array_merge($values[$key], $result);
-				}
-			}
-			foreach ($values as $key => $value) {
-				if (count($value) == 0) {
-					continue;
-				}
-				$allowDisplayZero = $def[$key]['allowDisplayZero'];
-				if ($def[$key]['calcul'] == 'text') {
-					$result = trim(implode(',', $value), ',');
-					$allowDisplayZero = 1;
+
+				log::add('discordlink', 'debug', 'test : '.$def[$key]['name']);
+				log::add('discordlink', 'debug', 'Résumé général : '. $key . ' = ' . jeeObject::getGlobalSummary($key));
+
+				$result = jeeObject::getGlobalSummary($key);
+				if ($result == "0") continue;
+
+				if ($key == "motion") {
+					$message .='|'.discordlink::geticon("mouvement").' ***'. $result.'***		(Mouvements)';
+				} elseif ($key == "door") {
+					$message .='|'.discordlink::geticon("porte").' ***'. $result.'***		(Portes)';
+				} elseif ($key == "windows") {
+					$message .='|'.discordlink::geticon("fenetre").' ***'. $result.'***		(Fenêtres)';
+				} elseif ($key == "light") {
+					$message .='|'.discordlink::geticon("lumiere").' ***'. $result.'***		(Lumières)';
+				} elseif ($key == "outlet") {
+					$message .='|'.discordlink::geticon("prise").' ***'. $result.'***		(Prises)';
+				} elseif ($key == "temperature") {
+					$message .='|'.discordlink::geticon("thermometer").' ***'. $result.' '.$def[$key]['unit']. '***		(Température)';
+				} elseif ($key == "humidity") {
+					$message .='|'.discordlink::geticon("tint").' ***'. $result.' '.$def[$key]['unit'].'***		(Humidité)';
+				} elseif ($key == "luminosity") {
+					$message .='|'.discordlink::geticon("luminosite").' ***'. $result.' '.$def[$key]['unit'].'***		(Luminosité)';
+				} elseif ($key == "power") {
+					$message .='|'.discordlink::geticon("elect").' ***'. $result.' '.$def[$key]['unit'] .'***		(Puissance)';
 				} else {
-					$result = round(jeedom::calculStat($def[$key]['calcul'], $value), 1);
+					$message .='|'.discordlink::geticon("other").' ***'. $result.' '.$def[$key]['unit'] .'***		('.$def[$key]['name'].')';
 				}
 
-				if (strpos($def[$key]['icon'], 'jeedom-mouvement')) {
-					$message .='|'.discordlink::geticon("mouvement").' ***'. $result.'***		(Mouvements)';
-				} elseif (strpos($def[$key]['icon'], 'jeedom-porte-ouverte')) {
-					$message .='|'.discordlink::geticon("porte").' ***'. $result.'***		(Portes)';
-				} elseif (strpos($def[$key]['icon'], 'jeedom-fenetre-ouverte')) {
-					$message .='|'.discordlink::geticon("fenetre").' ***'. $result.'***		(Fenêtres)';
-				} elseif (strpos($def[$key]['icon'], 'jeedom-lumiere-on')) {
-					$message .='|'.discordlink::geticon("lumiere").' ***'. $result.'***		(Lumières)';
-				} elseif (strpos($def[$key]['icon'], 'jeedom-prise')) {
-					$message .='|'.discordlink::geticon("prise").' ***'. $result.'***		(Prises)';
-				} elseif (strpos($def[$key]['icon'], 'divers-thermometer31')) {
-					$message .='|'.discordlink::geticon("thermometer").' ***'. $result.' '.$def[$key]['unit']. '***		(Température)';
-				} elseif (strpos($def[$key]['icon'], 'fa-tint')) {
-					$message .='|'.discordlink::geticon("tint").' ***'. $result.' '.$def[$key]['unit'].'***		(Humidité)';
-				} elseif (strpos($def[$key]['icon'], 'meteo-soleil')) {
-					$message .='|'.discordlink::geticon("luminosite").' ***'. $result.' '.$def[$key]['unit'].'***		(Luminosité)';
-				} elseif (strpos($def[$key]['icon'], 'fa-bolt')) {
-					$message .='|'.discordlink::geticon("elect").' ***'. $result.' '.$def[$key]['unit'] .'***		(Puissance)';
-				}
-			}
-			
+			}		
 				$message=str_replace("|","\n",$message);
 				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 				$_options = array('Titre'=>'Résumé général', 'description'=> $message, 'colors'=> '#0033ff', 'footer'=> 'By Thibaut');
