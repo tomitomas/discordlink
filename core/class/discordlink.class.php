@@ -687,28 +687,27 @@ class discordlinkCmd extends cmd {
 				log::add('discordlink', 'debug', 'Résumé général : '. $key . ' = ' . jeeObject::getGlobalSummary($key));
 
 				$result = jeeObject::getGlobalSummary($key);
-				if ($result == "0") continue;
 
 				if ($key == "motion") {
-					$message .='|'.discordlink::geticon("mouvement").' ***'. $result.'***		(Mouvements)';
+					$message .='|'.discordlink::geticon("mouvement").' *** '. $result.' ***		(Mouvements)';
 				} elseif ($key == "door") {
-					$message .='|'.discordlink::geticon("porte").' ***'. $result.'***		(Portes)';
+					$message .='|'.discordlink::geticon("porte").' *** '. $result.' ***		(Portes)';
 				} elseif ($key == "windows") {
-					$message .='|'.discordlink::geticon("fenetre").' ***'. $result.'***		(Fenêtres)';
+					$message .='|'.discordlink::geticon("fenetre").' *** '. $result.' ***		(Fenêtres)';
 				} elseif ($key == "light") {
-					$message .='|'.discordlink::geticon("lumiere").' ***'. $result.'***		(Lumières)';
+					$message .='|'.discordlink::geticon("lumiere").' *** '. $result.' ***		(Lumières)';
 				} elseif ($key == "outlet") {
-					$message .='|'.discordlink::geticon("prise").' ***'. $result.'***		(Prises)';
+					$message .='|'.discordlink::geticon("prise").' *** '. $result.' ***		(Prises)';
 				} elseif ($key == "temperature") {
-					$message .='|'.discordlink::geticon("thermometer").' ***'. $result.' '.$def[$key]['unit']. '***		(Température)';
+					$message .='|'.discordlink::geticon("thermometer").' *** '. $result.' '.$def[$key]['unit']. ' ***		(Température)';
 				} elseif ($key == "humidity") {
-					$message .='|'.discordlink::geticon("tint").' ***'. $result.' '.$def[$key]['unit'].'***		(Humidité)';
+					$message .='|'.discordlink::geticon("tint").' *** '. $result.' '.$def[$key]['unit'].' ***		(Humidité)';
 				} elseif ($key == "luminosity") {
-					$message .='|'.discordlink::geticon("luminosite").' ***'. $result.' '.$def[$key]['unit'].'***		(Luminosité)';
+					$message .='|'.discordlink::geticon("luminosite").' *** '. $result.' '.$def[$key]['unit'].' ***		(Luminosité)';
 				} elseif ($key == "power") {
-					$message .='|'.discordlink::geticon("elect").' ***'. $result.' '.$def[$key]['unit'] .'***		(Puissance)';
+					$message .='|'.discordlink::geticon("elect").' *** '. $result.' '.$def[$key]['unit'] .' ***		(Puissance)';
 				} else {
-					$message .='|'.discordlink::geticon("other").' ***'. $result.' '.$def[$key]['unit'] .'***		('.$def[$key]['name'].')';
+					$message .='|'.discordlink::geticon("other").' *** '. $result.' '.$def[$key]['unit'] .' ***		('.$def[$key]['name'].')';
 				}
 
 			}		
