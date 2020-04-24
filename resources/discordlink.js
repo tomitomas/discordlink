@@ -158,29 +158,12 @@ app.get('/getinvite', (req, res) => {
     });
 });
 
-app.get('/getguild', (req, res) => {
-    res.type('json');
-    var toReturn = [];
-
-	config.logger('DiscordLink: GetGuild');
-    var guildall = client.guilds.array();
-    for (var a in guildall) {
-        var guild = guildall[a];
-        toReturn.push({
-            /*'a': guildall,*/
-            'id': guild.id,
-            'name': guild.name
-        });
-    }
-    res.status(200).json(toReturn);
-});
-
 app.get('/getchannel', (req, res) => {
     res.type('json');
     var toReturn = [];
 
 	config.logger('DiscordLink: GetChannel');
-    var chnannelsall = client.channels.array();
+    var chnannelsall = client.channels.cache.array();
     for (var b in chnannelsall) {
         var channel = chnannelsall[b];
         if (channel.type == "text") {
@@ -201,7 +184,7 @@ app.get('/sendMsg', (req, res) => {
 
     config.logger('DiscordLink: sendMsg');
     
-    client.channels.get(req.query.channelID).send(req.query.message);
+    client.channels.cache.get(req.query.channelID).send(req.query.message);
 
     toReturn.push({
         'id': req.query
@@ -215,7 +198,7 @@ app.get('/sendFile', (req, res) => {
 
     config.logger('DiscordLink: sendMsg');
     
-    client.channels.get(req.query.channelID).send(req.query.message, {
+    client.channels.cache.get(req.query.channelID).send(req.query.message, {
 		files: [{
 		  attachment: req.query.patch,
 		  name: req.query.name
@@ -234,7 +217,7 @@ app.get('/sendMsgTTS', (req, res) => {
 
     config.logger('DiscordLink: sendMsgTTS');
     
-    client.channels.get(req.query.channelID).send(req.query.message, {
+    client.channels.cache.get(req.query.channelID).send(req.query.message, {
         tts: true
        });
 
@@ -260,7 +243,7 @@ app.get('/sendEmbed', (req, res) => {
 
 	if (color =="null")color = "#ff0000";
 
-	const Embed = new Discord.RichEmbed()
+	const Embed = new Discord.MessageEmbed()
 	.setColor(color)
 	.setTimestamp();
 	if(title != "null")Embed.setTitle(title);
@@ -268,7 +251,7 @@ app.get('/sendEmbed', (req, res) => {
 	if(description != "null")Embed.setDescription(description);
 	if(footer != "null")Embed.setFooter(footer);
 	   
-    client.channels.get(req.query.channelID).send(Embed).then(async m => {
+    client.channels.cache.get(req.query.channelID).send(Embed).then(async m => {
 		if(field != "null") {
 
 			toReturn.push({
