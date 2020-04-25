@@ -155,7 +155,7 @@ app.get('/getinvite', (req, res) => {
             'invite': link
         });
         res.status(200).json(toReturn);
-    });
+    }).catch(console.error);
 });
 
 app.get('/getchannel', (req, res) => {
