@@ -20,12 +20,14 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 function discordlink_install() {
     discordlink::CreateCmd();
-    discordlink::dependancy_install(); 
+    $discordlink = plugin::byId('discordlink');
+    $discordlink->dependancy_install(); 
 }
 
 function discordlink_update() {
     discordlink::CreateCmd();
-    discordlink::dependancy_install();
+    $discordlink = plugin::byId('discordlink');
+    $discordlink->dependancy_install();
 }
 
 
