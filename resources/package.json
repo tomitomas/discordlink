@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "discord.js": "^11.3.0",
+    "discord.js": "^12.2.0",
     "express": "^4.16.4",
     "extend": "^3.0.2",
     "http-proxy-middleware": "^0.19.1",
