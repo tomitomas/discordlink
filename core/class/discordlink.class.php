@@ -64,9 +64,17 @@ class discordlink extends eqLogic {
 
 	public static function getchannel() {
 		$deamon = discordlink::deamon_info();
+
 		if ($deamon['state'] == 'ok') {
-			$json = file_get_contents("http://" . config::byKey('internalAddr') . ":3466/getchannel");
-			$json = json_decode($json, true);
+			$request_http = new com_http("http://" . config::byKey('internalAddr') . ":3466/getchannel");
+			$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
+			$request_http->setNoSslCheck(true);
+			$request_http->setNoReportError(true);
+			$result = $request_http->exec(3,1);//Time out à 3s 3 essais
+			if (!$result) return "null";
+			//$result = substr($result, 1, -1);
+			log::add('discordlink', 'DEBUG', $result);
+			$json = json_decode($result, true);
 			return $json;
 		}
 	}
@@ -74,9 +82,15 @@ class discordlink extends eqLogic {
 	public static function getinvite() {
 		$deamon = discordlink::deamon_info();
 		if ($deamon['state'] == 'ok') {
-			$json = file_get_contents("http://" . config::byKey('internalAddr') . ":3466/getinvite");
-			$json = json_decode($json, true);
-			$json = $json[0];
+			$request_http = new com_http("http://" . config::byKey('internalAddr') . ":3466/getinvite");
+			$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
+			$request_http->setNoSslCheck(true);
+			$request_http->setNoReportError(true);
+			$result = $request_http->exec(3,1);//Time out à 3s 3 essais
+			if (!$result) return "null";
+			$result = substr($result, 1, -1);
+			log::add('discordlink', 'DEBUG', $result);
+			$json = json_decode($result, true);
 			return $json['invite'];
 		}
 	}
