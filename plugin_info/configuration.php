@@ -59,7 +59,6 @@ if (!isConnect()) {
             </div>
         </div>
       <br/>
-      <br/>
       <div class="form-group">
           <label class="col-lg-4 control-label">{{Joue à : }}</label>
           <div class="col-lg-6">
