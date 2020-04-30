@@ -49,17 +49,19 @@ if (!isConnect()) {
             </div>
         </div>
         </br>
-        <label class="col-lg-4 control-label">{{Thème Icon}}</label>
-			<div class="col-lg-6">
-				<select id="sel_object" class="configKey form-control" data-l1key="themeIcon">
-					<option value="1">Theme 1</option>
+        <div class="form-group">
+            <label class="col-lg-4 control-label">{{Thème Icon}}</label>
+            <div class="col-lg-6">
+                <select id="sel_object" class="configKey form-control" data-l1key="themeIcon">
+                    <option value="1">Theme 1</option>
                     <option value="2">Theme 2</option>
-				</select>
-			</div>
-      <br />
-      <br />
+                </select>
+            </div>
+        </div>
+      <br/>
+      <br/>
       <div class="form-group">
-          <label class="col-lg-4 control-label">{{Information Joue à : }}</label>
+          <label class="col-lg-4 control-label">{{Joue à : }}</label>
           <div class="col-lg-6">
               <input class="configKey form-control" data-l1key="joueA" placeholder="Travailler main dans la main avec votre Jeedom"/>
           </div>
