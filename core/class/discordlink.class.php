@@ -32,7 +32,7 @@ class discordlink extends eqLogic {
 			'replace' => array("#_desktop_width_#" => "100","#_mobile_width_#" => "50", "#title_disable#" => "1", "#message_disable#" => "0")
 	);
 		return $return;
-	}	
+	}
 
     /*     * ***********************Methode static*************************** */
 
@@ -122,17 +122,17 @@ class discordlink extends eqLogic {
 		$resource_path = realpath(dirname(__FILE__) . '/../../resources');
 		return array('script' => $resource_path . '/install.sh ' . $resource_path . ' discordlink ' . $_debug, 'log' => log::getPathToLog('discordlink_dep'));
 	}
-      
-    
+
+
 	public static function deamon_info() {
 		$return = array();
 		$return['log'] = 'discordlink_node';
-		$return['state'] = 'nok'; 
-		
+		$return['state'] = 'nok';
+
 		// Regarder si discordlink.js est lancé
 		$pid = trim(shell_exec('ps ax | grep "resources/discordlink.js" | grep -v "grep" | wc -l'));
 		if ($pid != '' && $pid != '0') $return['state'] = 'ok';
-		
+
 		// Regarder si le token est ok
 		if (config::byKey('Token', 'discordlink', 'null') != "null") $return['launchable'] = 'ok';
 		else {
@@ -150,7 +150,11 @@ class discordlink extends eqLogic {
 		$url = network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/discordlink/core/api/jeeDiscordlink.php?apikey=' . jeedom::getApiKey('discordlink');
 		$log = $_debug ? '1' : '0';
 		$sensor_path = realpath(dirname(__FILE__) . '/../../resources');
-		$cmd = 'nice -n 19 nodejs ' . $sensor_path . '/discordlink.js ' . network::getNetworkAccess('internal') . ' ' . config::byKey('Token', 'discordlink') . ' '.log::getLogLevel('discordlink') . ' ' . $url . ' ' . jeedom::getApiKey('discordlink');
+		$joueA = 'Travailler main dans la main avec votre Jeedom';
+		if(config::byKey('joueA', 'discordlink') != ''){
+			$joueA = config::byKey('joueA', 'discordlink');
+		}
+		$cmd = 'nice -n 19 nodejs ' . $sensor_path . '/discordlink.js ' . network::getNetworkAccess('internal') . ' ' . config::byKey('Token', 'discordlink') . ' '.log::getLogLevel('discordlink') . ' ' . $url . ' ' . jeedom::getApiKey('discordlink') . ' ' . rawurlencode($joueA);
 		log::add('discordlink', 'debug', 'Lancement démon discordlink : ' . $cmd);
 		$result = exec('NODE_ENV=production nohup ' . $cmd . ' >> ' . log::getPathToLog('discordlink_node') . ' 2>&1 &');
 		if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
@@ -191,14 +195,14 @@ class discordlink extends eqLogic {
 			}
 		}
     }
-    
+
 
     public function preInsert() {
-        
+
     }
 
     public function postInsert() {
-        
+
     }
 
     public function preSave() {
@@ -208,17 +212,17 @@ class discordlink extends eqLogic {
 				log::add('discordlink', 'debug', 'setLogicalId : ' . $channel);
 			}
 	}
-	
+
 	public static function geticon($_icon) {
 		$icon = "";
 		if (config::byKey('themeIcon', 'discordlink') == 2) {
-			switch ($_icon) {		
+			switch ($_icon) {
 				case 'ok':
 					$icon = ":green_circle: ";
-				break;	
+				break;
 				case 'progress':
 					$icon = ":orange_circle: ";
-				break;	
+				break;
 				case 'nok':
 					$icon = ":red_circle: ";
 				break;
@@ -260,13 +264,13 @@ class discordlink extends eqLogic {
 				break;
 			}
 		} else {
-			switch ($_icon) {		
+			switch ($_icon) {
 				case 'ok':
 					$icon = ":white_check_mark: ";
-				break;	
+				break;
 				case 'progress':
 					$icon = ":arrows_counterclockwise: ";
-				break;	
+				break;
 				case 'nok':
 					$icon = ":x: ";
 				break;
@@ -310,7 +314,7 @@ class discordlink extends eqLogic {
 		}
 		return $icon;
 	}
-	
+
 	public static function CreateCmd() {
 
 		$eqLogics = eqLogic::byType('discordlink');
@@ -331,7 +335,7 @@ class discordlink extends eqLogic {
 			//Chaque commande
 			foreach ($TabCmd as $CmdKey => $Cmd){
 				$Cmddiscordlink = $eqLogic->getCmd(null, $CmdKey);
-				
+
 				if (!is_object($Cmddiscordlink) ) {
 					$Cmddiscordlink = new discordlinkCmd();
 				}
@@ -370,18 +374,18 @@ class discordlink extends eqLogic {
 	}
 
     public function preUpdate() {
-        
+
     }
 
     public function postUpdate() {
     }
 
     public function preRemove() {
-        
+
     }
 
     public function postRemove() {
-        
+
     }
 
 
@@ -407,22 +411,22 @@ class discordlink extends eqLogic {
     /*     * **********************Getteur Setteur*************************** */
 }
 class discordlinkCmd extends cmd {
-	
+
 		/*     * *************************Attributs****************************** */
-	
-	
+
+
 		/*     * ***********************Methode static*************************** */
-	
-	
+
+
 		/*     * *********************Methode d'instance************************* */
-	
+
 		/*
 		 * Non obligatoire permet de demander de ne pas supprimer les commandes même si elles ne sont pas dans la nouvelle configuration de l'équipement envoyé en JS
 		  public function dontRemoveCmd() {
 		  return true;
 		  }
 		 */
-	
+
 		public function execute($_options = null) {
 			if ($this->getLogicalId() == 'refresh') {
 				$this->getEqLogic()->refresh();
@@ -436,16 +440,16 @@ class discordlinkCmd extends cmd {
 				$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
 				if ($this->getConfiguration('noSslCheck') == 1) $request_http->setNoSslCheck(true);
 				if ($this->getConfiguration('doNotReportHttpError') == 1) $request_http->setNoReportError(true);
-				if (isset($_options['speedAndNoErrorReport']) && $_options['speedAndNoErrorReport'] == true) {// option non activée 
+				if (isset($_options['speedAndNoErrorReport']) && $_options['speedAndNoErrorReport'] == true) {// option non activée
 					$request_http->setNoReportError(true);
 					$request_http->exec(0.1, 1);
 					return;
 				}
 
 				$result = $request_http->exec($this->getConfiguration('timeout', 6), $this->getConfiguration('maxHttpRetry', 1));//Time out à 3s 3 essais
-				
+
 				if (!$result) throw new Exception(__('Serveur injoignable', __FILE__));
-			
+
 				return true;
 			} else {
 				return true;
@@ -455,26 +459,26 @@ class discordlinkCmd extends cmd {
 		private function buildRequest($_options = array()) {
 			if ($this->getType() != 'action') return $this->getConfiguration('request');
 			$cmdANDarg = explode('?', $this->getConfiguration('request'), 2);
-			if (count($cmdANDarg) > 1) 
+			if (count($cmdANDarg) > 1)
 				list($command, $arguments) = $cmdANDarg;
 			else {
 				$command=$this->getConfiguration('request');
 				$arguments="";
 			}
-			switch ($command) {		
+			switch ($command) {
 				case 'sendMsg':
 				case 'sendMsgTTS':
 					$request = $this->build_ControledeSliderSelectMessage($_options);
-				break;	
+				break;
 				case 'sendEmbed':
 					$request = $this->build_ControledeSliderSelectEmbed($_options);
-				break;	
+				break;
 				case 'sendFile':
 					$request = $this->build_ControledeSliderSelectFile($_options);
-				break;		
+				break;
 				case 'deamonInfo':
 					$request = $this->build_deamonInfo($_options);
-				break;	
+				break;
 				case 'dependanceInfo':
 					$request = $this->build_dependanceInfo($_options);
 				break;
@@ -494,17 +498,17 @@ class discordlinkCmd extends cmd {
 				return $request;
 			}
 		}
-	
+
 		private function build_ControledeSliderSelectMessage($_options = array(), $default = "Une erreur est survenu") {
 
 			$request = $this->getConfiguration('request');
 			if ((isset($_options['message'])) && ($_options['message'] == "")) $_options['message'] = $default;
 			if (!(isset($_options['message']))) $_options['message'] = "";
-			$request = str_replace(array('#message#'), 
+			$request = str_replace(array('#message#'),
 			array(urlencode(self::decodeTexteAleatoire($_options['message']))), $request);
 			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
 			return $request;
-		}	
+		}
 
 		private function build_ControledeSliderSelectFile($_options = array(), $default = "Une erreur est survenu") {
 			$patch = "null";
@@ -523,7 +527,7 @@ class discordlinkCmd extends cmd {
 						$nameexplode = explode('.',$files->getFilename());
 						log::add('discordlink', 'info', $_options['title'].' taille : '.$nameexplode[sizeof($nameexplode)-1]);
 						$nameFile = (isset($_options['title']) ? $_options['title'].'.'.$nameexplode[sizeof($nameexplode)-1] : $files->getFilename());
-					} 
+					}
 				}
 				$message = $_options['message'];
 
@@ -531,17 +535,17 @@ class discordlinkCmd extends cmd {
 				$patch = $_options['patch'];
 				$nameFile = $_options['Name_File'];
 			}
-			
-			$request = str_replace(array('#message#'), 
+
+			$request = str_replace(array('#message#'),
 			array(urlencode(self::decodeTexteAleatoire($message))), $request);
-			$request = str_replace(array('#name#'), 
+			$request = str_replace(array('#name#'),
 			array(urlencode(self::decodeTexteAleatoire($nameFile))), $request);
-			$request = str_replace(array('#patch#'), 
+			$request = str_replace(array('#patch#'),
 			array(urlencode(self::decodeTexteAleatoire($patch))), $request);
 
 			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
 			return $request;
-		}	
+		}
 
 		private function build_ControledeSliderSelectEmbed($_options = array(), $default = "Une erreur est survenu") {
 
@@ -562,7 +566,7 @@ class discordlinkCmd extends cmd {
 				$answer = $_options['answer'];
 				$timeout = $_options['timeout'];
 				$description = "";
-				
+
 				$a = 0;
 				$url = "[";
 				$choix = [":regional_indicator_a:",":regional_indicator_b:",":regional_indicator_c:",":regional_indicator_d:",":regional_indicator_e:",":regional_indicator_f:",":regional_indicator_g:",":regional_indicator_h:",":regional_indicator_i:",":regional_indicator_j:",":regional_indicator_k:",":regional_indicator_l:",":regional_indicator_m:",":regional_indicator_n:",":regional_indicator_o:",":regional_indicator_p:",":regional_indicator_q:",":regional_indicator_r:",":regional_indicator_s:",":regional_indicator_t:",":regional_indicator_u:",":regional_indicator_v:",":regional_indicator_w:",":regional_indicator_x:",":regional_indicator_y:",":regional_indicator_z:"];
@@ -578,34 +582,34 @@ class discordlinkCmd extends cmd {
 				$field = count($answer);
 
 			} else {
-				if (("" != ($_options['Titre']))) $titre = $_options['Titre']; 
+				if (("" != ($_options['Titre']))) $titre = $_options['Titre'];
 				if (("" != ($_options['url']))) $url = $_options['url'];
 				if (("" != ($_options['description']))) $description = $_options['description'];
 				if (("" != ($_options['footer']))) $footer = $_options['footer'];
 				if (("" != ($_options['colors']))) $colors = $_options['colors'];
 			}
 
-			$request = str_replace(array('#title#'), 
+			$request = str_replace(array('#title#'),
 			array(urlencode(self::decodeTexteAleatoire($titre))), $request);
-			$request = str_replace(array('#title#'), 
+			$request = str_replace(array('#title#'),
 			array(urlencode(self::decodeTexteAleatoire($titre))), $request);
-			$request = str_replace(array('#url#'), 
+			$request = str_replace(array('#url#'),
 			array(urlencode(self::decodeTexteAleatoire($url))), $request);
-			$request = str_replace(array('#description#'), 
+			$request = str_replace(array('#description#'),
 			array(urlencode(self::decodeTexteAleatoire($description))), $request);
-			$request = str_replace(array('#footer#'), 
+			$request = str_replace(array('#footer#'),
 			array(urlencode(self::decodeTexteAleatoire($footer))), $request);
-			$request = str_replace(array('#field#'), 
+			$request = str_replace(array('#field#'),
 			array(urlencode(self::decodeTexteAleatoire($field))), $request);
-			$request = str_replace(array('#color#'), 
+			$request = str_replace(array('#color#'),
 			array(urlencode(self::decodeTexteAleatoire($colors))), $request);
-			$request = str_replace(array('#timeout#'), 
+			$request = str_replace(array('#timeout#'),
 			array(urlencode(self::decodeTexteAleatoire($timeout))), $request);
 
 			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
 			return $request;
-		}	
-	
+		}
+
 		public static function decodeTexteAleatoire($_text) {
 			$return = $_text;
 			if (strpos($_text, '|') !== false && strpos($_text, '[') !== false && strpos($_text, ']') !== false) {
@@ -625,7 +629,7 @@ class discordlinkCmd extends cmd {
 			}
 			return str_replace(array_keys($replace), $replace, $return);
 		}
-	
+
 		public function getWidgetTemplateCode($_version = 'dashboard', $_noCustom = false) {
 			if ($_version != 'scenario') return parent::getWidgetTemplateCode($_version, $_noCustom);
 			list($command, $arguments) = explode('?', $this->getConfiguration('request'), 2);
@@ -646,21 +650,21 @@ class discordlinkCmd extends cmd {
 					if ($deamon_info['state'] != 'ok') {
 						$message .='|'.discordlink::geticon("nok").$plugin->getName().' ('.$plugin->getId().')';
 						if ($colors != '#ff0000') $colors = '#ff0000';
-						log::add('discordlink', 'DEBUG', 'Deamon Non OK : ' . $deamon_info['state']);	
+						log::add('discordlink', 'DEBUG', 'Deamon Non OK : ' . $deamon_info['state']);
 					} else {
 						$message .='|'.discordlink::geticon("ok").$plugin->getName().' ('.$plugin->getId().')';
 						log::add('discordlink', 'DEBUG', 'Deamon OK : ' . $deamon_info['state']);
 					}
-					
+
 				}
 			}
 
 			$message=str_replace("|","\n",$message);
 
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-			
+
 			$_options = array('Titre'=>'Etat des démons', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
-			
+
 			$cmd->execCmd($_options);
 			return 'truesendwithembed';
 		}
@@ -678,13 +682,13 @@ class discordlinkCmd extends cmd {
 					} elseif ($dependency_info['state'] == 'in_progress') {
 						$message .='|'.discordlink::geticon("progress").$plugin->getName().' ('.$plugin->getId().')';
 						if ($colors == '#00ff08') $colors = '#ffae00';
-						log::add('discordlink', 'DEBUG', 'Dependance En cours d\'install : ' . $dependency_info['state']);	
+						log::add('discordlink', 'DEBUG', 'Dependance En cours d\'install : ' . $dependency_info['state']);
 					} else {
 						$message .='|'.discordlink::geticon("nok").' ('.$plugin->getId().')';
 						if ($colors != '#ff0000') $colors = '#ff0000';
-						log::add('discordlink', 'DEBUG', 'Dependance Non OK : ' . $dependency_info['state']);	
+						log::add('discordlink', 'DEBUG', 'Dependance Non OK : ' . $dependency_info['state']);
 					}
-					
+
 				}
 			}
 
@@ -698,7 +702,7 @@ class discordlinkCmd extends cmd {
 		public function build_globalSummary($_options = array()) {
 
 
-			
+
 
 
 
@@ -706,7 +710,7 @@ class discordlinkCmd extends cmd {
 			$def = config::byKey('object:summary');
 			$values = array();
 			$message='';
-			
+
 			foreach ($def as $key => $value) {
 
 				log::add('discordlink', 'debug', 'test : '.$def[$key]['name']);
@@ -740,7 +744,7 @@ class discordlinkCmd extends cmd {
 					$message .='|'.discordlink::geticon("other").' *** '. $result.' '.$def[$key]['unit'] .' ***		('.$def[$key]['name'].')';
 				}
 
-			}		
+			}
 				$message=str_replace("|","\n",$message);
 				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 				$_options = array('Titre'=>'Résumé général', 'description'=> $message, 'colors'=> '#0033ff', 'footer'=> 'By DiscordLink');
@@ -750,5 +754,4 @@ class discordlinkCmd extends cmd {
 		}
 		/*     * **********************Getteur Setteur*************************** */
 	}
-?>	
-
+?>

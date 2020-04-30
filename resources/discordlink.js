@@ -13,6 +13,7 @@ const IPJeedom = process.argv[2];
 const logLevel = process.argv[4];
 const urlreponse = process.argv[5];
 const ClePlugin =  process.argv[6];
+const joueA = decodeURI(process.argv[7]);
 
 
 /* Configuration */
@@ -57,10 +58,10 @@ function isEmpty(obj) {
 
 	// arguments[0]	c'est le texte
 	// arguments[1]	c'est le niveau de log ou un array
-	
+
 	//niveaudeLog=5 c'est tout
 	//niveaudeLog=2 c'est reduit
-	
+
 
 function console2(text, level='') {
 	var today = new Date();
@@ -70,31 +71,30 @@ function console2(text, level='') {
 	// 300=WARNING
 	// 400=ERROR
 	//1000=AUCUN
-	
+
 	try {
     	var niveauLevel;
 		switch (level) {
-		case "ERROR":	
+		case "ERROR":
 				niveauLevel=400;
 				break;
-		case "WARNING":	
+		case "WARNING":
 				niveauLevel=300;
-				break;		
-		case "INFO":	
+				break;
+		case "INFO":
 				niveauLevel=200;
-				break;		
-		case "DEBUG":	
+				break;
+		case "DEBUG":
 				niveauLevel=100;
-				break;	
+				break;
 		default:
 				niveauLevel=400; //pour trouver ce qui n'a pas été affecté à un niveau
 				break;
-		
 		}
 	} catch (e) {
 		console.log(arguments[0]);
 	}
-	
+
 
 }
 
@@ -106,7 +106,7 @@ let server = null;
 var CommandAlexa = {};
 
 
-function LancementCommande(commande, req) 
+function LancementCommande(commande, req)
 {
 	config.logger('DiscordLink:    Lancement /'+commande, "INFO");
 }
@@ -130,7 +130,7 @@ app.get('/restart', (req, res) => {
 		config.logger('DiscordLink: *****************************Relance forcée du Serveur*************');
 		config.logger('DiscordLink: ******************************************************************');
 	startServer();
-	
+
 });
 
 app.get('/restart', (req, res) => {
@@ -140,12 +140,12 @@ app.get('/restart', (req, res) => {
 		config.logger('DiscordLink: *****************************Relance forcée du Serveur*************');
 		config.logger('DiscordLink: ******************************************************************');
 	startServer();
-	
+
 });
 
 
 app.get('/getinvite', (req, res) => {
-    
+
     res.type('json');
     var toReturn = [];
 
@@ -183,13 +183,13 @@ app.get('/sendMsg', (req, res) => {
     var toReturn = [];
 
     config.logger('DiscordLink: sendMsg');
-    
+
     client.channels.cache.get(req.query.channelID).send(req.query.message);
 
     toReturn.push({
         'id': req.query
     });
-    res.status(200).json(toReturn);	
+    res.status(200).json(toReturn);
 });
 
 app.get('/sendFile', (req, res) => {
@@ -197,18 +197,18 @@ app.get('/sendFile', (req, res) => {
     var toReturn = [];
 
     config.logger('DiscordLink: sendMsg');
-    
+
     client.channels.cache.get(req.query.channelID).send(req.query.message, {
 		files: [{
 		  attachment: req.query.patch,
 		  name: req.query.name
 		}]
 	});
-	
+
     toReturn.push({
         'id': req.query
     });
-    res.status(200).json(toReturn);	
+    res.status(200).json(toReturn);
 });
 
 app.get('/sendMsgTTS', (req, res) => {
@@ -216,7 +216,7 @@ app.get('/sendMsgTTS', (req, res) => {
     var toReturn = [];
 
     config.logger('DiscordLink: sendMsgTTS');
-    
+
     client.channels.cache.get(req.query.channelID).send(req.query.message, {
         tts: true
        });
@@ -224,7 +224,7 @@ app.get('/sendMsgTTS', (req, res) => {
     toReturn.push({
         'id': req.query
     });
-    res.status(200).json(toReturn);	
+    res.status(200).json(toReturn);
 });
 
 app.get('/sendEmbed', (req, res) => {
@@ -232,7 +232,7 @@ app.get('/sendEmbed', (req, res) => {
     var toReturn = [];
 
 	config.logger('DiscordLink: sendEmbed');
-	
+
 	var color = req.query.color;
 	var title = req.query.title;
 	var url = req.query.url;
@@ -250,7 +250,7 @@ app.get('/sendEmbed', (req, res) => {
 	if(url != "null" && field == "null")Embed.setURL(url);
 	if(description != "null")Embed.setDescription(description);
 	if(footer != "null")Embed.setFooter(footer);
-	   
+
     client.channels.cache.get(req.query.channelID).send(Embed).then(async m => {
 		if(field != "null") {
 
@@ -259,7 +259,7 @@ app.get('/sendEmbed', (req, res) => {
 				'timeout':req.query.timeout,
 				'timecalcul': timecalcul
 			});
-			res.status(200).json(toReturn);	
+			res.status(200).json(toReturn);
 
 			var emojy = ["🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","🇯","🇰","🇱","🇲","🇳","🇴","🇵","🇶","🇷","🇸","🇹","🇺","🇻","🇼","🇽","🇾","🇿"];
 			a = 0;
@@ -276,33 +276,33 @@ app.get('/sendEmbed', (req, res) => {
 			m.awaitReactions(filter, { max: 1, time: timecalcul, errors: ['time'] })
 			.then(collected => {
 				const reaction = collected.first();
-				if (reaction.emoji.name === '🇦') reponse = 0;	
-				else if (reaction.emoji.name === '🇧') reponse = 1;	
-				else if (reaction.emoji.name === '🇨') reponse = 2;	
-				else if (reaction.emoji.name === '🇩') reponse = 3;	
-				else if (reaction.emoji.name === '🇪') reponse = 4;	
-				else if (reaction.emoji.name === '🇫') reponse = 5;	
-				else if (reaction.emoji.name === '🇬') reponse = 6;	
-				else if (reaction.emoji.name === '🇭') reponse = 7;	
-				else if (reaction.emoji.name === '🇮') reponse = 8;	
-				else if (reaction.emoji.name === '🇯') reponse = 9;	
-				else if (reaction.emoji.name === '🇰') reponse = 10;	
-				else if (reaction.emoji.name === '🇱') reponse = 11;	
-				else if (reaction.emoji.name === '🇲') reponse = 12;	
-				else if (reaction.emoji.name === '🇳') reponse = 13;	
-				else if (reaction.emoji.name === '🇴') reponse = 14;	
-				else if (reaction.emoji.name === '🇵') reponse = 15;	
-				else if (reaction.emoji.name === '🇶') reponse = 16;	
-				else if (reaction.emoji.name === '🇷') reponse = 17;	
-				else if (reaction.emoji.name === '🇸') reponse = 18;	
-				else if (reaction.emoji.name === '🇹') reponse = 19;	
-				else if (reaction.emoji.name === '🇺') reponse = 20;	
-				else if (reaction.emoji.name === '🇻') reponse = 21;	
-				else if (reaction.emoji.name === '🇼') reponse = 22;	
-				else if (reaction.emoji.name === '🇽') reponse = 23;	
-				else if (reaction.emoji.name === '🇾') reponse = 24;	
-				else if (reaction.emoji.name === '🇿') reponse = 25;	
-				
+				if (reaction.emoji.name === '🇦') reponse = 0;
+				else if (reaction.emoji.name === '🇧') reponse = 1;
+				else if (reaction.emoji.name === '🇨') reponse = 2;
+				else if (reaction.emoji.name === '🇩') reponse = 3;
+				else if (reaction.emoji.name === '🇪') reponse = 4;
+				else if (reaction.emoji.name === '🇫') reponse = 5;
+				else if (reaction.emoji.name === '🇬') reponse = 6;
+				else if (reaction.emoji.name === '🇭') reponse = 7;
+				else if (reaction.emoji.name === '🇮') reponse = 8;
+				else if (reaction.emoji.name === '🇯') reponse = 9;
+				else if (reaction.emoji.name === '🇰') reponse = 10;
+				else if (reaction.emoji.name === '🇱') reponse = 11;
+				else if (reaction.emoji.name === '🇲') reponse = 12;
+				else if (reaction.emoji.name === '🇳') reponse = 13;
+				else if (reaction.emoji.name === '🇴') reponse = 14;
+				else if (reaction.emoji.name === '🇵') reponse = 15;
+				else if (reaction.emoji.name === '🇶') reponse = 16;
+				else if (reaction.emoji.name === '🇷') reponse = 17;
+				else if (reaction.emoji.name === '🇸') reponse = 18;
+				else if (reaction.emoji.name === '🇹') reponse = 19;
+				else if (reaction.emoji.name === '🇺') reponse = 20;
+				else if (reaction.emoji.name === '🇻') reponse = 21;
+				else if (reaction.emoji.name === '🇼') reponse = 22;
+				else if (reaction.emoji.name === '🇽') reponse = 23;
+				else if (reaction.emoji.name === '🇾') reponse = 24;
+				else if (reaction.emoji.name === '🇿') reponse = 25;
+
 				url = JSON.parse(url);
 
 
@@ -322,7 +322,7 @@ app.get('/sendEmbed', (req, res) => {
 		toReturn.push({
 			'querry': req.query
 		});
-		res.status(200).json(toReturn);	
+		res.status(200).json(toReturn);
 	}
 });
 /* Main */
@@ -333,7 +333,7 @@ function startServer() {
     dernierStartServeur=Date.now();
 
     config.logger('DiscordLink:    ******************** Lancement BOT ***********************','INFO');
-    
+
     client.login(config.token);
 
     server = app.listen(config.listeningPort, () => {
@@ -347,9 +347,9 @@ function startServer() {
 function httpPost(nom, jsonaenvoyer) {
 
 	var url=IPJeedom+"/plugins/discordlink/core/php/jeediscordlink.php?apikey="+ClePlugin+"&nom="+nom;
-		
+
 	config.logger && config.logger('URL envoyée: '+url, "DEBUG");
-		
+
 	jsonaenvoyer=JSON.stringify(jsonaenvoyer);
 	config.logger && config.logger('DATA envoyé:'+jsonaenvoyer,'DEBUG');
 
@@ -365,7 +365,7 @@ function httpPost(nom, jsonaenvoyer) {
 
 		if (!err && response.statusCode == 200) {
 
-		} else 
+		} else
 		{
 
 		}
@@ -373,7 +373,7 @@ function httpPost(nom, jsonaenvoyer) {
 }
 
 client.on("ready", async() => {
-    client.user.setActivity(`Travailler main dans la main avec votre Jeedom`);
+    client.user.setActivity(joueA);
 });
 
 client.on('message', (receivedMessage) => {

@@ -35,7 +35,7 @@ if (!isConnect()) {
             <label class="col-lg-4 control-label">{{Bot Invite : }}</label>
             <div class="col-lg-6">
                     <?php
-                
+
                 include_file('desktop', 'configuration', 'js', 'discordlink');
 
                 $invite = discordlink::getinvite();
@@ -56,6 +56,13 @@ if (!isConnect()) {
                     <option value="2">Theme 2</option>
 				</select>
 			</div>
+      <br />
+      <br />
+      <div class="form-group">
+          <label class="col-lg-4 control-label">{{Information Joue à : }}</label>
+          <div class="col-lg-6">
+              <input class="configKey form-control" data-l1key="joueA" placeholder="Travailler main dans la main avec votre Jeedom"/>
+          </div>
+      </div>
     </fieldset>
 </form>
-
