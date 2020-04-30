@@ -60,7 +60,7 @@ $discordlinkeqlogic=eqLogic::byLogicalId($result['idchannel'], 'discordlink');
 switch ($nom) {
 	
 		case 'messagerecu':
-			getdevicepuisupdate("1oldmsg", $result['message'], '1oldmsg', $result['idchannel']);
+			getdevicepuisupdate("1oldmsg", $result['message'], '1oldmsg', $result['idchannel'], $result['iduser']);
 		break;	
 		case 'ASK':
 			getASK($result['reponse'], $result['idchannel'], $result['demande']);
@@ -75,7 +75,7 @@ switch ($nom) {
 			}
 }
 
-function getdevicepuisupdate($nom, $variable, $commandejeedom, $_idchannel) {
+function getdevicepuisupdate($nom, $variable, $commandejeedom, $_idchannel, $id_user) {
 	$discordlinkeqlogic=eqLogic::byLogicalId($_idchannel, 'discordlink'); 
 	if (is_object($discordlinkeqlogic))  {
 		$oldmsg1 = $discordlinkeqlogic->getCmd('info', '1oldmsg');
@@ -91,6 +91,7 @@ function getdevicepuisupdate($nom, $variable, $commandejeedom, $_idchannel) {
 	log::add('discordlink', 'debug', $discordlinkeqlogic->getConfiguration('interactionjeedom'));
 	if ($discordlinkeqlogic->getConfiguration('interactionjeedom') == 1) {
 		$parameters['plugin'] = 'discordlink';
+		$parameters['userid'] = $id_user;
 		$reply = interactQuery::tryToReply(trim($variable), $parameters);
 		log::add('discordlink', 'debug', 'Interaction ' . print_r($reply, true));
 		if ($reply['reply'] != "Désolé je n'ai pas compris" && $reply['reply'] != "Désolé je n'ai pas compris la demande" && $reply['reply'] != "Désolé je ne comprends pas la demande" && $reply['reply'] != "Je ne comprends pas" && $reply['reply'] != "ceci est un message de test" && $reply['reply'] != "" && $reply['reply'] != " ") {

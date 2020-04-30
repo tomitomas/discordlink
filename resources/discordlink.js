@@ -386,6 +386,7 @@ client.on('message', (receivedMessage) => {
 	}
 	httpPost("messagerecu",{
 		idchannel: receivedMessage.channel.id,
-		message: receivedMessage.content
+		message: receivedMessage.content,
+		iduser: receivedMessage.author.id
 	});
 });
