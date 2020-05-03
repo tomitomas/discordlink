@@ -328,10 +328,12 @@ class discordlink extends eqLogic {
 				'deamonInfo'=>array('Order' => 4,'Libelle'=>'Etat des démons', 'Type'=>'action', 'SubType'=>'other','request'=>'deamonInfo?null', 'visible' => 1),
 				'dependanceInfo'=>array('Order' => 5,'Libelle'=>'Etat des dépendances', 'Type'=>'action', 'SubType'=>'other','request'=>'dependanceInfo?null', 'visible' => 1),
 				'globalSummary'=>array('Order' => 6,'Libelle'=>'Résumé général', 'Type'=>'action', 'SubType'=>'other','request'=>'globalSummary?null', 'visible' => 1),
-				'1oldmsg'=>array('Order' => 7,'Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
-				'2oldmsg'=>array('Order' => 8,'Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
-				'3oldmsg'=>array('Order' => 9,'Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1)
+				'batteryinfo'=>array('Order' => 7,'Libelle'=>'Résumé des batterie', 'Type'=>'action', 'SubType'=>'other','request'=>'batteryinfo?null', 'visible' => 1),
+				'1oldmsg'=>array('Order' => 8,'Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
+				'2oldmsg'=>array('Order' => 9,'Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
+				'3oldmsg'=>array('Order' => 10,'Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1)
 			);
+			
 			//Chaque commande
 			foreach ($TabCmd as $CmdKey => $Cmd){
 				$Cmddiscordlink = $eqLogic->getCmd(null, $CmdKey);
@@ -484,6 +486,9 @@ class discordlinkCmd extends cmd {
 				break;
 				case 'globalSummary':
 					$request = $this->build_globalSummary($_options);
+				break;
+				case 'batteryinfo':
+					$request = $this->build_baterieglobal($_options);
 				break;
 				default:
 					$request = '';
@@ -701,11 +706,6 @@ class discordlinkCmd extends cmd {
 
 		public function build_globalSummary($_options = array()) {
 
-
-
-
-
-
 			$objects = jeeObject::all();
 			$def = config::byKey('object:summary');
 			$values = array();
@@ -749,6 +749,55 @@ class discordlinkCmd extends cmd {
 				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 				$_options = array('Titre'=>'Résumé général', 'description'=> $message, 'colors'=> '#0033ff', 'footer'=> 'By DiscordLink');
 				$cmd->execCmd($_options);
+
+			return 'truesendwithembed';
+		}
+
+		public function build_baterieglobal($_options = array()) {
+			$message='null';
+			$colors = '#00ff08';
+			$seuil_alert = 30;
+			$seuil_critique = 10;
+			$nb_alert = 0;
+			$nb_critique = 0;
+			$nb_battery = 0;
+			$nb_total = 0;
+
+			$eqLogics = eqLogic::all();
+
+			foreach($eqLogics as $eqLogic)
+			{
+				$nb_total = $nb_total + 1;
+				if((is_numeric(eqLogic::byId($eqLogic->getId())->getStatus('battery')) == 1) && strpos($eqLogic->getHumanName(), 'Aucun') == false) {
+					$nb_battery = $nb_battery + 1;
+					if(eqLogic::byId($eqLogic->getId())->getStatus('battery') <= $seuil_alert) {
+						if(eqLogic::byId($eqLogic->getId())->getStatus('battery') <= $seuil_critique) { 
+							$list_battery .= "\n".discordlink::geticon("nok").substr($eqLogic->getHumanName(), strrpos($eqLogic->getHumanName(), '[',-1) + 1, -1) . ' => __***' . eqLogic::byId($eqLogic->getId())->getStatus('battery') . "%***__";
+							$nb_critique = $nb_critique + 1; 
+							if ($colors != '#ff0000') $colors = '#ff0000';
+						} else { 
+							$list_battery .= "\n".discordlink::geticon("progress").substr($eqLogic->getHumanName(), strrpos($eqLogic->getHumanName(), '[',-1) + 1, -1) . ' =>  __***' . eqLogic::byId($eqLogic->getId())->getStatus('battery') . "%***__";
+							$nb_alert = $nb_alert + 1;
+							if ($colors == '#00ff08') $colors = '#ffae00';
+						}
+					} else {
+						$list_battery = $list_battery . "\n" .discordlink::geticon("ok"). substr($eqLogic->getHumanName(), strrpos($eqLogic->getHumanName(), '[',-1) + 1, -1) . ' =>  __***' . eqLogic::byId($eqLogic->getId())->getStatus('battery') . "%***__";
+					}
+				}
+			}
+
+			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
+
+			$message = $list_battery;
+			$message=str_replace("|","\n",$message);
+			$_options = array('Titre'=>'Résumé Batteries : ', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
+			$cmd->execCmd($_options);
+
+			$message2 = "Battery en alerte : __***" . $nb_alert . "***__\n Battery critique : __***".$nb_critique."***__";
+
+			$message2=str_replace("|","\n",$message2);
+			$_options2 = array('Titre'=>'Résumé Batterie', 'description'=> $message2, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
+			$cmd->execCmd($_options2);
 
 			return 'truesendwithembed';
 		}
