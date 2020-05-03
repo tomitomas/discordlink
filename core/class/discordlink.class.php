@@ -45,11 +45,10 @@ class discordlink extends eqLogic {
 
 
     /*
-     * Fonction exécutée automatiquement toutes les heures par Jeedom
+     * Fonction exécutée automatiquement toutes les heures par Jeedom*/
       public static function cronHourly() {
-
+		discordlink::updateobject();
       }
-     */
 
     /*
      * Fonction exécutée automatiquement tous les jours par Jeedom
@@ -328,10 +327,11 @@ class discordlink extends eqLogic {
 				'deamonInfo'=>array('Order' => 4,'Libelle'=>'Etat des démons', 'Type'=>'action', 'SubType'=>'other','request'=>'deamonInfo?null', 'visible' => 1),
 				'dependanceInfo'=>array('Order' => 5,'Libelle'=>'Etat des dépendances', 'Type'=>'action', 'SubType'=>'other','request'=>'dependanceInfo?null', 'visible' => 1),
 				'globalSummary'=>array('Order' => 6,'Libelle'=>'Résumé général', 'Type'=>'action', 'SubType'=>'other','request'=>'globalSummary?null', 'visible' => 1),
-				'batteryinfo'=>array('Order' => 7,'Libelle'=>'Résumé des batterie', 'Type'=>'action', 'SubType'=>'other','request'=>'batteryinfo?null', 'visible' => 1),
-				'1oldmsg'=>array('Order' => 8,'Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
-				'2oldmsg'=>array('Order' => 9,'Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
-				'3oldmsg'=>array('Order' => 10,'Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1)
+				'objectSummary'=>array('Order' => 7,'Libelle'=>'Résumé Par Object', 'Type'=>'action', 'SubType'=>'select','request'=>'objectSummary?null', 'visible' => 1),
+				'batteryinfo'=>array('Order' => 8,'Libelle'=>'Résumé des batterie', 'Type'=>'action', 'SubType'=>'other','request'=>'batteryinfo?null', 'visible' => 1),
+				'1oldmsg'=>array('Order' => 9,'Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
+				'2oldmsg'=>array('Order' => 10,'Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
+				'3oldmsg'=>array('Order' => 11,'Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1)
 			);
 			
 			//Chaque commande
@@ -373,6 +373,7 @@ class discordlink extends eqLogic {
 
     public function postSave() {
 		discordlink::CreateCmd();
+		discordlink::updateobject();
 	}
 
     public function preUpdate() {
@@ -390,6 +391,22 @@ class discordlink extends eqLogic {
 
     }
 
+	public function updateobject() {
+
+		$listValue = '';
+		foreach(jeeObject::all() as $object) {
+			$listValue .= $object->getId()."|".$object->getName().";";
+		}
+
+		if ($listValue != '') {
+			$eqLogics = eqLogic::byType('discordlink');
+			foreach ($eqLogics as $eqLogic) {
+				$Cmddiscordlink = $eqLogic->getCmd(null, 'objectSummary');
+				$Cmddiscordlink->setConfiguration('listValue', $listValue);
+				$Cmddiscordlink->save();
+			}
+		}
+	}
 
     /*
      * Non obligatoire mais permet de modifier l'affichage du widget si vous en avez besoin
@@ -489,6 +506,9 @@ class discordlinkCmd extends cmd {
 				break;
 				case 'batteryinfo':
 					$request = $this->build_baterieglobal($_options);
+				break;
+				case 'objectSummary':
+					$request = $this->build_objectSummary($_options);
 				break;
 				default:
 					$request = '';
@@ -635,16 +655,6 @@ class discordlinkCmd extends cmd {
 			return str_replace(array_keys($replace), $replace, $return);
 		}
 
-		public function getWidgetTemplateCode($_version = 'dashboard', $_noCustom = false) {
-			if ($_version != 'scenario') return parent::getWidgetTemplateCode($_version, $_noCustom);
-			list($command, $arguments) = explode('?', $this->getConfiguration('request'), 2);
-			if ($command == 'sendEmbed')
-				return getTemplate('core', 'scenario', 'cmd.sendEmbed', 'discordlink');
-			if ($command == 'sendFile')
-				return getTemplate('core', 'scenario', 'cmd.sendFile', 'discordlink');
-			return parent::getWidgetTemplateCode($_version, $_noCustom);
-		}
-
 		public function build_deamonInfo($_options = array()) {
 			$message='';
 			$colors = '#00ff08';
@@ -713,10 +723,13 @@ class discordlinkCmd extends cmd {
 
 			foreach ($def as $key => $value) {
 
+				$result ='';
+
 				log::add('discordlink', 'debug', 'test : '.$def[$key]['name']);
 				log::add('discordlink', 'debug', 'Résumé général : '. $key . ' = ' . jeeObject::getGlobalSummary($key));
 
 				$result = jeeObject::getGlobalSummary($key);
+				if ($result == '') continue;
 
 				if ($key == "motion") {
 					$message .='|'.discordlink::geticon("mouvement").' *** '. $result.' ***		(Mouvements)';
@@ -800,6 +813,77 @@ class discordlinkCmd extends cmd {
 			$cmd->execCmd($_options2);
 
 			return 'truesendwithembed';
+		}
+
+		public function build_objectSummary($_options = array()) {
+
+			$idobject = $_options['select'];
+			log::add('discordlink', 'debug', 'idobject : '.$idobject);
+			$object = jeeObject::byId($idobject);
+			$def = config::byKey('object:summary');
+
+			$message='';
+			
+			foreach ($def as $key => $value) {
+
+				$result == '';
+
+				log::add('discordlink', 'debug', 'test : '.$def[$key]['name']);
+				log::add('discordlink', 'debug', 'Résumé object : '. $key . ' = ' . $object->getSummary($key));
+
+				$result = $object->getSummary($key);
+
+				if ($result == '') continue;
+
+				if ($key == "motion") {
+					$message .='|'.discordlink::geticon("mouvement").' *** '. $result.' ***		(Mouvements)';
+				} elseif ($key == "door") {
+					$message .='|'.discordlink::geticon("porte").' *** '. $result.' ***		(Portes)';
+				} elseif ($key == "windows") {
+					$message .='|'.discordlink::geticon("fenetre").' *** '. $result.' ***		(Fenêtres)';
+				} elseif ($key == "light") {
+					$message .='|'.discordlink::geticon("lumiere").' *** '. $result.' ***		(Lumières)';
+				} elseif ($key == "outlet") {
+					$message .='|'.discordlink::geticon("prise").' *** '. $result.' ***		(Prises)';
+				} elseif ($key == "temperature") {
+					$message .='|'.discordlink::geticon("thermometer").' *** '. $result.' '.$def[$key]['unit']. ' ***		(Température)';
+				} elseif ($key == "humidity") {
+					$message .='|'.discordlink::geticon("tint").' *** '. $result.' '.$def[$key]['unit'].' ***		(Humidité)';
+				} elseif ($key == "luminosity") {
+					$message .='|'.discordlink::geticon("luminosite").' *** '. $result.' '.$def[$key]['unit'].' ***		(Luminosité)';
+				} elseif ($key == "power") {
+					$message .='|'.discordlink::geticon("elect").' *** '. $result.' '.$def[$key]['unit'] .' ***		(Puissance)';
+				} elseif ($key == "security") {
+					$message .='|'.discordlink::geticon("alerte").' *** '. $result.' '.$def[$key]['unit'] .' ***		(Alerte)';
+				} elseif ($key == "shutter") {
+					$message .='|'.discordlink::geticon("volet").' *** '. $result.' '.$def[$key]['unit'] .' ***		(Volet)';
+				} else {
+					$message .='|'.discordlink::geticon("other").' *** '. $result.' '.$def[$key]['unit'] .' ***		('.$def[$key]['name'].')';
+				}
+
+			}
+				$message=str_replace("|","\n",$message);
+				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
+				$_options = array('Titre'=>'Résumé général', 'description'=> $message, 'colors'=> '#0033ff', 'footer'=> 'By DiscordLink');
+				$cmd->execCmd($_options);
+
+			return 'truesendwithembed';
+		}
+
+		public function getWidgetTemplateCode($_version = 'dashboard', $_noCustom = false) {
+			if ($_version != 'scenario') return parent::getWidgetTemplateCode($_version, $_noCustom);
+			list($command, $arguments) = explode('?', $this->getConfiguration('request'), 2);
+			if ($command == 'sendMsg')
+				return getTemplate('core', 'scenario', 'cmd.sendMsg', 'discordlink');
+			if ($command == 'sendMsgTTS')
+				return getTemplate('core', 'scenario', 'cmd.sendMsgtts', 'discordlink');
+			if ($command == 'sendEmbed')
+				return getTemplate('core', 'scenario', 'cmd.sendEmbed', 'discordlink');
+			if ($command == 'sendFile')
+				return getTemplate('core', 'scenario', 'cmd.sendFile', 'discordlink');
+			//if ($command == 'objectSummary')
+			//	return getTemplate('core', 'scenario', 'cmd.objectSummary', 'discordlink');
+			return parent::getWidgetTemplateCode($_version, $_noCustom);
 		}
 		/*     * **********************Getteur Setteur*************************** */
 	}
