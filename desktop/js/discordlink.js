@@ -132,7 +132,13 @@ function addCmdToTable(_cmd) {
               tr +=   '</td>';
               tr +=   '<td>';
           }
-
+  
+      tr +=   '</td>'
+       +   '<td>'
+       +     '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isVisible" checked/>{{Afficher}}</label></span> '
+       +   '</td>'
+       + '<td>';
+  
       if (is_numeric(_cmd.id))
       {
         tr += '<a class="btn btn-default btn-xs cmdAction expertModeVisible" data-action="configure"><i class="fa fa-cogs"></i></a> ';
