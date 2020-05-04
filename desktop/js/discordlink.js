@@ -117,11 +117,7 @@ function addCmdToTable(_cmd) {
       tr  +=' style="display:none;" ';
   
       tr+= ' data-l1key="configuration" data-l2key="request">';
-      
-          if (init(_cmd.subType) == 'select') {
-      tr += '<input class="tooltips cmdAttr form-control input-sm expertModeVisible" data-l1key="configuration" data-l2key="listValue" placeholder="{{Liste de valeur|texte séparé par ;}}" title="{{Liste}}">';	
-          }
-      
+            
       tr +=   '</td>';
       tr +=   '<td>';
       
@@ -136,17 +132,7 @@ function addCmdToTable(_cmd) {
               tr +=   '</td>';
               tr +=   '<td>';
           }
-  
-  
-  
-        
-      tr +=   '</td>'
-       +   '<td>'
-       +     '<input class="tooltips cmdAttr form-control input-sm expertModeVisible" data-l1key="configuration" data-l2key="listValue" placeholder="{{Liste de valeur|texte séparé par ;}}" title="{{Liste}}" style="margin-top : 5px;">'
-       +     '<span><label class="checkbox-inline"><input type="checkbox" class="cmdAttr checkbox-inline" data-l1key="isVisible" checked/>{{Afficher}}</label></span> '
-       +   '</td>'
-       + '<td>';
-  
+
       if (is_numeric(_cmd.id))
       {
         tr += '<a class="btn btn-default btn-xs cmdAction expertModeVisible" data-action="configure"><i class="fa fa-cogs"></i></a> ';

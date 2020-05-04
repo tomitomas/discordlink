@@ -776,12 +776,12 @@ class discordlinkCmd extends cmd {
 			$nb_battery = 0;
 			$nb_total = 0;
 
-			$eqLogics = eqLogic::all();
+			$eqLogics = eqLogic::all(true);
 
 			foreach($eqLogics as $eqLogic)
 			{
 				$nb_total = $nb_total + 1;
-				if((is_numeric(eqLogic::byId($eqLogic->getId())->getStatus('battery')) == 1) && strpos($eqLogic->getHumanName(), 'Aucun') == false) {
+				if((is_numeric(eqLogic::byId($eqLogic->getId())->getStatus('battery')) == 1)) {
 					$nb_battery = $nb_battery + 1;
 					if(eqLogic::byId($eqLogic->getId())->getStatus('battery') <= $seuil_alert) {
 						if(eqLogic::byId($eqLogic->getId())->getStatus('battery') <= $seuil_critique) { 
