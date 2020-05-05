@@ -345,6 +345,7 @@ class discordlink extends eqLogic {
 			$Order = 0;
 			foreach ($TabCmd as $CmdKey => $Cmd){
 
+				
 				$pluginisla = 0;
 				if ($Cmd['reqplug'] != "0") {
 					if (discordlink::testplugin($Cmd['reqplug'])) $pluginisla = 1;
