@@ -30,12 +30,11 @@ class discordlink extends eqLogic {
 		$return['action']['message']['embed'] =    array(
 			'template' => 'embed',
 			'replace' => array("#_desktop_width_#" => "100","#_mobile_width_#" => "50", "#title_disable#" => "1", "#message_disable#" => "0")
-	);
+		);
 		return $return;
 	}
 
 	public static function testplugin($_pluginid){
-
 		$result = false;
 		try {$test = plugin::byId($_pluginid);  if ($test->isActive()) $result=true;}  catch(Exception $e) {}
 		return $result;
@@ -327,53 +326,63 @@ class discordlink extends eqLogic {
 		foreach ($eqLogics as $eqLogic) {
 
 			$TabCmd = array(
-				'sendMsg'=>array('Order' => 0, 'Libelle'=>'Envoi message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
-				'sendMsgTTS'=>array('Order' => 1,'Libelle'=>'Envoi message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
-				'sendEmbed'=>array('Order' => 2,'Libelle'=>'Envoi message évolué', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
-				'sendFile'=>array('Order' => 3,'Libelle'=>'Envoi fichier', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#&message=#message#', 'visible' => 0),
-				'deamonInfo'=>array('Order' => 4,'Libelle'=>'Etat des démons', 'Type'=>'action', 'SubType'=>'other','request'=>'deamonInfo?null', 'visible' => 1),
-				'dependanceInfo'=>array('Order' => 5,'Libelle'=>'Etat des dépendances', 'Type'=>'action', 'SubType'=>'other','request'=>'dependanceInfo?null', 'visible' => 1),
-				'globalSummary'=>array('Order' => 6,'Libelle'=>'Résumé général', 'Type'=>'action', 'SubType'=>'other','request'=>'globalSummary?null', 'visible' => 1),
-				'objectSummary'=>array('Order' => 7,'Libelle'=>'Résumé Par Object', 'Type'=>'action', 'SubType'=>'select','request'=>'objectSummary?null', 'visible' => 1),
-				'batteryinfo'=>array('Order' => 8,'Libelle'=>'Résumé des batterie', 'Type'=>'action', 'SubType'=>'other','request'=>'batteryinfo?null', 'visible' => 1),
-				'1oldmsg'=>array('Order' => 9,'Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
-				'2oldmsg'=>array('Order' => 10,'Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
-				'3oldmsg'=>array('Order' => 11,'Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1)
+				'sendMsg'=>array('reqplug' => '0', 'Libelle'=>'Envoi message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
+				'sendMsgTTS'=>array('reqplug' => '0','Libelle'=>'Envoi message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
+				'sendEmbed'=>array('reqplug' => '0','Libelle'=>'Envoi message évolué', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
+				'sendFile'=>array('reqplug' => '0','Libelle'=>'Envoi fichier', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#&message=#message#', 'visible' => 0),
+				'deamonInfo'=>array('reqplug' => '0','Libelle'=>'Etat des démons', 'Type'=>'action', 'SubType'=>'other','request'=>'deamonInfo?null', 'visible' => 1),
+				'dependanceInfo'=>array('reqplug' => '0','Libelle'=>'Etat des dépendances', 'Type'=>'action', 'SubType'=>'other','request'=>'dependanceInfo?null', 'visible' => 1),
+				'zwave'=>array('reqplug' => 'openzwave','Libelle'=>'zwave', 'Type'=>'action', 'SubType'=>'other','request'=>'zwave?null', 'visible' => 1),
+				'globalSummary'=>array('reqplug' => '0','Libelle'=>'Résumé général', 'Type'=>'action', 'SubType'=>'other','request'=>'globalSummary?null', 'visible' => 1),
+				'objectSummary'=>array('reqplug' => '0','Libelle'=>'Résumé Par Object', 'Type'=>'action', 'SubType'=>'select','request'=>'objectSummary?null', 'visible' => 1),
+				'batteryinfo'=>array('reqplug' => '0','Libelle'=>'Résumé des batterie', 'Type'=>'action', 'SubType'=>'other','request'=>'batteryinfo?null', 'visible' => 1),
+				'1oldmsg'=>array('reqplug' => '0','Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
+				'2oldmsg'=>array('reqplug' => '0','Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
+				'3oldmsg'=>array('reqplug' => '0','Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1)
 			);
 			
 			//Chaque commande
+			$Order = 0;
 			foreach ($TabCmd as $CmdKey => $Cmd){
-				$Cmddiscordlink = $eqLogic->getCmd(null, $CmdKey);
 
-				if (!is_object($Cmddiscordlink) ) {
-					$Cmddiscordlink = new discordlinkCmd();
-				}
-
-				$Cmddiscordlink->setName($Cmd['Libelle']);
-				$Cmddiscordlink->setEqLogic_id($eqLogic->getId());
-				$Cmddiscordlink->setType($Cmd['Type']);
-				$Cmddiscordlink->setSubType($Cmd['SubType']);
-				$Cmddiscordlink->setLogicalId($CmdKey);
-				$Cmddiscordlink->setEventOnly(1);
-				$Cmddiscordlink->setIsVisible($Cmd['visible']);
-				if ($Cmd['Type'] == "action" && $CmdKey != "deamonInfo") {
-					$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
-					$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
-				}
-				if ($Cmd['Type'] == "action" && $CmdKey == "deamonInfo") {
-					$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
-					$Cmddiscordlink->setConfiguration('value', $Cmd['request']);
+				$pluginisla = 0;
+				if ($Cmd['reqplug'] != "0") {
+					if (discordlink::testplugin($Cmd['reqplug'])) $pluginisla = 1;
 				}
 
-				$Cmddiscordlink->setDisplay('generic_type','GENERIC_INFO');
-				if (!empty($Cmd['Template'])) {
-					$Cmddiscordlink->setTemplate("dashboard", $Cmd['Template']);
-					$Cmddiscordlink->setTemplate("mobile", $Cmd['Template']);
+				if ($Cmd['reqplug'] == "0" || $pluginisla == 1)  {
+					$Cmddiscordlink = $eqLogic->getCmd(null, $CmdKey);
+					if (!is_object($Cmddiscordlink) ) {
+						$Cmddiscordlink = new discordlinkCmd();
+					}
+
+					$Cmddiscordlink->setName($Cmd['Libelle']);
+					$Cmddiscordlink->setEqLogic_id($eqLogic->getId());
+					$Cmddiscordlink->setType($Cmd['Type']);
+					$Cmddiscordlink->setSubType($Cmd['SubType']);
+					$Cmddiscordlink->setLogicalId($CmdKey);
+					$Cmddiscordlink->setEventOnly(1);
+					$Cmddiscordlink->setIsVisible($Cmd['visible']);
+					if ($Cmd['Type'] == "action" && $CmdKey != "deamonInfo") {
+						$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
+						$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
+					}
+					if ($Cmd['Type'] == "action" && $CmdKey == "deamonInfo") {
+						$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
+						$Cmddiscordlink->setConfiguration('value', $Cmd['request']);
+					}
+
+					$Cmddiscordlink->setDisplay('generic_type','GENERIC_INFO');
+					if (!empty($Cmd['Template'])) {
+						$Cmddiscordlink->setTemplate("dashboard", $Cmd['Template']);
+						$Cmddiscordlink->setTemplate("mobile", $Cmd['Template']);
+					}
+					$Cmddiscordlink->setOrder($Order);
+					$Cmddiscordlink->setDisplay('message_placeholder', 'Message a envoyer sur discord');
+					$Cmddiscordlink->setDisplay('forceReturnLineBefore', true);
+					$Cmddiscordlink->save();
+					$Order++;
 				}
-				$Cmddiscordlink->setOrder($Cmd['Order']);
-				$Cmddiscordlink->setDisplay('message_placeholder', 'Message a envoyer sur discord');
-				$Cmddiscordlink->setDisplay('forceReturnLineBefore', true);
-				$Cmddiscordlink->save();
 			}
 		}
 	}
@@ -516,6 +525,9 @@ class discordlinkCmd extends cmd {
 				break;
 				case 'objectSummary':
 					$request = $this->build_objectSummary($_options);
+				break;
+				case 'zwave':
+					$request = $this->build_zwave($_options);
 				break;
 				default:
 					$request = '';
@@ -892,6 +904,39 @@ class discordlinkCmd extends cmd {
 			return 'truesendwithembed';
 		}
 
+		public function build_zwave($_options = array()) {
+
+			if (discordlink::testplugin('openzwave')) {
+				$message = '';
+				$colors = '#00ff08';
+				$maxTime = 43200;
+				$_format = 'Y-m-d H:M:S';
+				$eqLogics = eqLogic::byType('openzwave');
+
+				foreach($eqLogics as $eqLogic) {
+					$maxDate = date($_format, "1970-1-1 00:00:00");
+					$collectDate = strtotime($eqLogic->getStatus('lastCommunication', date($_format)));
+					//$scenario->setLog( 'Commande ' . $cmd->getHumanName() . ' - ' . $collectDate);
+					$maxDate = max($maxDate, $collectDate);
+					log::add('discordlink', 'DEBUG', 'Date max ' . date('c', $maxDate));
+					$elapsedTime = time() - $maxDate;
+					log::add('discordlink', 'DEBUG', 'elapsedTime ' . $elapsedTime);
+					if ($elapsedTime >= $maxTime) {
+						$message .= "|".discordlink::geticon("nok"). " ". $eqLogic->getName(). ' ('.$elapsedTime.')';
+						if ($colors != '#ff0000') $colors = '#ff0000';
+					} else {
+						$message .= "|".discordlink::geticon("ok"). " ". $eqLogic->getName().' ('.$elapsedTime.')';
+					}
+				}
+				// log fin de traitement	
+				$message=str_replace("|","\n",$message);
+				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
+				$_options = array('Titre'=>'Zwave Info ', 'description'=> $message, 'colors'=> '#0033ff', 'footer'=> 'By DiscordLink');
+				$cmd->execCmd($_options);
+			}
+			return 'truesendwithembed';
+		} 
+
 		public function getWidgetTemplateCode($_version = 'dashboard', $_noCustom = false) {
 			if ($_version != 'scenario') return parent::getWidgetTemplateCode($_version, $_noCustom);
 			list($command, $arguments) = explode('?', $this->getConfiguration('request'), 2);
@@ -910,5 +955,3 @@ class discordlinkCmd extends cmd {
 		/*     * **********************Getteur Setteur*************************** */
 	}
 ?>
-
-f
