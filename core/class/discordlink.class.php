@@ -834,13 +834,16 @@ class discordlinkCmd extends cmd {
 					}
 				}
 
-				if ($nb_ligne == 25) {
+				if ($nb_ligne <= 20) {
 					$message = $list_battery;
 					$message=str_replace("|","\n",$message);
 					$_options = array('Titre'=>'Résumé Batteries : ', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
 					$cmd->execCmd($_options);
 					$nb_ligne = 0;
+					$list_battery = '';
+					$message = '';
 				}
+				$nb_ligne++;
 			}
 
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
