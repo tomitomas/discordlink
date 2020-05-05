@@ -34,6 +34,13 @@ class discordlink extends eqLogic {
 		return $return;
 	}
 
+	public static function testplugin($_pluginid){
+
+		$result = false;
+		try {$test = plugin::byId($_pluginid);  if ($test->isActive()) $result=true;}  catch(Exception $e) {}
+		return $result;
+	}
+
     /*     * ***********************Methode static*************************** */
 
     /*
@@ -671,6 +678,21 @@ class discordlinkCmd extends cmd {
 						log::add('discordlink', 'DEBUG', 'Deamon OK : ' . $deamon_info['state']);
 					}
 
+					if ($plugin->getId() == 'blea') {
+						if (discordlink::testplugin('blea')) {
+							$remotes = blea_remote::all();			
+							foreach ($remotes as $remote) {				
+								$last = $remote->getCache('lastupdate','0');
+								if ($last == '0' || time() - strtotime($last)>65){								
+									$message .='|'.discordlink::geticon("nok").' Antenne BLEA : '.$remote->getRemoteName();
+									if ($colors != '#ff0000') $colors = '#ff0000';
+								} else {
+									$message .='|'.discordlink::geticon("ok").' Antenne BLEA : '.$remote->getRemoteName();
+								}
+							}
+						}
+					}
+
 				}
 			}
 
@@ -888,3 +910,5 @@ class discordlinkCmd extends cmd {
 		/*     * **********************Getteur Setteur*************************** */
 	}
 ?>
+
+f
