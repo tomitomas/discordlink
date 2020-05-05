@@ -834,7 +834,7 @@ class discordlinkCmd extends cmd {
 					}
 				}
 
-				if ($nb_ligne == 20) {
+				if ($nb_ligne == 25) {
 					$message = $list_battery;
 					$message=str_replace("|","\n",$message);
 					$_options = array('Titre'=>'Résumé Batteries : ', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
