@@ -813,6 +813,7 @@ class discordlinkCmd extends cmd {
 			$nb_ligne = 0;
 
 			$eqLogics = eqLogic::all(true);
+			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 
 			foreach($eqLogics as $eqLogic)
 			{
@@ -845,8 +846,6 @@ class discordlinkCmd extends cmd {
 				}
 				$nb_ligne++;
 			}
-
-			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 
 			$message = $list_battery;
 			$message=str_replace("|","\n",$message);
