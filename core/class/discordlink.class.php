@@ -810,6 +810,7 @@ class discordlinkCmd extends cmd {
 			$nb_critique = 0;
 			$nb_battery = 0;
 			$nb_total = 0;
+			$nb_ligne = 0;
 
 			$eqLogics = eqLogic::all(true);
 
@@ -831,6 +832,14 @@ class discordlinkCmd extends cmd {
 					} else {
 						$list_battery = $list_battery . "\n" .discordlink::geticon("ok"). substr($eqLogic->getHumanName(), strrpos($eqLogic->getHumanName(), '[',-1) + 1, -1) . ' =>  __***' . eqLogic::byId($eqLogic->getId())->getStatus('battery') . "%***__";
 					}
+				}
+
+				if ($nb_ligne == 20) {
+					$message = $list_battery;
+					$message=str_replace("|","\n",$message);
+					$_options = array('Titre'=>'Résumé Batteries : ', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
+					$cmd->execCmd($_options);
+					$nb_ligne = 0;
 				}
 			}
 
