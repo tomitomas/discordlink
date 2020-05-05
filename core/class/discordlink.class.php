@@ -833,18 +833,18 @@ class discordlinkCmd extends cmd {
 					} else {
 						$list_battery = $list_battery . "\n" .discordlink::geticon("ok"). substr($eqLogic->getHumanName(), strrpos($eqLogic->getHumanName(), '[',-1) + 1, -1) . ' =>  __***' . eqLogic::byId($eqLogic->getId())->getStatus('battery') . "%***__";
 					}
+					
+					if ($nb_ligne == 20) {
+						$message = $list_battery;
+						$message=str_replace("|","\n",$message);
+						$_options = array('Titre'=>'Résumé Batteries : ', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
+						$cmd->execCmd($_options);
+						$nb_ligne = 0;
+						$list_battery = '';
+						$message = '';
+					}
+					$nb_ligne++;
 				}
-
-				if ($nb_ligne == 20) {
-					$message = $list_battery;
-					$message=str_replace("|","\n",$message);
-					$_options = array('Titre'=>'Résumé Batteries : ', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
-					$cmd->execCmd($_options);
-					$nb_ligne = 0;
-					$list_battery = '';
-					$message = '';
-				}
-				$nb_ligne++;
 			}
 
 			$message = $list_battery;
