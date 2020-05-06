@@ -20,11 +20,39 @@ try {
     require_once dirname(__FILE__) . '/../../../../core/php/core.inc.php';
     include_file('core', 'authentification', 'php');
 
-    if (!isConnect('admin')) {
-        throw new Exception(__('401 - Accès non autorisé', __FILE__));
-    }
-    
+//    if (!isConnect('admin')) {
+//        throw new Exception(__('401 - Accès non autorisé', __FILE__));
+//    }
     ajax::init();
+    
+    if (init('action') == 'saveemojy') {
+
+        $arrayemojy = init('arrayemojy');
+        log::add('discordlink', 'debug', 'Emojy Save Debus : '.json_encode($arrayemojy));
+        $emojyconfig = array();
+
+        foreach ($arrayemojy as $emojy) {
+            $key = $emojy['keyEmojy'];
+            $emojyconfig[$key] = $emojy['codeEmojy'];
+        }
+        //$emojy = json_encode($emojyconfig);
+        config::save('emojy', $emojyconfig, 'discordlink');
+        log::add('discordlink', 'debug', 'Emojy Save Fin : '.json_encode($emojyconfig));
+        ajax::success();
+    }
+
+    if (init('action') == 'getemojy') {
+        $emojyarray = config::byKey('emojy', 'discordlink');
+        log::add('discordlink', 'debug', 'Emojy Get Debus : '.json_encode($emojyarray));
+        $emojycommandetable = array();
+        foreach ($emojyarray as $key => $emojy) {
+            $emojycmdligne = array('keyEmojy' => $key, 'codeEmojy' => $emojy);
+            array_push($emojycommandetable,  $emojycmdligne);
+        }
+        $emojy = $emojycommandetable;
+        log::add('discordlink', 'debug', 'Emojy Get Fin : '.$emojy);
+        ajax::success($emojy);
+    }
 
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */

@@ -219,104 +219,13 @@ class discordlink extends eqLogic {
 	}
 
 	public static function geticon($_icon) {
-		$icon = "";
-		if (config::byKey('themeIcon', 'discordlink') == 2) {
-			switch ($_icon) {
-				case 'ok':
-					$icon = ":green_circle: ";
-				break;
-				case 'progress':
-					$icon = ":orange_circle: ";
-				break;
-				case 'nok':
-					$icon = ":red_circle: ";
-				break;
-				case 'mouvement':
-					$icon = ":person_walking: ";
-				break;
-				case 'porte':
-					$icon = ":door: ";
-				break;
-				case 'fenetre':
-					$icon = ":frame_photo: ";
-				break;
-				case 'lumiere':
-					$icon = ":bulb: ";
-				break;
-				case 'prise':
-					$icon = ":electric_plug: ";
-				break;
-				case 'thermometer':
-					$icon = ":thermometer: ";
-				break;
-				case 'tint':
-					$icon = ":droplet: ";
-				break;
-				case 'luminosite':
-					$icon = ":sunny: ";
-				break;
-				case 'elect':
-					$icon = ":cloud_lightning: ";
-				break;
-				case 'other':
-					$icon = ":interrobang: ";
-				break;
-				case 'alerte':
-					$icon = ":rotating_light: ";
-				break;
-				case 'volet':
-					$icon = ":beginner: ";
-				break;
-			}
-		} else {
-			switch ($_icon) {
-				case 'ok':
-					$icon = ":white_check_mark: ";
-				break;
-				case 'progress':
-					$icon = ":arrows_counterclockwise: ";
-				break;
-				case 'nok':
-					$icon = ":x: ";
-				break;
-				case 'mouvement':
-					$icon = ":person_walking: ";
-				break;
-				case 'porte':
-					$icon = ":door: ";
-				break;
-				case 'fenetre':
-					$icon = ":frame_photo: ";
-				break;
-				case 'lumiere':
-					$icon = ":bulb: ";
-				break;
-				case 'prise':
-					$icon = ":electric_plug: ";
-				break;
-				case 'thermometer':
-					$icon = ":thermometer: ";
-				break;
-				case 'tint':
-					$icon = ":droplet: ";
-				break;
-				case 'luminosite':
-					$icon = ":sunny: ";
-				break;
-				case 'elect':
-					$icon = ":cloud_lightning: ";
-				break;
-				case 'other':
-					$icon = ":interrobang: ";
-				break;
-				case 'alerte':
-					$icon = ":rotating_light: ";
-				break;
-				case 'volet':
-					$icon = ":beginner: ";
-				break;
-			}
+		$icon = "null";
+		$emojyArray = config::byKey('emojy', 'discordlink');
+		$icon = $emojyArray[$_icon];
+		if ($icon == "null") {
+			$icon = ":interrobang:";
 		}
+		$icon .= " ";
 		return $icon;
 	}
 
@@ -683,11 +592,11 @@ class discordlinkCmd extends cmd {
 				if($plugin->getHasOwnDeamon() && config::byKey('deamonAutoMode', $plugin->getId(), 1) == 1) {
 					$deamon_info = $plugin->deamon_info();
 					if ($deamon_info['state'] != 'ok') {
-						$message .='|'.discordlink::geticon("nok").$plugin->getName().' ('.$plugin->getId().')';
+						$message .='|'.discordlink::geticon("deamon_nok").$plugin->getName().' ('.$plugin->getId().')';
 						if ($colors != '#ff0000') $colors = '#ff0000';
 						log::add('discordlink', 'DEBUG', 'Deamon Non OK : ' . $deamon_info['state']);
 					} else {
-						$message .='|'.discordlink::geticon("ok").$plugin->getName().' ('.$plugin->getId().')';
+						$message .='|'.discordlink::geticon("deamon_ok").$plugin->getName().' ('.$plugin->getId().')';
 						log::add('discordlink', 'DEBUG', 'Deamon OK : ' . $deamon_info['state']);
 					}
 
@@ -697,10 +606,10 @@ class discordlinkCmd extends cmd {
 							foreach ($remotes as $remote) {				
 								$last = $remote->getCache('lastupdate','0');
 								if ($last == '0' || time() - strtotime($last)>65){								
-									$message .='|'.discordlink::geticon("nok").' Antenne BLEA : '.$remote->getRemoteName();
+									$message .='|'.discordlink::geticon("deamon_nok").' Antenne BLEA : '.$remote->getRemoteName();
 									if ($colors != '#ff0000') $colors = '#ff0000';
 								} else {
-									$message .='|'.discordlink::geticon("ok").' Antenne BLEA : '.$remote->getRemoteName();
+									$message .='|'.discordlink::geticon("deamon_ok").' Antenne BLEA : '.$remote->getRemoteName();
 								}
 							}
 						}
@@ -727,14 +636,14 @@ class discordlinkCmd extends cmd {
 				if($plugin->getHasDependency()) {
 					$dependency_info = $plugin->dependancy_info();
 					if ($dependency_info['state'] == 'ok') {
-						$message .='|'.discordlink::geticon("ok").$plugin->getName().' ('.$plugin->getId().')';
+						$message .='|'.discordlink::geticon("dep_ok").$plugin->getName().' ('.$plugin->getId().')';
 						log::add('discordlink', 'DEBUG', 'Dependance OK : ' . $dependency_info['state']);
 					} elseif ($dependency_info['state'] == 'in_progress') {
-						$message .='|'.discordlink::geticon("progress").$plugin->getName().' ('.$plugin->getId().')';
+						$message .='|'.discordlink::geticon("dep_progress").$plugin->getName().' ('.$plugin->getId().')';
 						if ($colors == '#00ff08') $colors = '#ffae00';
 						log::add('discordlink', 'DEBUG', 'Dependance En cours d\'install : ' . $dependency_info['state']);
 					} else {
-						$message .='|'.discordlink::geticon("nok").' ('.$plugin->getId().')';
+						$message .='|'.discordlink::geticon("dep_nok").' ('.$plugin->getId().')';
 						if ($colors != '#ff0000') $colors = '#ff0000';
 						log::add('discordlink', 'DEBUG', 'Dependance Non OK : ' . $dependency_info['state']);
 					}
@@ -766,31 +675,7 @@ class discordlinkCmd extends cmd {
 				$result = jeeObject::getGlobalSummary($key);
 				if ($result == '') continue;
 
-				if ($key == "motion") {
-					$message .='|'.discordlink::geticon("mouvement").' *** '. $result.' ***		(Mouvements)';
-				} elseif ($key == "door") {
-					$message .='|'.discordlink::geticon("porte").' *** '. $result.' ***		(Portes)';
-				} elseif ($key == "windows") {
-					$message .='|'.discordlink::geticon("fenetre").' *** '. $result.' ***		(Fenêtres)';
-				} elseif ($key == "light") {
-					$message .='|'.discordlink::geticon("lumiere").' *** '. $result.' ***		(Lumières)';
-				} elseif ($key == "outlet") {
-					$message .='|'.discordlink::geticon("prise").' *** '. $result.' ***		(Prises)';
-				} elseif ($key == "temperature") {
-					$message .='|'.discordlink::geticon("thermometer").' *** '. $result.' '.$def[$key]['unit']. ' ***		(Température)';
-				} elseif ($key == "humidity") {
-					$message .='|'.discordlink::geticon("tint").' *** '. $result.' '.$def[$key]['unit'].' ***		(Humidité)';
-				} elseif ($key == "luminosity") {
-					$message .='|'.discordlink::geticon("luminosite").' *** '. $result.' '.$def[$key]['unit'].' ***		(Luminosité)';
-				} elseif ($key == "power") {
-					$message .='|'.discordlink::geticon("elect").' *** '. $result.' '.$def[$key]['unit'] .' ***		(Puissance)';
-				} elseif ($key == "security") {
-					$message .='|'.discordlink::geticon("alerte").' *** '. $result.' '.$def[$key]['unit'] .' ***		(Alerte)';
-				} elseif ($key == "shutter") {
-					$message .='|'.discordlink::geticon("volet").' *** '. $result.' '.$def[$key]['unit'] .' ***		(Volet)';
-				} else {
-					$message .='|'.discordlink::geticon("other").' *** '. $result.' '.$def[$key]['unit'] .' ***		('.$def[$key]['name'].')';
-				}
+				$message .='|'.discordlink::geticon($key).' *** '. $result.' '.$def[$key]['unit'] .' ***		('.$def[$key]['name'].')';
 
 			}
 				$message=str_replace("|","\n",$message);
@@ -822,16 +707,16 @@ class discordlinkCmd extends cmd {
 					$nb_battery = $nb_battery + 1;
 					if(eqLogic::byId($eqLogic->getId())->getStatus('battery') <= $seuil_alert) {
 						if(eqLogic::byId($eqLogic->getId())->getStatus('battery') <= $seuil_critique) { 
-							$list_battery .= "\n".discordlink::geticon("nok").substr($eqLogic->getHumanName(), strrpos($eqLogic->getHumanName(), '[',-1) + 1, -1) . ' => __***' . eqLogic::byId($eqLogic->getId())->getStatus('battery') . "%***__";
+							$list_battery .= "\n".discordlink::geticon("batterie_nok").substr($eqLogic->getHumanName(), strrpos($eqLogic->getHumanName(), '[',-1) + 1, -1) . ' => __***' . eqLogic::byId($eqLogic->getId())->getStatus('battery') . "%***__";
 							$nb_critique = $nb_critique + 1; 
 							if ($colors != '#ff0000') $colors = '#ff0000';
 						} else { 
-							$list_battery .= "\n".discordlink::geticon("progress").substr($eqLogic->getHumanName(), strrpos($eqLogic->getHumanName(), '[',-1) + 1, -1) . ' =>  __***' . eqLogic::byId($eqLogic->getId())->getStatus('battery') . "%***__";
+							$list_battery .= "\n".discordlink::geticon("batterie_progress").substr($eqLogic->getHumanName(), strrpos($eqLogic->getHumanName(), '[',-1) + 1, -1) . ' =>  __***' . eqLogic::byId($eqLogic->getId())->getStatus('battery') . "%***__";
 							$nb_alert = $nb_alert + 1;
 							if ($colors == '#00ff08') $colors = '#ffae00';
 						}
 					} else {
-						$list_battery = $list_battery . "\n" .discordlink::geticon("ok"). substr($eqLogic->getHumanName(), strrpos($eqLogic->getHumanName(), '[',-1) + 1, -1) . ' =>  __***' . eqLogic::byId($eqLogic->getId())->getStatus('battery') . "%***__";
+						$list_battery = $list_battery . "\n" .discordlink::geticon("batterie_ok"). substr($eqLogic->getHumanName(), strrpos($eqLogic->getHumanName(), '[',-1) + 1, -1) . ' =>  __***' . eqLogic::byId($eqLogic->getId())->getStatus('battery') . "%***__";
 					}
 					
 					if ($nb_ligne == 20) {
@@ -881,36 +766,12 @@ class discordlinkCmd extends cmd {
 
 				if ($result == '') continue;
 
-				if ($key == "motion") {
-					$message .='|'.discordlink::geticon("mouvement").' *** '. $result.' ***		(Mouvements)';
-				} elseif ($key == "door") {
-					$message .='|'.discordlink::geticon("porte").' *** '. $result.' ***		(Portes)';
-				} elseif ($key == "windows") {
-					$message .='|'.discordlink::geticon("fenetre").' *** '. $result.' ***		(Fenêtres)';
-				} elseif ($key == "light") {
-					$message .='|'.discordlink::geticon("lumiere").' *** '. $result.' ***		(Lumières)';
-				} elseif ($key == "outlet") {
-					$message .='|'.discordlink::geticon("prise").' *** '. $result.' ***		(Prises)';
-				} elseif ($key == "temperature") {
-					$message .='|'.discordlink::geticon("thermometer").' *** '. $result.' '.$def[$key]['unit']. ' ***		(Température)';
-				} elseif ($key == "humidity") {
-					$message .='|'.discordlink::geticon("tint").' *** '. $result.' '.$def[$key]['unit'].' ***		(Humidité)';
-				} elseif ($key == "luminosity") {
-					$message .='|'.discordlink::geticon("luminosite").' *** '. $result.' '.$def[$key]['unit'].' ***		(Luminosité)';
-				} elseif ($key == "power") {
-					$message .='|'.discordlink::geticon("elect").' *** '. $result.' '.$def[$key]['unit'] .' ***		(Puissance)';
-				} elseif ($key == "security") {
-					$message .='|'.discordlink::geticon("alerte").' *** '. $result.' '.$def[$key]['unit'] .' ***		(Alerte)';
-				} elseif ($key == "shutter") {
-					$message .='|'.discordlink::geticon("volet").' *** '. $result.' '.$def[$key]['unit'] .' ***		(Volet)';
-				} else {
-					$message .='|'.discordlink::geticon("other").' *** '. $result.' '.$def[$key]['unit'] .' ***		('.$def[$key]['name'].')';
-				}
+				$message .='|'.discordlink::geticon($key).' *** '. $result.' '.$def[$key]['unit'] .' ***		('.$def[$key]['name'].')';
 
 			}
 				$message=str_replace("|","\n",$message);
 				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-				$_options = array('Titre'=>'Résumé général', 'description'=> $message, 'colors'=> '#0033ff', 'footer'=> 'By DiscordLink');
+				$_options = array('Titre'=>'Résumé : '.$object->getname(), 'description'=> $message, 'colors'=> '#0033ff', 'footer'=> 'By DiscordLink');
 				$cmd->execCmd($_options);
 
 			return 'truesendwithembed';
@@ -934,10 +795,10 @@ class discordlinkCmd extends cmd {
 					$elapsedTime = time() - $maxDate;
 					log::add('discordlink', 'DEBUG', 'elapsedTime ' . $elapsedTime);
 					if ($elapsedTime >= $maxTime) {
-						$message .= "|".discordlink::geticon("nok"). " ". $eqLogic->getName(). ' ('.$elapsedTime.')';
+						$message .= "|".discordlink::geticon("zwave_nok"). " ". $eqLogic->getName(). ' ('.$elapsedTime.')';
 						if ($colors != '#ff0000') $colors = '#ff0000';
 					} else {
-						$message .= "|".discordlink::geticon("ok"). " ". $eqLogic->getName().' ('.$elapsedTime.')';
+						$message .= "|".discordlink::geticon("zwave_ok"). " ". $eqLogic->getName().' ('.$elapsedTime.')';
 					}
 				}
 				// log fin de traitement	

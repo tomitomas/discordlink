@@ -11,19 +11,24 @@ $eqLogics = eqLogic::byType($plugin->getId());
    <div class="col-xs-12 eqLogicThumbnailDisplay">
   <legend><i class="fas fa-cog"></i>  {{Gestion}}</legend>
   <div class="eqLogicThumbnailContainer">
-      <div class="cursor eqLogicAction logoPrimary" data-action="add">
+    <div class="cursor eqLogicAction logoPrimary" data-action="add">
         <i class="fas fa-plus-circle"></i>
         <br>
         <span>{{Ajouter}}</span>
     </div>
-      <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
-      <i class="fas fa-wrench"></i>
-    <br>
-    <span>{{Configuration}}</span>
-  </div>
-  </div>
-  <legend><i class="fas fa-table"></i> {{Mes Channels}}</legend>
-	   <input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
+    <div class="cursor eqLogicAction logoSecondary" data-action="gotoPluginConf">
+        <i class="fas fa-wrench"></i>
+        <br>
+        <span>{{Configuration}}</span>
+    </div>
+    <div class="cursor eqLogicAction logoSecondary" style="position: absolute; left: 0px; top: 0px;">
+        <a href="index.php?v=d&m=discordlink&p=discordlinkemote"><img style="margin-top:-32px;" src="plugins/discordlink/plugin_info/discordlink_icon.png" width="75" height="75">
+        <br>
+        <span>Emojy setting</span></a>
+    </div>
+</div>
+<legend><i class="fas fa-table"></i> {{Mes Channels}}</legend>
+<input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
 <div class="eqLogicThumbnailContainer">
     <?php
 foreach ($eqLogics as $eqLogic) {
