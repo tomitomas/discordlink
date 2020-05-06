@@ -20,25 +20,19 @@ require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 function discordlink_install() {
     discordlink::CreateCmd();
+    discordlink::setemojy();
     discordlink::updateobject();
-
-    $default = json_decode('{"motion":":person_walking:","door":":door:","windows":":frame_photo:","light":":bulb:","outlet":":electric_plug:","temperature":":thermometer:","humidity":":droplet:","luminosity":":sunny:","power":":cloud_lightning:","security":":rotating_light:","shutter":":beginner:","deamon_ok":":green_circle:","deamon_nok":":red_circle:","dep_ok":":green_circle:","dep_progress":":orange_circle:","dep_nok":":red_circle:","batterie_ok":":green_circle:","batterie_progress":":orange_circle:","batterie_nok":":red_circle:","zwave_ok":":green_circle:","zwave_nok":":red_circle:"}');
-    $emojyarray = config::byKey('emojy', 'discordlink', $default);
-    config::save('emojy', $emojyarray, 'discordlink');
 }
 
 function discordlink_update() {
     discordlink::CreateCmd();
+    discordlink::setemojy();
     discordlink::updateobject();
-
-    $default = json_decode('{"motion":":person_walking:","door":":door:","windows":":frame_photo:","light":":bulb:","outlet":":electric_plug:","temperature":":thermometer:","humidity":":droplet:","luminosity":":sunny:","power":":cloud_lightning:","security":":rotating_light:","shutter":":beginner:","deamon_ok":":green_circle:","deamon_nok":":red_circle:","dep_ok":":green_circle:","dep_progress":":orange_circle:","dep_nok":":red_circle:","batterie_ok":":green_circle:","batterie_progress":":orange_circle:","batterie_nok":":red_circle:","zwave_ok":":green_circle:","zwave_nok":":red_circle:"}');
-    $emojyarray = config::byKey('emojy', 'discordlink', $default);
-    config::save('emojy', $emojyarray, 'discordlink');
 }
 
 
 function discordlink_remove() {
-    discordlink::CreateCmd();
+
 }
 
 ?>

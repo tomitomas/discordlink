@@ -40,7 +40,34 @@ class discordlink extends eqLogic {
 		return $result;
 	}
 
-    /*     * ***********************Methode static*************************** */
+	public static function setchannel() {
+		$channels = discordlink::getchannel();
+		config::save('channels', $channels, 'discordlink');
+	}
+   
+	public static function setemojy($reset = 0) {
+		$json = '{"motion":":person_walking:","door":":door:","windows":":frame_photo:","light":":bulb:","outlet":":electric_plug:","temperature":":thermometer:","humidity":":droplet:","luminosity":":sunny:","power":":cloud_lightning:","security":":rotating_light:","shutter":":beginner:","deamon_ok":":green_circle:","deamon_nok":":red_circle:","dep_ok":":green_circle:","dep_progress":":orange_circle:","dep_nok":":red_circle:","batterie_ok":":green_circle:","batterie_progress":":orange_circle:","batterie_nok":":red_circle:","zwave_ok":":green_circle:","zwave_nok":":red_circle:"}';
+		$default = json_decode($json);
+		$emojyarray = config::byKey('emojy', 'discordlink', $default);
+		if ($reset == 1) {
+			$emojyarray = $default;
+		}
+		config::save('emojy', $emojyarray, 'discordlink');
+	}
+
+	public static function setinvite() {
+		$invite = discordlink::getinvite();
+		config::save('invite', $invite, 'discordlink');
+	}
+
+	public static function updateinfo() {
+		sleep(5);
+		discordlink::setchannel();
+		discordlink::updateobject();
+		discordlink::setinvite();
+	}
+	
+	/*     * ***********************Methode static*************************** */
 
     /*
      * Fonction exécutée automatiquement toutes les minutes par Jeedom
@@ -53,7 +80,7 @@ class discordlink extends eqLogic {
     /*
      * Fonction exécutée automatiquement toutes les heures par Jeedom*/
       public static function cronHourly() {
-		discordlink::updateobject();
+		discordlink::updateinfo();
       }
 
     /*
@@ -69,18 +96,21 @@ class discordlink extends eqLogic {
 
 	public static function getchannel() {
 		$deamon = discordlink::deamon_info();
-
 		if ($deamon['state'] == 'ok') {
 			$request_http = new com_http("http://" . config::byKey('internalAddr') . ":3466/getchannel");
 			$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
 			$request_http->setNoSslCheck(true);
 			$request_http->setNoReportError(true);
 			$result = $request_http->exec(3,1);//Time out à 3s 3 essais
+			log::add('discordlink', 'debug', 'Set Invite Deamon 1 : '.$result);
 			if (!$result) return "null";
 			//$result = substr($result, 1, -1);
 			log::add('discordlink', 'DEBUG', $result);
 			$json = json_decode($result, true);
+			log::add('discordlink', 'debug', 'Set Invite Deamon JSON : '.$json);
 			return $json;
+		} else {
+			log::add('discordlink', 'debug', 'Set Invite Deamon : ERROR');
 		}
 	}
 
@@ -94,7 +124,6 @@ class discordlink extends eqLogic {
 			$result = $request_http->exec(3,1);//Time out à 3s 3 essais
 			if (!$result) return "null";
 			$result = substr($result, 1, -1);
-			log::add('discordlink', 'DEBUG', $result);
 			$json = json_decode($result, true);
 			return $json['invite'];
 		}
@@ -179,6 +208,7 @@ class discordlink extends eqLogic {
 		}
 		message::removeAll('discordlink', 'unableStartDeamon');
 		log::add('discordlink', 'info', 'Démon discordlink lancé');
+		discordlink::updateinfo();
 		return true;
 	}
 

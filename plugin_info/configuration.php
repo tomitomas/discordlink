@@ -34,17 +34,10 @@ if (!isConnect()) {
         <div class="form-group">
             <label class="col-lg-4 control-label">{{Bot Invite : }}</label>
             <div class="col-lg-6">
-                    <?php
-
-                include_file('desktop', 'configuration', 'js', 'discordlink');
-
-                $invite = discordlink::getinvite();
-                if (discordlink::deamon_info()['state'] == "ok" && $invite != "null") {
+                <?php
                     echo '<a class="btn btn-success btn-sm bt_getinvite">Ajouter votre bot à votre serveur discord</a>';
-                    sendVarToJS('invitebotdiscord', $invite);
-                } else {
                     echo '<a class="btn btn-danger btn-sm bt_errorinvite">Erreur, lance ton démon et si tu n\'y arrives pas, clique sur moi</a>';
-                }
+                    include_file('desktop', 'configuration', 'js', 'discordlink');
                 ?>
             </div>
         </div>

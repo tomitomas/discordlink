@@ -50,6 +50,11 @@ try {
         ajax::success($emojy);
     }
 
+    if (init('action') == 'getinvite') {
+        $token = config::byKey('invite', 'discordlink', 'null');
+        ajax::success($token);
+    }
+
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {

@@ -104,24 +104,13 @@ foreach ($eqLogics as $eqLogic) {
         <div class="col-sm-3">
             <select class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="channelid">       
                 <?php
-                    $deamon = discordlink::deamon_info();
-                    $channels = discordlink::getchannel();
-                    if ($deamon['state'] == 'ok' && $channels != "null") {        
-                        $channelssize = sizeof($channels);
-                        $channelssize1 =  $channelssize - 1;
-                        if ($channelssize != 0) {
-                            $i = 0;
-                            echo ($channelssize1 >= $i);
-                            while ($channelssize1 >= $i) {
-                                $chann = $channels[$i];
-                                echo '<option value="'.$chann['id'].'">('.$chann['guildName'].') '.$chann['name'].'</option>';
-                                $i++;
-                            }
-                        } else {
-                            echo '<option value="null">Pas de channel disponible</option>';
+                    $channels = config::byKey('channels', 'discordlink', 'null');
+                    if ($channels != "null") {
+                        foreach($channels as $channel) {
+                            echo '<option value="'.$channel['id'].'">('.$channel['guildName'].') '.$channel['name'].'</option>';
                         }
                     } else {
-                        echo '<option value="null">Deamon NOK</option>';
+                        echo '<option value="null">Pas de channel disponible</option>';
                     }
                 ?>
             </select>
