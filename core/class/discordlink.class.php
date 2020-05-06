@@ -271,10 +271,10 @@ class discordlink extends eqLogic {
 				'sendFile'=>array('reqplug' => '0','Libelle'=>'Envoi fichier', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#&message=#message#', 'visible' => 0),
 				'deamonInfo'=>array('reqplug' => '0','Libelle'=>'Etat des démons', 'Type'=>'action', 'SubType'=>'other','request'=>'deamonInfo?null', 'visible' => 1),
 				'dependanceInfo'=>array('reqplug' => '0','Libelle'=>'Etat des dépendances', 'Type'=>'action', 'SubType'=>'other','request'=>'dependanceInfo?null', 'visible' => 1),
-				'zwave'=>array('reqplug' => 'openzwave','Libelle'=>'zwave', 'Type'=>'action', 'SubType'=>'other','request'=>'zwave?null', 'visible' => 1),
+				'zwave'=>array('reqplug' => 'openzwave','Libelle'=>'Etat des équipement Zwave', 'Type'=>'action', 'SubType'=>'other','request'=>'zwave?null', 'visible' => 1),
 				'globalSummary'=>array('reqplug' => '0','Libelle'=>'Résumé général', 'Type'=>'action', 'SubType'=>'other','request'=>'globalSummary?null', 'visible' => 1),
-				'objectSummary'=>array('reqplug' => '0','Libelle'=>'Résumé Par Object', 'Type'=>'action', 'SubType'=>'select','request'=>'objectSummary?null', 'visible' => 1),
-				'batteryinfo'=>array('reqplug' => '0','Libelle'=>'Résumé des batterie', 'Type'=>'action', 'SubType'=>'other','request'=>'batteryinfo?null', 'visible' => 1),
+				'objectSummary'=>array('reqplug' => '0','Libelle'=>'Résumé par object', 'Type'=>'action', 'SubType'=>'select','request'=>'objectSummary?null', 'visible' => 1),
+				'batteryinfo'=>array('reqplug' => '0','Libelle'=>'Résumé des batteries', 'Type'=>'action', 'SubType'=>'other','request'=>'batteryinfo?null', 'visible' => 1),
 				'1oldmsg'=>array('reqplug' => '0','Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
 				'2oldmsg'=>array('reqplug' => '0','Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
 				'3oldmsg'=>array('reqplug' => '0','Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1)
@@ -283,19 +283,15 @@ class discordlink extends eqLogic {
 			//Chaque commande
 			$Order = 0;
 			foreach ($TabCmd as $CmdKey => $Cmd){
-
-				
 				$pluginisla = 0;
 				if ($Cmd['reqplug'] != "0") {
 					if (discordlink::testplugin($Cmd['reqplug'])) $pluginisla = 1;
 				}
-
 				if ($Cmd['reqplug'] == "0" || $pluginisla == 1)  {
 					$Cmddiscordlink = $eqLogic->getCmd(null, $CmdKey);
 					if (!is_object($Cmddiscordlink) ) {
 						$Cmddiscordlink = new discordlinkCmd();
 					}
-
 					$Cmddiscordlink->setName($Cmd['Libelle']);
 					$Cmddiscordlink->setEqLogic_id($eqLogic->getId());
 					$Cmddiscordlink->setType($Cmd['Type']);
@@ -826,8 +822,6 @@ class discordlinkCmd extends cmd {
 				return getTemplate('core', 'scenario', 'cmd.sendEmbed', 'discordlink');
 			if ($command == 'sendFile')
 				return getTemplate('core', 'scenario', 'cmd.sendFile', 'discordlink');
-			//if ($command == 'objectSummary')
-			//	return getTemplate('core', 'scenario', 'cmd.objectSummary', 'discordlink');
 			return parent::getWidgetTemplateCode($_version, $_noCustom);
 		}
 		/*     * **********************Getteur Setteur*************************** */
