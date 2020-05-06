@@ -66,6 +66,24 @@ class discordlink extends eqLogic {
 		discordlink::updateobject();
 		discordlink::setinvite();
 	}
+
+	public function emojyconvert($_text) {
+		log::add('discordlink', 'debug', 'desctription 1 : '.$_text);
+		$_returntext = '';
+		$textsplit = explode(" ", $_text);
+		log::add('discordlink', 'debug', 'desctription 2 : '.json_encode($textsplit));
+		foreach ($textsplit as $key => $value) {
+			if (substr($value,0,4) === "emo_") {
+				$emojy = discordlink::geticon(str_replace("emo_","",$value));
+				$_returntext .= $emojy;
+			} else {
+				$_returntext .= $value;
+			}
+			log::add('discordlink', 'debug', 'desctription '.$key.' : '.$value);
+			$_returntext .= " ";
+		}
+		return $_returntext;
+	}
 	
 	/*     * ***********************Methode static*************************** */
 
@@ -568,6 +586,9 @@ class discordlinkCmd extends cmd {
 				if (("" != ($_options['footer']))) $footer = $_options['footer'];
 				if (("" != ($_options['colors']))) $colors = $_options['colors'];
 			}
+
+			$description = discordlink::emojyconvert($description);
+			log::add('discordlink', 'debug', 'desctription : '.$description);
 
 			$request = str_replace(array('#title#'),
 			array(urlencode(self::decodeTexteAleatoire($titre))), $request);
