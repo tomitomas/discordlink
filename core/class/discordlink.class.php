@@ -804,7 +804,7 @@ class discordlinkCmd extends cmd {
 				// log fin de traitement	
 				$message=str_replace("|","\n",$message);
 				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-				$_options = array('Titre'=>'Zwave Info ', 'description'=> $message, 'colors'=> '#0033ff', 'footer'=> 'By DiscordLink');
+				$_options = array('Titre'=>'Zwave Info ', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
 				$cmd->execCmd($_options);
 			}
 			return 'truesendwithembed';
