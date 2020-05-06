@@ -594,10 +594,8 @@ class discordlinkCmd extends cmd {
 					if ($deamon_info['state'] != 'ok') {
 						$message .='|'.discordlink::geticon("deamon_nok").$plugin->getName().' ('.$plugin->getId().')';
 						if ($colors != '#ff0000') $colors = '#ff0000';
-						log::add('discordlink', 'DEBUG', 'Deamon Non OK : ' . $deamon_info['state']);
 					} else {
 						$message .='|'.discordlink::geticon("deamon_ok").$plugin->getName().' ('.$plugin->getId().')';
-						log::add('discordlink', 'DEBUG', 'Deamon OK : ' . $deamon_info['state']);
 					}
 
 					if ($plugin->getId() == 'blea') {
@@ -637,15 +635,12 @@ class discordlinkCmd extends cmd {
 					$dependency_info = $plugin->dependancy_info();
 					if ($dependency_info['state'] == 'ok') {
 						$message .='|'.discordlink::geticon("dep_ok").$plugin->getName().' ('.$plugin->getId().')';
-						log::add('discordlink', 'DEBUG', 'Dependance OK : ' . $dependency_info['state']);
 					} elseif ($dependency_info['state'] == 'in_progress') {
 						$message .='|'.discordlink::geticon("dep_progress").$plugin->getName().' ('.$plugin->getId().')';
 						if ($colors == '#00ff08') $colors = '#ffae00';
-						log::add('discordlink', 'DEBUG', 'Dependance En cours d\'install : ' . $dependency_info['state']);
 					} else {
 						$message .='|'.discordlink::geticon("dep_nok").' ('.$plugin->getId().')';
 						if ($colors != '#ff0000') $colors = '#ff0000';
-						log::add('discordlink', 'DEBUG', 'Dependance Non OK : ' . $dependency_info['state']);
 					}
 
 				}
@@ -664,19 +659,11 @@ class discordlinkCmd extends cmd {
 			$def = config::byKey('object:summary');
 			$values = array();
 			$message='';
-
 			foreach ($def as $key => $value) {
-
 				$result ='';
-
-				log::add('discordlink', 'debug', 'test : '.$def[$key]['name']);
-				log::add('discordlink', 'debug', 'Résumé général : '. $key . ' = ' . jeeObject::getGlobalSummary($key));
-
 				$result = jeeObject::getGlobalSummary($key);
 				if ($result == '') continue;
-
 				$message .='|'.discordlink::geticon($key).' *** '. $result.' '.$def[$key]['unit'] .' ***		('.$def[$key]['name'].')';
-
 			}
 				$message=str_replace("|","\n",$message);
 				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
@@ -752,22 +739,12 @@ class discordlinkCmd extends cmd {
 			log::add('discordlink', 'debug', 'idobject : '.$idobject);
 			$object = jeeObject::byId($idobject);
 			$def = config::byKey('object:summary');
-
 			$message='';
-			
 			foreach ($def as $key => $value) {
-
 				$result == '';
-
-				log::add('discordlink', 'debug', 'test : '.$def[$key]['name']);
-				log::add('discordlink', 'debug', 'Résumé object : '. $key . ' = ' . $object->getSummary($key));
-
 				$result = $object->getSummary($key);
-
 				if ($result == '') continue;
-
 				$message .='|'.discordlink::geticon($key).' *** '. $result.' '.$def[$key]['unit'] .' ***		('.$def[$key]['name'].')';
-
 			}
 				$message=str_replace("|","\n",$message);
 				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
@@ -791,9 +768,7 @@ class discordlinkCmd extends cmd {
 					$collectDate = strtotime($eqLogic->getStatus('lastCommunication', date($_format)));
 					//$scenario->setLog( 'Commande ' . $cmd->getHumanName() . ' - ' . $collectDate);
 					$maxDate = max($maxDate, $collectDate);
-					log::add('discordlink', 'DEBUG', 'Date max ' . date('c', $maxDate));
 					$elapsedTime = time() - $maxDate;
-					log::add('discordlink', 'DEBUG', 'elapsedTime ' . $elapsedTime);
 					if ($elapsedTime >= $maxTime) {
 						$message .= "|".discordlink::geticon("zwave_nok"). " ". $eqLogic->getName(). ' ('.$elapsedTime.')';
 						if ($colors != '#ff0000') $colors = '#ff0000';

@@ -28,7 +28,6 @@ try {
     if (init('action') == 'saveemojy') {
 
         $arrayemojy = init('arrayemojy');
-        log::add('discordlink', 'debug', 'Emojy Save Debus : '.json_encode($arrayemojy));
         $emojyconfig = array();
 
         foreach ($arrayemojy as $emojy) {
@@ -37,20 +36,17 @@ try {
         }
         //$emojy = json_encode($emojyconfig);
         config::save('emojy', $emojyconfig, 'discordlink');
-        log::add('discordlink', 'debug', 'Emojy Save Fin : '.json_encode($emojyconfig));
         ajax::success();
     }
 
     if (init('action') == 'getemojy') {
         $emojyarray = config::byKey('emojy', 'discordlink');
-        log::add('discordlink', 'debug', 'Emojy Get Debus : '.json_encode($emojyarray));
         $emojycommandetable = array();
         foreach ($emojyarray as $key => $emojy) {
             $emojycmdligne = array('keyEmojy' => $key, 'codeEmojy' => $emojy);
             array_push($emojycommandetable,  $emojycmdligne);
         }
         $emojy = $emojycommandetable;
-        log::add('discordlink', 'debug', 'Emojy Get Fin : '.$emojy);
         ajax::success($emojy);
     }
 
