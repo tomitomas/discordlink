@@ -85,6 +85,27 @@ class discordlink extends eqLogic {
 		return $_returntext;
 	}
 	
+	public function checkall() {
+		$_options = array('cron5'=>true);
+		$eqLogics = eqLogic::byType('discordlink');
+		foreach ($eqLogics as $eqLogic) {
+			if ($eqLogic->getConfiguration('deamoncheck', 0) == 1) {
+				log::add('discordlink', 'debug', 'DeamonCheck');
+				$cmdDeamon = $eqLogic->getCmd('action', 'deamonInfo');
+				$cmdDeamon->execCmd($_options);
+			}
+			if ($eqLogic->getConfiguration('depcheck', 0) == 1) {
+				log::add('discordlink', 'debug', 'DepCheck');
+				$cmdDep = $eqLogic->getCmd('action', 'dependanceInfo');
+				$cmdDep->execCmd($_options);
+			}
+			if ($eqLogic->getConfiguration('zwavecheck', 0) == 1) {
+				log::add('discordlink', 'debug', 'ZWaveCheck');
+				$cmdZwave = $eqLogic->getCmd('action', 'zwave');
+				$cmdZwave->execCmd($_options);
+			}
+		}
+	}
 	/*     * ***********************Methode static*************************** */
 
     /*
@@ -93,7 +114,9 @@ class discordlink extends eqLogic {
 
       }
      */
-
+	public static function cron5() {
+		discordlink::checkall();
+	}
 
     /*
      * Fonction exécutée automatiquement toutes les heures par Jeedom*/
@@ -663,12 +686,10 @@ class discordlinkCmd extends cmd {
 				}
 			}
 
+			if (isset($_options['cron5']) AND $colors == '#00ff08') return 'truesendwithembed';
 			$message=str_replace("|","\n",$message);
-
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-
 			$_options = array('Titre'=>'Etat des démons', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
-
 			$cmd->execCmd($_options);
 			return 'truesendwithembed';
 		}
@@ -693,6 +714,7 @@ class discordlinkCmd extends cmd {
 				}
 			}
 
+			if (isset($_options['cron5']) && $colors == '#00ff08') return 'truesendwithembed';
 			$message=str_replace("|","\n",$message);
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 			$_options = array('Titre'=>'Etat des dépendances', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
@@ -824,6 +846,7 @@ class discordlinkCmd extends cmd {
 					}
 				}
 				// log fin de traitement	
+				if (isset($_options['cron5']) && $colors == '#00ff08') return 'truesendwithembed';
 				$message=str_replace("|","\n",$message);
 				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 				$_options = array('Titre'=>'Zwave Info ', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
