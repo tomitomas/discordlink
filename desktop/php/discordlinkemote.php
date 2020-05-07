@@ -7,6 +7,7 @@ sendVarToJS('eqType', $plugin->getId());
 $eqLogics = eqLogic::byType($plugin->getId());
 ?>
 
+<div id="div_AboAlert" style="display: none;"></div>
 <div class="input-group" style="display:inline-flex">
     <span class="input-group-btn">
         <a class="btn btn-sm btn-success" href="index.php?v=d&m=discordlink&p=discordlink"><i class="fas fa-check-circle"></i>Retours à Discord Link</a>

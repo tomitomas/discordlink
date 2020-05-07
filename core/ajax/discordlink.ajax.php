@@ -55,6 +55,11 @@ try {
         ajax::success($token);
     }
 
+    if (init('action') == 'resetemojy') {
+        discordlink::setemojy(1);
+        ajax::success();
+    }
+
     throw new Exception(__('Aucune méthode correspondante à : ', __FILE__) . init('action'));
     /*     * *********Catch exeption*************** */
 } catch (Exception $e) {

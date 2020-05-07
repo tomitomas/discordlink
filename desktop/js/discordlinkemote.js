@@ -38,10 +38,8 @@ function initemojy() {
         $('#div_AboAlert').showAlert({message: 'ERROR', level: 'danger'});
         return;
       }
-      console.log(data);
       for (var i in data.result) {
         addEmojyToTable(data.result[i]);
-        console.log(data.result[i]);
       }
     }
   });
@@ -103,6 +101,28 @@ $("#bt_addemojy").off('click').on('click', function(event)
 {
   var _cmd = {};
   addEmojyToTable(_cmd);
+});
+
+$("#bt_reset").off('click').on('click', function(event)
+{
+  $.ajax({
+    type: 'POST',
+    url: 'plugins/discordlink/core/ajax/discordlink.ajax.php',
+    data: {
+      action: 'resetemojy'
+    },
+    dataType: 'json',
+    error: function (request, status, error) {
+      handleAjaxError(request, status, error, $('#div_AboAlert'));
+    },
+    success: function (data) {
+      if (data.state != 'ok') {
+        $('#div_AboAlert').showAlert({message: 'ERROR', level: 'danger'});
+        return;
+      }
+      location.reload();
+    }
+  });
 });
 
 $('#div_pageContainer').on( 'click', '.emojy .emojyAction[data-action=remove]',function () {

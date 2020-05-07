@@ -50,7 +50,7 @@ class discordlink extends eqLogic {
 		$default = json_decode($json);
 		$emojyarray = config::byKey('emojy', 'discordlink', $default);
 		if ($reset == 1) {
-			$emojyarray = $default;
+			$emojyarray = $json;
 		}
 		config::save('emojy', $emojyarray, 'discordlink');
 	}
