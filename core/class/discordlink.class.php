@@ -34,6 +34,50 @@ class discordlink extends eqLogic {
 		return $return;
 	}
 
+	public static function health() {
+		$return = array();
+		//Token Detect
+		$token = strpos(config::byKey('Token', 'discordlink', 'null'),'null') !==true;
+		$tokenarray = array(
+			'test' => __('Token Bot', __FILE__),
+			'result' => ($token) ? __('OK', __FILE__) : __('NOK', __FILE__),
+			'advice' => ($token) ? '' : __('Votre Bot doit absolument avoir un token', __FILE__),
+			'state' => $token
+		);
+		array_push($return, $tokenarray);
+
+			//Invite Detect
+			$invite = strpos(config::byKey('invite', 'discordlink', 'null'),'null') !==true;
+			$invitearray = array(
+				'test' => __('Lien d\'invitation du Bot', __FILE__),
+				'result' => ($invite) ? __('OK', __FILE__) : __('NOK', __FILE__),
+				'advice' => ($invite) ? '' : __('Votre bot n\'a pas encore reusit a générer une invitation', __FILE__),
+				'state' => $invite
+			);
+			array_push($return, $invitearray);
+
+		//Emojy Detect
+		$emojy = strpos(config::byKey('emojy', 'discordlink', 'null'),'null') !==true;
+		$emojyarray = array(
+			'test' => __('Listes des d\'emojys', __FILE__),
+			'result' => ($emojy) ? __('OK', __FILE__) : __('NOK', __FILE__),
+			'advice' => ($emojy) ? '' : __('La liste d\'emojy a une erreur', __FILE__),
+			'state' => $emojy,
+		);
+		array_push($return, $emojyarray);
+
+		//channel Detect
+		$channel = strpos(config::byKey('channels', 'discordlink', 'null'),'null') !==true;
+		$channelarray = array(
+			'test' => __('Listes des Channels', __FILE__),
+			'result' => ($channel) ? __('OK', __FILE__) : __('NOK', __FILE__),
+			'advice' => ($channel) ? '' : __('Votre bot n\'a pas encore recu la liste de vos channel dispognible', __FILE__),
+			'state' => $channel
+		);
+		array_push($return, $channelarray);
+		return $return;
+	}
+
 	public static function testplugin($_pluginid){
 		$result = false;
 		try {$test = plugin::byId($_pluginid);  if ($test->isActive()) $result=true;}  catch(Exception $e) {}
