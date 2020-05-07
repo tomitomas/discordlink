@@ -68,10 +68,8 @@ class discordlink extends eqLogic {
 	}
 
 	public function emojyconvert($_text) {
-		log::add('discordlink', 'debug', 'desctription 1 : '.$_text);
 		$_returntext = '';
 		$textsplit = explode(" ", $_text);
-		log::add('discordlink', 'debug', 'desctription 2 : '.json_encode($textsplit));
 		foreach ($textsplit as $key => $value) {
 			if (substr($value,0,4) === "emo_") {
 				$emojy = discordlink::geticon(str_replace("emo_","",$value));
@@ -79,7 +77,6 @@ class discordlink extends eqLogic {
 			} else {
 				$_returntext .= $value;
 			}
-			log::add('discordlink', 'debug', 'desctription '.$key.' : '.$value);
 			$_returntext .= " ";
 		}
 		return $_returntext;
