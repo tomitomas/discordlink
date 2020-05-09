@@ -24,7 +24,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
     <div class="cursor eqLogicAction logoSecondary" style="position: absolute; left: 0px; top: 0px;">
         <a href="index.php?v=d&m=discordlink&p=discordlinkemote"><img style="margin-top:-32px;" src="plugins/discordlink/plugin_info/discordlink_icon.png" width="75" height="75">
         <br>
-        <span>Emojy setting</span></a>
+        <span>Emojis Settings</span></a>
     </div>
 </div>
 <legend><i class="fas fa-table"></i> {{Mes Channels}}</legend>
@@ -98,9 +98,9 @@ foreach ($eqLogics as $eqLogic) {
 			<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
             <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="interactionjeedom"/>{{Interactions Avec Jeedom}}</label>
             </br>
-            <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="deamoncheck"/>{{Deamon Check}}</label>
-            <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="depcheck"/>{{Dependance Check}}</label>
-            <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="zwavecheck"/>{{Zwave Check}}</label>
+            <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="deamoncheck"/>{{Vérification Démon}}</label>
+            <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="depcheck"/>{{Vérification Dépendances}}</label>
+            <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="zwavecheck"/>{{Vérification Z-wave}}</label>
         </div>
 	</div>
        <div class="form-group">
