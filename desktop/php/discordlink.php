@@ -169,7 +169,7 @@ foreach ($eqLogics as $eqLogic) {
         </div>
     </div>
     <div class="form-group zwave">
-        <label class="col-sm-3 control-label">{{Temps maximal entre la dernière reponse (En seconde) : }}</label>
+        <label class="col-sm-3 control-label">{{Temps maximal entre la dernière reponse (En seconde)(Z-Wave) : }}</label>
         <div class="col-sm-3">
             <input type="number" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TempMax" placeholder="{{default : 43200}}"/>
         </div>
