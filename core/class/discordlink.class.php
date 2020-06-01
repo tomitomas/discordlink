@@ -136,23 +136,51 @@ class discordlink extends eqLogic {
 	}
 	
 	public function checkall() {
-		$_options = array('cron5'=>true);
+		$dateRun = new DateTime();
+		$_options = array('cron'=>true);
 		$eqLogics = eqLogic::byType('discordlink');
+
 		foreach ($eqLogics as $eqLogic) {
-			if ($eqLogic->getConfiguration('deamoncheck', 0) == 1) {
-				log::add('discordlink', 'debug', 'DeamonCheck');
-				$cmdDeamon = $eqLogic->getCmd('action', 'deamonInfo');
-				$cmdDeamon->execCmd($_options);
+
+			$autorefreshDeamon = $eqLogic->getConfiguration('autorefreshDeamon');
+			$autorefreshDependances = $eqLogic->getConfiguration('autorefreshDependances');
+			$autorefreshZWave = $eqLogic->getConfiguration('autorefreshZWave');
+
+			if ($eqLogic->getConfiguration('deamoncheck', 0) == 1 && $autorefreshDeamon != '') {
+				try {
+					$c = new Cron\CronExpression($autorefreshDeamon, new Cron\FieldFactory);
+					if ($c->isDue($dateRun)) {
+						log::add('discordlink', 'debug', 'DeamonCheck');
+						$cmdDeamon = $eqLogic->getCmd('action', 'deamonInfo');
+						$cmdDeamon->execCmd($_options);
+					}
+				} catch (Exception $exc) {
+					log::add('discordlink', 'error', __('Expression cron non valide pour ', __FILE__) . $eqLogic->getHumanName() . ' : ' . $autorefreshDeamon);
+				}
 			}
-			if ($eqLogic->getConfiguration('depcheck', 0) == 1) {
-				log::add('discordlink', 'debug', 'DepCheck');
-				$cmdDep = $eqLogic->getCmd('action', 'dependanceInfo');
-				$cmdDep->execCmd($_options);
+			if ($eqLogic->getConfiguration('depcheck', 0) == 1 && $autorefreshDependances != '') {
+				try {
+					$c = new Cron\CronExpression($autorefreshDependances, new Cron\FieldFactory);
+					if ($c->isDue($dateRun)) {
+						log::add('discordlink', 'debug', 'DepCheck');
+						$cmdDep = $eqLogic->getCmd('action', 'dependanceInfo');
+						$cmdDep->execCmd($_options);
+					}
+				} catch (Exception $exc) {
+					log::add('discordlink', 'error', __('Expression cron non valide pour ', __FILE__) . $eqLogic->getHumanName() . ' : ' . $autorefreshDependances);
+				}
 			}
-			if ($eqLogic->getConfiguration('zwavecheck', 0) == 1) {
-				log::add('discordlink', 'debug', 'ZWaveCheck');
-				$cmdZwave = $eqLogic->getCmd('action', 'zwave');
-				$cmdZwave->execCmd($_options);
+			if ($eqLogic->getConfiguration('zwavecheck', 0) == 1 && $autorefreshZWave != '') {
+				try {
+					$c = new Cron\CronExpression($autorefreshZWave, new Cron\FieldFactory);
+					if ($c->isDue($dateRun)) {
+						log::add('discordlink', 'debug', 'ZWaveCheck');
+						$cmdZwave = $eqLogic->getCmd('action', 'zwave');
+						$cmdZwave->execCmd($_options);
+					}
+				} catch (Exception $exc) {
+					log::add('discordlink', 'error', __('Expression cron non valide pour ', __FILE__) . $eqLogic->getHumanName() . ' : ' . $autorefreshZWave);
+				}
 			}
 		}
 	}
@@ -160,13 +188,14 @@ class discordlink extends eqLogic {
 
     /*
      * Fonction exécutée automatiquement toutes les minutes par Jeedom
-      public static function cron() {
-
-      }
-     */
-	public static function cron5() {
+	 */
+	public static function cron() {
 		discordlink::checkall();
 	}
+    
+	/*public static function cron5() {
+		discordlink::checkall();
+	}*/
 
     /*
      * Fonction exécutée automatiquement toutes les heures par Jeedom*/
@@ -366,6 +395,7 @@ class discordlink extends eqLogic {
 				'globalSummary'=>array('reqplug' => '0','Libelle'=>'Résumé général', 'Type'=>'action', 'SubType'=>'other','request'=>'globalSummary?null', 'visible' => 1),
 				'objectSummary'=>array('reqplug' => '0','Libelle'=>'Résumé par objet', 'Type'=>'action', 'SubType'=>'select','request'=>'objectSummary?null', 'visible' => 1),
 				'batteryinfo'=>array('reqplug' => '0','Libelle'=>'Résumé des batteries', 'Type'=>'action', 'SubType'=>'other','request'=>'batteryinfo?null', 'visible' => 1),
+				'centreMsg'=>array('reqplug' => '0','Libelle'=>'Centre de messages', 'Type'=>'action', 'SubType'=>'other','request'=>'centreMsg?null', 'visible' => 1),
 				'1oldmsg'=>array('reqplug' => '0','Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
 				'2oldmsg'=>array('reqplug' => '0','Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
 				'3oldmsg'=>array('reqplug' => '0','Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1)
@@ -556,6 +586,9 @@ class discordlinkCmd extends cmd {
 				case 'zwave':
 					$request = $this->build_zwave($_options);
 				break;
+				case 'centreMsg':
+					$request = $this->build_centreMsg($_options);
+				break;
 				default:
 					$request = '';
 				break;
@@ -736,7 +769,7 @@ class discordlinkCmd extends cmd {
 				}
 			}
 
-			if (isset($_options['cron5']) AND $colors == '#00ff08') return 'truesendwithembed';
+			if (isset($_options['cron']) AND $colors == '#00ff08') return 'truesendwithembed';
 			$message=str_replace("|","\n",$message);
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 			$_options = array('Titre'=>'Etat des démons', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
@@ -764,7 +797,7 @@ class discordlinkCmd extends cmd {
 				}
 			}
 
-			if (isset($_options['cron5']) && $colors == '#00ff08') return 'truesendwithembed';
+			if (isset($_options['cron']) && $colors == '#00ff08') return 'truesendwithembed';
 			$message=str_replace("|","\n",$message);
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 			$_options = array('Titre'=>'Etat des dépendances', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
@@ -878,30 +911,117 @@ class discordlinkCmd extends cmd {
 			if (discordlink::testplugin('openzwave')) {
 				$message = '';
 				$colors = '#00ff08';
-				$maxTime = 43200;
+				$maxTime = $this->getEqLogic()->getConfiguration('TempMax', 43200);
 				$_format = 'Y-m-d H:M:S';
 				$eqLogics = eqLogic::byType('openzwave');
 
 				foreach($eqLogics as $eqLogic) {
-					$maxDate = date($_format, "1970-1-1 00:00:00");
-					$collectDate = strtotime($eqLogic->getStatus('lastCommunication', date($_format)));
-					//$scenario->setLog( 'Commande ' . $cmd->getHumanName() . ' - ' . $collectDate);
-					$maxDate = max($maxDate, $collectDate);
-					$elapsedTime = time() - $maxDate;
-					if ($elapsedTime >= $maxTime) {
-						$message .= "|".discordlink::geticon("zwave_nok"). " ". $eqLogic->getName(). ' ('.$elapsedTime.')';
-						if ($colors != '#ff0000') $colors = '#ff0000';
-					} else {
-						$message .= "|".discordlink::geticon("zwave_ok"). " ". $eqLogic->getName().' ('.$elapsedTime.')';
+
+					$zwaveexclude = $this->getEqLogic()->getConfiguration('zwaveIdExclude', '');
+					if (!(strpos($zwaveexclude, $eqLogic->getLogicalId()) !== false)) {
+						$maxDate = date($_format, "1970-1-1 00:00:00");
+						$collectDate = strtotime($eqLogic->getStatus('lastCommunication', date($_format)));
+						//$scenario->setLog( 'Commande ' . $cmd->getHumanName() . ' - ' . $collectDate);
+						$maxDate = max($maxDate, $collectDate);
+						$elapsedTime = time() - $maxDate;
+						if ($elapsedTime >= $maxTime) {
+							$message .= "|".discordlink::geticon("zwave_nok"). " ". $eqLogic->getName(). ' ('.$elapsedTime.')';
+							if ($colors != '#ff0000') $colors = '#ff0000';
+						} else {
+							$message .= "|".discordlink::geticon("zwave_ok"). " ". $eqLogic->getName().' ('.$elapsedTime.')';
+						}
 					}
 				}
 				// log fin de traitement	
-				if (isset($_options['cron5']) && $colors == '#00ff08') return 'truesendwithembed';
+				if (isset($_options['cron']) && $colors == '#00ff08') return 'truesendwithembed';
 				$message=str_replace("|","\n",$message);
 				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 				$_options = array('Titre'=>'Zwave Info ', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
 				$cmd->execCmd($_options);
 			}
+			return 'truesendwithembed';
+		} 
+
+		public function build_centreMsg($_options = array()) {
+
+			// Parcours de tous les Updates
+				$listUpdate = "";
+				$nbMaj = 0;
+				$msgBloq = "";
+				$nbMajBloq = 0;
+				foreach (update::all() as $update) {
+					$monUpdate = $update->getName();
+					$statusUpdate = strtolower($update->getStatus());
+					$configUpdate = $update->getConfiguration('doNotUpdate');
+					if ($configUpdate == 1) {
+						$configUpdate = " **(MaJ bloquée)**";
+						$nbMajBloq++;
+					}else{$configUpdate = "";}
+					if ($statusUpdate == "update") {
+						$nbMaj++;
+						if ($listUpdate == ""){ $listUpdate = $nbMaj."- ".$monUpdate.$configUpdate; } else {$listUpdate .= "\n".$nbMaj."- ".$monUpdate.$configUpdate;}
+					}
+				}
+				if ($nbMajBloq == 0) {
+					$msgBloq = "";
+				} elseif ($nbMajBloq == 1) {
+					$msgBloq = " (dont **".$nbMajBloq."** bloquée)";
+				} else { 
+					$msgBloq = " (dont **".$nbMajBloq."** bloquées)";
+				}
+
+				// Message selon le nombre de mises à jours
+				if ($nbMaj == 0) {
+					$msg = "*Vous n'avez pas de mise à jour en attente !*";
+				}elseif  ($nbMaj == 1) {
+					$msg = "*Vous avez **".$nbMaj."** mise à jour en attente".$msgBloq." :*"."\n".$listUpdate;
+				} else {
+					$msg = "*Vous avez **".$nbMaj."** mises à jour en attente".$msgBloq." :*"."\n".$listUpdate;
+				}
+			
+				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
+				$_options = array('Titre'=>':gear: CENTRE DE MISE A JOUR :gear:', 'description'=> $msg, 'colors'=> '#ff0000', 'footer'=> 'By jcamus86');
+				$cmd->execCmd($_options);
+
+				// -------------------------------------------------------------------------------------- //
+				$msg = "";
+				$nbMsg = 0;
+				$nbMsgMax = 5;		//Nombre de messages par bloc de notification
+				$MsgBloc = 1;
+				$listMessage = message::all();
+				foreach ($listMessage as $message){
+					$nbMsg++;
+					if (!($nbMsg <= $nbMsgMax)){
+						$nbMsg = 1;
+						$MsgBloc = $MsgBloc + 1;
+					}
+					
+					$msg[$MsgBloc] .= "[".$message->getDate()."]";
+					$msg[$MsgBloc] .= " (".$message->getPlugin().") :";
+					$msg[$MsgBloc] .= "\n" ;
+					($message->getAction() != "") ? $msg[$MsgBloc] .= " (Action : ".$message->getAction().")" : null;
+					$msg[$MsgBloc] .= " ".$message->getMessage()."\n";
+					$msg[$MsgBloc] .= "\n" ;
+					$msg[$MsgBloc] = html_entity_decode($msg[$MsgBloc], ENT_QUOTES | ENT_HTML5);
+				}
+
+				// Message selon le nombre de messages
+				if ($nbMsg == 0){
+					$i=1;
+					$msg = "*Le centre de message est vide !*";
+					$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
+					$_options = array('Titre'=>':clipboard: CENTRE DE MESSAGE :clipboard:', 'description'=> $msg, 'colors'=> '#ff8040', 'footer'=> 'By jcamus86');
+					$cmd->execCmd($_options);
+				}else{
+					$i=0;
+					foreach ($msg as $value){
+						$i++;
+						$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
+						$_options = array('Titre'=>':clipboard: CENTRE DE MESSAGE '.$i.'/'.count($msg).' :clipboard:', 'description'=> $value, 'colors'=> '#ff8040', 'footer'=> 'By jcamus86');
+						$cmd->execCmd($_options);
+					}
+				}
+
 			return 'truesendwithembed';
 		} 
 
@@ -918,6 +1038,7 @@ class discordlinkCmd extends cmd {
 				return getTemplate('core', 'scenario', 'cmd.sendFile', 'discordlink');
 			return parent::getWidgetTemplateCode($_version, $_noCustom);
 		}
+		
 		/*     * **********************Getteur Setteur*************************** */
 	}
 ?>

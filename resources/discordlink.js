@@ -182,14 +182,14 @@ app.get('/sendMsg', (req, res) => {
     res.type('json');
     var toReturn = [];
 
-    config.logger('DiscordLink: sendMsg');
-
-    client.channels.cache.get(req.query.channelID).send(req.query.message);
-
-    toReturn.push({
+	config.logger('DiscordLink: sendMsg');
+	
+	toReturn.push({
         'id': req.query
     });
     res.status(200).json(toReturn);
+
+    client.channels.cache.get(req.query.channelID).send(req.query.message);
 });
 
 app.get('/sendFile', (req, res) => {

@@ -15,8 +15,7 @@
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
 
-
-
+setupcase();
 $('.bt_test').off('click').on('click', function() {
 
     console.log(getchannel);
@@ -168,3 +167,76 @@ function addCmdToTable(_cmd) {
       });
     }
 }
+
+$('#bt_cronGeneratordeamon').on('click',function(){
+  jeedom.getCronSelectModal({},function (result) {
+      $('.eqLogicAttr[data-l1key=configuration][data-l2key=autorefreshDeamon]').value(result.value);
+  });
+});
+
+$('#bt_cronGeneratorDependance').on('click',function(){
+  jeedom.getCronSelectModal({},function (result) {
+      $('.eqLogicAttr[data-l1key=configuration][data-l2key=autorefreshDependances]').value(result.value);
+  });
+});
+
+$('#bt_cronGeneratorzwave').on('click',function(){
+  jeedom.getCronSelectModal({},function (result) {
+      $('.eqLogicAttr[data-l1key=configuration][data-l2key=autorefreshZWave]').value(result.value);
+  });
+});
+
+function setupcase() {
+  HideAll();
+  if ($('.eqLogicAttr[data-l1key=configuration][data-l2key=deamoncheck]').value() == 1) {
+    var divsToHide = document.getElementsByClassName('deamon'); //divsToHide is an array
+    for(var i = 0; i < divsToHide.length; i++){
+      divsToHide[i].style.visibility = "visible"; // or
+      divsToHide[i].style.display = "initial"; // depending on what you're doing
+    }
+  }
+  if ($('.eqLogicAttr[data-l1key=configuration][data-l2key=depcheck]').value() == 1) {
+    var divsToHide2 = document.getElementsByClassName('dependance'); //divsToHide is an array
+    for(var a = 0; a < divsToHide2.length; a++){
+      divsToHide2[a].style.visibility = "visible"; // or
+      divsToHide2[a].style.display = "initial"; // depending on what you're doing
+    }
+  }
+  if ($('.eqLogicAttr[data-l1key=configuration][data-l2key=zwavecheck]').value() == 1) {
+    var divsToHide3 = document.getElementsByClassName('zwave'); //divsToHide is an array
+    for(var b = 0; b < divsToHide3.length; b++){
+      divsToHide3[b].style.visibility = "visible"; // or
+      divsToHide3[b].style.display = "initial"; // depending on what you're doing
+    }
+  }
+}
+
+function HideAll() {
+  var divsToHide = document.getElementsByClassName('deamon'); //divsToHide is an array
+  for(var i = 0; i < divsToHide.length; i++){
+    divsToHide[i].style.visibility = "hidden"; // or
+    divsToHide[i].style.display = "none"; // depending on what you're doing
+  }
+  var divsToHide2 = document.getElementsByClassName('dependance'); //divsToHide is an array
+  for(var a = 0; a < divsToHide2.length; a++){
+    divsToHide2[a].style.visibility = "hidden"; // or
+    divsToHide2[a].style.display = "none"; // depending on what you're doing
+  }
+  var divsToHide3 = document.getElementsByClassName('zwave'); //divsToHide is an array
+  for(var b = 0; b < divsToHide3.length; b++){
+    divsToHide3[b].style.visibility = "hidden"; // or
+    divsToHide3[b].style.display = "none"; // depending on what you're doing
+  }
+}
+
+$('#deamoncheck').click(function(){
+  setupcase();
+});
+
+$('#depcheck').click(function(){
+  setupcase();
+});
+
+$('#zwavecheck').click(function(){
+  setupcase();
+});

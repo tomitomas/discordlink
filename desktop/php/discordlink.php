@@ -97,13 +97,9 @@ foreach ($eqLogics as $eqLogic) {
 			<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isEnable" checked/>{{Activer}}</label>
 			<label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="isVisible" checked/>{{Visible}}</label>
             <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="interactionjeedom"/>{{Interactions Avec Jeedom}}</label>
-            </br>
-            <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="deamoncheck"/>{{Vérification Démon}}</label>
-            <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="depcheck"/>{{Vérification Dépendances}}</label>
-            <label class="checkbox-inline"><input type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="zwavecheck"/>{{Vérification Z-wave}}</label>
         </div>
 	</div>
-       <div class="form-group">
+    <div class="form-group">
         <label class="col-sm-3 control-label">{{Channels : }}</label>
         <div class="col-sm-3">
             <select class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="channelid">       
@@ -118,6 +114,64 @@ foreach ($eqLogics as $eqLogic) {
                     }
                 ?>
             </select>
+        </div>
+    </div>
+    </br>
+    </br>
+	<div class="form-group">
+		<label class="col-sm-3 control-label"></label>
+		<div class="col-sm-9">
+            <label class="checkbox-inline"><input id="deamoncheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="deamoncheck"/>{{Vérification Démon}}</label>
+            <label class="checkbox-inline"><input id="depcheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="depcheck"/>{{Vérification Dépendances}}</label>
+            <?php
+                if (discordlink::testplugin('openzwave')) {
+                    echo'<label class="checkbox-inline"><input id="zwavecheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="zwavecheck"/>{{Vérification Z-wave}}</label>';
+                } else {
+                    echo'<div style="visibility: hidden; display: none;"><label class="checkbox-inline"><input id="zwavecheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="zwavecheck"/>{{Vérification Z-wave}}</label></div>';
+                    
+                }
+            ?>
+        </div>
+    </div>
+    <div class="form-group deamon">
+        <label class="col-sm-3 control-label">{{Auto-actualisation deamon (cron)}}</label>
+        <div class="col-sm-3">
+            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="autorefreshDeamon" placeholder="{{Auto-actualisation Deamon (cron)}}"/>
+        </div>
+        <div class="col-sm-1">
+            <i class="fas fa-question-circle cursor floatright" id="bt_cronGeneratordeamon"></i>
+        </div>
+    </div>
+    <div class="form-group dependance">
+        <label class="col-sm-3 control-label">{{Auto-actualisation dépendances (cron)}}</label>
+        <div class="col-sm-3">
+            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="autorefreshDependances" placeholder="{{Auto-actualisation dépendances (cron)}}"/>
+        </div>
+        <div class="col-sm-1">
+            <i class="fas fa-question-circle cursor floatright" id="bt_cronGeneratorDependance"></i>
+        </div>
+    </div>
+    <div class="form-group zwave">
+        <label class="col-sm-3 control-label">{{Auto-actualisation Z-Wave (cron)}}</label>
+        <div class="col-sm-3">
+            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="autorefreshZWave" placeholder="{{Auto-actualisation Z-Wave (cron)}}"/>
+        </div>
+        <div class="col-sm-1">
+            <i class="fas fa-question-circle cursor floatright" id="bt_cronGeneratorzwave"></i>
+        </div>
+    </div>
+    </br>
+    </br>
+    <div class="form-group zwave">
+        <label class="col-sm-3 control-label">{{Node Id Zwave a exclure : }}</label>
+        <div class="col-sm-3">
+            <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="zwaveIdExclude" placeholder="{{exemple : 21 17 58}}"/>
+        </div>
+    </div>
+    <div class="form-group zwave">
+        <label class="col-sm-3 control-label">{{Temps maximal entre la dernière reponse (En seconde) : }}</label>
+        <div class="col-sm-3">
+            <input type="number" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TempMax" placeholder="{{default : 43200}}"/>
         </div>
     </div>
 </fieldset>
@@ -148,3 +202,7 @@ foreach ($eqLogics as $eqLogic) {
 
 <?php include_file('desktop', 'discordlink', 'js', 'discordlink');?>
 <?php include_file('core', 'plugin.template', 'js');?>
+<script type="text/javascript">
+setTimeout(() => {setupcase();}, 500);
+
+</script>
