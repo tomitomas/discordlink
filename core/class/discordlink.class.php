@@ -1040,7 +1040,7 @@ class discordlinkCmd extends cmd {
 					$number1 = (int)$date1->format('U');
 					$number2 = (int)$date2->format('U');
 					$temps = ($number2 - $number1);
-					if ($temps <= 5){
+					if ($temps <= 60){
 						$message = "L'utilisateur **$nomUtilisateur** vient de se connecter à Jeedom !";
 					}
 				}
