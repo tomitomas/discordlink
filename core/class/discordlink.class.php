@@ -396,6 +396,7 @@ class discordlink extends eqLogic {
 				'objectSummary'=>array('reqplug' => '0','Libelle'=>'Résumé par objet', 'Type'=>'action', 'SubType'=>'select','request'=>'objectSummary?null', 'visible' => 1),
 				'batteryinfo'=>array('reqplug' => '0','Libelle'=>'Résumé des batteries', 'Type'=>'action', 'SubType'=>'other','request'=>'batteryinfo?null', 'visible' => 1),
 				'centreMsg'=>array('reqplug' => '0','Libelle'=>'Centre de messages', 'Type'=>'action', 'SubType'=>'other','request'=>'centreMsg?null', 'visible' => 1),
+				'LastUser'=>array('reqplug' => '0','Libelle'=>'Dernière Connexions utilisateurs', 'Type'=>'action', 'SubType'=>'other','request'=>'LastUser?null', 'visible' => 1),
 				'1oldmsg'=>array('reqplug' => '0','Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
 				'2oldmsg'=>array('reqplug' => '0','Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
 				'3oldmsg'=>array('reqplug' => '0','Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1)
@@ -588,6 +589,9 @@ class discordlinkCmd extends cmd {
 				break;
 				case 'centreMsg':
 					$request = $this->build_centreMsg($_options);
+				break;
+				case 'LastUser':
+					$request = $this->build_LastUser($_options);
 				break;
 				default:
 					$request = '';
@@ -1024,6 +1028,31 @@ class discordlinkCmd extends cmd {
 
 			return 'truesendwithembed';
 		} 
+
+		public function build_LastUser($_options = array()) {
+
+			foreach (user::all() as $utilisateur) {
+				$lastConnect = $utilisateur->getOptions('lastConnection');				
+				if($lastConnect != ""){
+					$nomUtilisateur = $utilisateur->getLogin();
+					$date1 = new DateTime($lastConnect);
+					$date2 = new DateTime('now');
+					$number1 = (int)$date1->format('U');
+					$number2 = (int)$date2->format('U');
+					$temps = ($number2 - $number1);
+					if ($temps <= 5){
+						$message = "L'utilisateur **$nomUtilisateur** vient de se connecter à Jeedom !";
+					}
+				}
+			}
+		  
+			$message=str_replace("|","\n",$message);
+			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
+			$_options = array('Titre'=>':bust_in_silhouette: CONNEXION :bust_in_silhouette:', 'description'=> $message, 'colors'=> '#000000', 'footer'=> 'By Yasu');
+			$cmd->execCmd($_options);
+
+			return 'truesendwithembed';
+		}
 
 		public function getWidgetTemplateCode($_version = 'dashboard', $_noCustom = false) {
 			if ($_version != 'scenario') return parent::getWidgetTemplateCode($_version, $_noCustom);
