@@ -47,7 +47,7 @@ class discordlink extends eqLogic {
 		array_push($return, $tokenarray);
 
 			//Invite Detect
-			$invite = strpos(config::byKey('invite', 'discordlink', 'null'),'null') !==true;
+			$invite = strpos(implode(" ",config::byKey('invite', 'discordlink', 'null')),'null') !==true;
 			$invitearray = array(
 				'test' => __('Lien d\'invitation du Bot', __FILE__),
 				'result' => ($invite) ? __('OK', __FILE__) : __('NOK', __FILE__),
@@ -57,7 +57,7 @@ class discordlink extends eqLogic {
 			array_push($return, $invitearray);
 
 		//Emojy Detect
-		$emojy = strpos(config::byKey('emojy', 'discordlink', 'null'),'null') !==true;
+		$emojy = strpos(implode(" ",config::byKey('emojy', 'discordlink', 'null')),'null') !==true;
 		$emojyarray = array(
 			'test' => __('Listes des d\'emojys', __FILE__),
 			'result' => ($emojy) ? __('OK', __FILE__) : __('NOK', __FILE__),
