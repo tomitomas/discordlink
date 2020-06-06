@@ -240,3 +240,9 @@ $('#depcheck').click(function(){
 $('#zwavecheck').click(function(){
   setupcase();
 });
+
+$(".eqLogicDisplayCard").on('click', function (event) {
+  setTimeout(function(){
+    setupcase();
+  },800);
+});
