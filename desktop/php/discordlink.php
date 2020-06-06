@@ -31,15 +31,15 @@ $eqLogics = eqLogic::byType($plugin->getId());
 <input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
 <div class="eqLogicThumbnailContainer">
     <?php
-foreach ($eqLogics as $eqLogic) {
-	$opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
-	echo '<div class="eqLogicDisplayCard cursor '.$opacity.'" data-eqLogic_id="' . $eqLogic->getId() . '">';
-	echo '<img src="' . $plugin->getPathImgIcon() . '"/>';
-	echo '<br>';
-	echo '<span class="name">' . $eqLogic->getHumanName(true, true) . '</span>';
-	echo '</div>';
-}
-?>
+        foreach ($eqLogics as $eqLogic) {
+            $opacity = ($eqLogic->getIsEnable()) ? '' : 'disableCard';
+            echo '<div class="eqLogicDisplayCard cursor '.$opacity.'" data-eqLogic_id="' . $eqLogic->getId() . '">';
+            echo '<img src="' . $plugin->getPathImgIcon() . '"/>';
+            echo '<br>';
+            echo '<span class="name">' . $eqLogic->getHumanName(true, true) . '</span>';
+            echo '</div>';
+        }
+    ?>
 </div>
 </div>
 
@@ -110,7 +110,14 @@ foreach ($eqLogics as $eqLogic) {
                             echo '<option value="'.$channel['id'].'">('.$channel['guildName'].') '.$channel['name'].'</option>';
                         }
                     } else {
-                        echo '<option value="null">Pas de channel disponible</option>';
+                        $channels = discordlink::getchannel();
+                        if (count($channel) == 0) {
+                            echo '<option value="null">Pas de channel disponible</option>';
+                        } else {
+                            foreach($channels as $channel) {
+                                echo '<option value="'.$channel['id'].'">('.$channel['guildName'].') '.$channel['name'].'</option>';
+                            }
+                        }
                     }
                 ?>
             </select>
@@ -123,6 +130,7 @@ foreach ($eqLogics as $eqLogic) {
 		<div class="col-sm-9">
             <label class="checkbox-inline"><input id="deamoncheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="deamoncheck"/>{{Vérification Démon}}</label>
             <label class="checkbox-inline"><input id="depcheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="depcheck"/>{{Vérification Dépendances}}</label>
+            <label class="checkbox-inline"><input id="connectcheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="connectcheck"/>{{Annonce des connection}}</label>
             <?php
                 if (discordlink::testplugin('openzwave')) {
                     echo'<label class="checkbox-inline"><input id="zwavecheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="zwavecheck"/>{{Vérification Z-wave}}</label>';
