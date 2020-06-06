@@ -116,8 +116,8 @@ class discordlink extends eqLogic {
 	public static function updateinfo() {
 		sleep(2);
 		discordlink::setinvite();
-		discordlink::setchannel();
 		discordlink::updateobject();
+		discordlink::setchannel();
 	}
 
 	public function emojyconvert($_text) {
@@ -1127,7 +1127,6 @@ class discordlinkCmd extends cmd {
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 			$_options = array('Titre'=>$titre, 'description'=> $message, 'colors'=> '#000000', 'footer'=> 'By Yasu');
 			$cmd->execCmd($_options);
-
 			return 'truesendwithembed';
 		}
 
