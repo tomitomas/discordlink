@@ -113,10 +113,9 @@ $eqLogics = eqLogic::byType($plugin->getId());
                         }
                     } else {
                         $channels = discordlink::getchannel();
-                            foreach($channels as $channel) {
-                                echo '<option value="'.$channel['id'].'">('.$channel['guildName'].') '.$channel['name'].'</option>';
-                                $i ++;
-                            }
+                        foreach($channels as $channel) {
+                            echo '<option value="'.$channel['id'].'">('.$channel['guildName'].') '.$channel['name'].'</option>';
+                            $i ++;
                         }
                     }
                     if ($i == 0) {
