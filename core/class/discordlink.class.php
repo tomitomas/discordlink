@@ -227,13 +227,11 @@ class discordlink extends eqLogic {
 			$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
 			$request_http->setNoSslCheck(true);
 			$request_http->setNoReportError(true);
-			$result = $request_http->exec(3,1);//Time out à 3s 3 essais
-			log::add('discordlink', 'debug', 'Set Invite Deamon 1 : '.$result);
+			$result = $request_http->exec(6,3);//Time out à 3s 3 essais
+			log::add('discordlink', 'debug', 'Set Invite Channel Json: '.$result);
 			if (!$result) return "null";
 			//$result = substr($result, 1, -1);
-			log::add('discordlink', 'DEBUG', $result);
 			$json = json_decode($result, true);
-			log::add('discordlink', 'debug', 'Set Invite Deamon JSON : '.$json);
 			return $json;
 		} else {
 			log::add('discordlink', 'debug', 'Set Invite Deamon : ERROR');
@@ -243,14 +241,16 @@ class discordlink extends eqLogic {
 	public static function getinvite() {
 		$deamon = discordlink::deamon_info();
 		if ($deamon['state'] == 'ok') {
+			log::add('discordlink', 'debug', 'Get Invite !!');
 			$request_http = new com_http("http://" . config::byKey('internalAddr') . ":3466/getinvite");
 			$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
 			$request_http->setNoSslCheck(true);
 			$request_http->setNoReportError(true);
-			$result = $request_http->exec(3,1);//Time out à 3s 3 essais
+			$result = $request_http->exec(6,3);//Time out à 3s 3 essais
 			if (!$result) return "null";
 			$result = substr($result, 1, -1);
 			$json = json_decode($result, true);
+			log::add('discordlink', 'debug', 'Invite = '.$json['invite']);
 			return $json['invite'];
 		}
 	}
@@ -544,11 +544,8 @@ class discordlinkCmd extends cmd {
 					$request_http->exec(0.1, 1);
 					return;
 				}
-
 				$result = $request_http->exec($this->getConfiguration('timeout', 6), $this->getConfiguration('maxHttpRetry', 1));//Time out à 3s 3 essais
-
-				if (!$result) throw new Exception(__('Serveur injoignable', __FILE__));
-
+				//if (!$result) throw new Exception(__('Serveur injoignable', __FILE__));
 				return true;
 			} else {
 				return true;
