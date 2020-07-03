@@ -127,9 +127,9 @@ $eqLogics = eqLogic::byType($plugin->getId());
 	<div class="form-group">
 		<label class="col-sm-3 control-label"></label>
 		<div class="col-sm-9">
-            <label class="checkbox-inline"><input id="deamoncheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="deamoncheck"/>{{Vérification Démon}}</label>
+            <label class="checkbox-inline"><input id="deamoncheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="deamoncheck"/>{{Vérification Démons}}</label>
             <label class="checkbox-inline"><input id="depcheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="depcheck"/>{{Vérification Dépendances}}</label>
-            <label class="checkbox-inline"><input id="connectcheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="connectcheck"/>{{Annonce des connection}}</label>
+            <label class="checkbox-inline"><input id="connectcheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="connectcheck"/>{{Annonce des connections}}</label>
             <?php
                 if (discordlink::testplugin('openzwave')) {
                     echo'<label class="checkbox-inline"><input id="zwavecheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="zwavecheck"/>{{Vérification Z-wave}}</label>';

@@ -17,7 +17,8 @@
  */
 
 /* * ***************************Includes********************************* */
-require_once __DIR__  . '/../../../../core/php/core.inc.php';
+require_once __DIR__ . '/../../../../core/php/core.inc.php';
+require_once dirname(__FILE__) . '/../../core/php/discordlink.inc.php';
 
 class discordlink extends eqLogic {
     /*     * *************************Attributs****************************** */
@@ -995,96 +996,11 @@ class discordlinkCmd extends cmd {
 		} 
 
 		public function build_LastUser($_options = array()) {
-
-			$nbUser = 0;
-			$listUser = "";
-			$oldconn = true;
-			$message = "Voici un récapitulatif des **connexions** sur votre Jeedom :";
-			foreach (user::all() as $utilisateur) {
-				$nbUser++;
-				$lastConnect[$nbUser] = "";
-				$lastConnectInfo[$nbUser] = "";
-				$lastConnect[$nbUser] = $utilisateur->getOptions('lastConnection');
-				if($lastConnect[$nbUser] != ""){
-					$nomUtilisateur[$nbUser] = $utilisateur->getLogin();		
-					$userConnected[$nbUser] = "**hors ligne**";
-					$sessions = listSession();
-					foreach ($sessions as $session) {
-						if($nomUtilisateur[$nbUser] == $session['login']){
-							$temps[$nbUser] = (strtotime(date("Y-m-d H:i:s")) - strtotime($session['datetime']));
-							if($temps[$nbUser] < 60){
-								$userConnected[$nbUser] = "**en ligne**";
-								$userIP[$nbUser] = $session['ip'];
-							}
-						}
-					}
-					$date1 = new DateTime($lastConnect[$nbUser]);
-					$date2 = new DateTime('now');
-					$number1 = (int)$date1->format('U');
-					$number2 = (int)$date2->format('U');
-					$temps[$nbUser] = ($number2 - $number1);
-					if ($lastConnect[$nbUser] != "" && $userConnected[$nbUser] == "**en ligne**"){
-						$dateJour = date("l", strtotime($lastConnect[$nbUser]));
-						if($dateJour == "Monday") {
-							$dateJour = "lundi";
-						} elseif ($dateJour == "Tuesday") {
-							$dateJour = "mardi";
-						} elseif ($dateJour == "Wednesday") {
-							$dateJour = "mercredi";
-						} elseif ($dateJour == "Thursday") {
-							$dateJour = "jeudi";
-						} elseif ($dateJour == "Friday") {
-							$dateJour = "vendredi";
-						} elseif ($dateJour == "Saturday") {
-							$dateJour = "samedi";
-						} elseif ($dateJour == "Sunday") {
-							$dateJour = "dimanche";
-						}
-						$dateMois = date("F", strtotime($lastConnect[$nbUser]));
-						if($dateMois == "January") {
-							$dateMois = "janvier";
-						} elseif ($dateMois == "February") {
-							$dateMois = "février";
-						} elseif ($dateMois == "March") {
-							$dateMois = "mars";
-						} elseif ($dateMois == "April") {
-							$dateMois = "avril";
-						} elseif ($dateMois == "May") {
-							$dateMois = "mai";
-						} elseif ($dateMois == "June") {
-							$dateMois = "juin";
-						} elseif ($dateMois == "July") {
-							$dateMois = "juillet";
-						} elseif ($dateMois == "August") {
-							$dateMois = "août";
-						} elseif ($dateMois == "September") {
-							$dateMois = "septembre";
-						} elseif ($dateMois == "October") {
-							$dateMois = "octobre";
-						} elseif ($dateMois == "November") {
-							$dateMois = "novembre";
-						} elseif ($dateMois == "December") {
-							$dateMois = "décembre";
-						}
-
-						$lastConnectInfo[$nbUser] = $dateJour." ".date("d",strtotime($lastConnect[$nbUser]))." ".$dateMois." ".date("Y",strtotime($lastConnect[$nbUser]))."** à **".date("H",strtotime($lastConnect[$nbUser]))."h".date("i",strtotime($lastConnect[$nbUser]));
-						$lastConnectInfo[$nbUser] = " depuis le **".$lastConnectInfo[$nbUser]."**";
-					}
-					if ($temps[$nbUser] <= 65){
-						$titre = ':bust_in_silhouette: CONNEXION :bust_in_silhouette:';
-						$message = "L'utilisateur **$nomUtilisateur[$nbUser]** vient de se connecter à Jeedom depuis **".$userIP[$nbUser]."** !";
-						$oldconn = false;
-						break;
-					}else{
-						$titre = ':busts_in_silhouette: CONNEXIONS :busts_in_silhouette:';
-						$message .= "\n - ".$nomUtilisateur[$nbUser]." est ".$userConnected[$nbUser].$lastConnectInfo[$nbUser];
-					}
-				}
-			}
-			if (isset($_options['cron']) && $oldconn) return 'truesendwithembed';
-			$message=str_replace("|","\n",$message);
+			$result = discordMsg::LastUser();
+			if (isset($_options['cron']) && !$result['cronOk']) return 'truesendwithembed';
+			$message=str_replace("|","\n",$result['Message']);
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-			$_options = array('Titre'=>$titre, 'description'=> $message, 'colors'=> '#000000', 'footer'=> 'By Yasu');
+			$_options = array('Titre'=>$result['Titre'], 'description'=> $message, 'colors'=> '#ff00ff', 'footer'=> 'By Yasu et Jcamus86');
 			$cmd->execCmd($_options);
 			return 'truesendwithembed';
 		}
