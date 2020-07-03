@@ -1000,7 +1000,7 @@ class discordlinkCmd extends cmd {
 			if (isset($_options['cron']) && !$result['cronOk']) return 'truesendwithembed';
 			$message=str_replace("|","\n",$result['Message']);
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-			$_options = array('Titre'=>$result['Titre'], 'description'=> $message, 'colors'=> '#ff00ff', 'footer'=> 'By Yasu & Jcamus86');
+			$_options = array('Titre'=>$result['Titre'], 'description'=> $message, 'colors'=> '#ff00ff', 'footer'=> 'By Yasu et Jcamus86');
 			$cmd->execCmd($_options);
 			return 'truesendwithembed';
 		}
