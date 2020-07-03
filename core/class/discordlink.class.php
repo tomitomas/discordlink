@@ -367,11 +367,17 @@ class discordlink extends eqLogic {
     }
 
     public function preSave() {
-        $channel = $this->getConfiguration('channelid');
+		$channel = $this->getConfiguration('channelid');
+		log::add('discordlink', 'debug', 'setLogicalId : ' . $channel);
+		if ($channel != 'null' && $channel != '') {
 			if (isset($channel)) {
 				$this->setLogicalId($channel);
 				log::add('discordlink', 'debug', 'setLogicalId : ' . $channel);
 			}
+		} else {
+			$this->setConfiguration('channelid', $this->getLogicalId());
+			$this->save();
+		}
 	}
 
 	public static function geticon($_icon) {

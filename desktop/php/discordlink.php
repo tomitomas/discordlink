@@ -105,19 +105,16 @@ $eqLogics = eqLogic::byType($plugin->getId());
             <select class="form-control eqLogicAttr" data-l1key="configuration" data-l2key="channelid">       
                 <?php
                     $channels = config::byKey('channels', 'discordlink', 'null');
+                    $deamon = discordlink::deamon_info();
                     $i = 0;
-                    if ($channels != "null") {
-                        foreach($channels as $channel) {
-                            echo '<option value="'.$channel['id'].'">('.$channel['guildName'].') '.$channel['name'].'</option>';
-                            $i ++;
-                        }
-                    } else {
+                    if ($deamon['state'] == 'ok') {
                         $channels = discordlink::getchannel();
                         foreach($channels as $channel) {
                             echo '<option value="'.$channel['id'].'">('.$channel['guildName'].') '.$channel['name'].'</option>';
                             $i ++;
                         }
                     }
+
                     if ($i == 0) {
                         echo '<option value="null">Pas de channel disponible</option>';
                     }

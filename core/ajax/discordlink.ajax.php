@@ -51,8 +51,21 @@ try {
     }
 
     if (init('action') == 'getinvite') {
-        $token = config::byKey('invite', 'discordlink', 'null');
-        ajax::success($token);
+        $deamon = discordlink::deamon_info();
+		if ($deamon['state'] == 'ok') {
+			log::add('discordlink', 'debug', 'Get Invite !!');
+			$request_http = new com_http("http://" . config::byKey('internalAddr') . ":3466/getinvite");
+			$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
+			$request_http->setNoSslCheck(true);
+			$request_http->setNoReportError(true);
+            $result = $request_http->exec(6,3);//Time out à 3s 3 essais
+            if (!$result) ajax::success("null");
+			$result = substr($result, 1, -1);
+			$json = json_decode($result, true);
+			log::add('discordlink', 'debug', 'Invite = '.$json['invite']);
+            ajax::success($json['invite']);
+        }
+        ajax::success("null");
     }
 
     if (init('action') == 'resetemojy') {
