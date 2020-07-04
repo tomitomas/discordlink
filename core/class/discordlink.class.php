@@ -333,7 +333,6 @@ class discordlink extends eqLogic {
 			}
 		} else {
 			$this->setConfiguration('channelid', $this->getLogicalId());
-			$this->save();
 		}
 	}
 
