@@ -32,20 +32,8 @@ class discordMsg {
         // Récupération du niveau de log du log Connection (//100=debug | 200=info | 300=warning | 400=erreur=defaut | 1000=none)
         $level = log::getLogLevel('connection');
         $levelName = log::convertLogLevel($level);
-
-        //Add Emojy
-        $emo_warning = discordlink::addemojy("lastUser_warning",":warning:");
-        $emo_mag_right = discordlink::addemojy("lastUser_mag_right",":mag_right:");
-        $emo_mag = discordlink::addemojy("lastUser_mag",":mag:");
-        $emo_check = discordlink::addemojy("lastUser_check",":white_check_mark:");
-        $emo_internet = discordlink::addemojy("lastUser_internet",":globe_with_meridians:");
-        $emo_connecter = discordlink::addemojy("lastUser_connecter",":green_circle:");
-        $emo_deconnecter = discordlink::addemojy("lastUser_deconnecter",":red_circle:");
-        $emo_silhouette = discordlink::addemojy("lastUser_silhouette",":busts_in_silhouette:");
-
-
         if($level > 200){
-            $niveauLog = "\n"."\n".$emo_warning."Plus d'informations ? ".$emo_warning."\n"."veuillez mettre le log **connection** sur **info** dans *Configuration/Logs* (niveau actuel : **".$levelName."**)";
+            $niveauLog = "\n"."\n".":warning: Plus d'informations ? :warning:"."\n"."veuillez mettre le log **connection** sur **info** dans *Configuration/Logs* (niveau actuel : **".$levelName."**)";
         }      
         $delaiHorsLigne = 10;
         $var_nbUser = 0;
@@ -94,10 +82,10 @@ class discordMsg {
                     $logConnection_Type[$log_nbUser] = 'navigateur';
                 }
                 if($log_nbUser == 1){
-                    $message .= "\n".$emo_mag_right."__Récapitulatif de ces ".$cron." dernières secondes :__ ".$emo_mag;
+                    $message .= "\n".":mag_right: "."__Récapitulatif de ces ".$cron." dernières secondes :__"." :mag:";
                 }
                 $nbEnLigne++;
-                $message .= "\n".$emo_check."**".$logConnection_Name[$log_nbUser]."** s'est connecté par **".$logConnection_Type[$log_nbUser]."** à **".date("H", strtotime($logConnection_Date[$log_nbUser]))."h".date("i", strtotime($logConnection_Date[$log_nbUser]))."**";
+                $message .= "\n".":white_check_mark: "."**".$logConnection_Name[$log_nbUser]."** s'est connecté par **".$logConnection_Type[$log_nbUser]."** à **".date("H", strtotime($logConnection_Date[$log_nbUser]))."h".date("i", strtotime($logConnection_Date[$log_nbUser]))."**";
                 $cronOk = true;
                 $userNum = 0;
                 $nbtrouv = 0;
@@ -136,7 +124,7 @@ class discordMsg {
         $sessions = listSession();
         $nbSessions=count($sessions);												//nombre d'utilisateur en session actuellement
         
-        $message .= "\n"."\n".$emo_mag_right."__Récapitulatif des sessions actuelles :__ ".$emo_mag;
+        $message .= "\n"."\n".":mag_right: "."__Récapitulatif des sessions actuelles :__"." :mag:";
         // Parcours des sessions pour vérifier le statut et le nombre de sessions
         $userNum=0;
         $userConnect_list_new = '';
@@ -158,7 +146,7 @@ class discordMsg {
                         $nbtrouv++;
                         $nbEnLigne++;
                         $userConnect_Statut[$userNum] = 'en ligne';
-                        $userConnect_IP[$userNum] .= "\n"."-> ".$emo_internet." IP : ".$session['ip'];
+                        $userConnect_IP[$userNum] .= "\n"."-> :globe_with_meridians:"." IP : ".$session['ip'];
                     }else{
                     }
                 }			
@@ -177,11 +165,11 @@ class discordMsg {
                 $date = $nomJour." ".$numJour." ".$nomMois." ".$numAnnee."** à **".$heures."h".$minutes;
             }
             if($nbtrouv > 0){
-                $message .= "\n".$emo_connecter." **".$userConnect_Name[$userNum]."** est **en ligne** depuis **".$date."**";
+                $message .= "\n".":green_circle: **".$userConnect_Name[$userNum]."** est **en ligne** depuis **".$date."**";
                 $message .= $userConnect_IP[$userNum];
             }else{
                 if(strtotime($timeNow) - strtotime($userConnect_Date[$userNum]) < ($nbJourAvantSupprUser*24*60*60)){
-                    $message .= "\n".$emo_deconnecter." **".$userConnect_Name[$userNum]."** est **hors ligne** (dernière connexion **".$date."**)";
+                    $message .= "\n".":red_circle: **".$userConnect_Name[$userNum]."** est **hors ligne** (dernière connexion **".$date."**)";
                 }
             }
             if($userConnect_list_new != ''){
@@ -192,7 +180,7 @@ class discordMsg {
         }
         
         // Préparation des tags de notification
-        $titre = $emo_silhouette.'CONNEXIONS '.$emo_silhouette;
+        $titre = ':busts_in_silhouette: CONNEXIONS :busts_in_silhouette:';
         return array(
             'Titre'=>$titre,
             'Message'=>$message.$niveauLog,

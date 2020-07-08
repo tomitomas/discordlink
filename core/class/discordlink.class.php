@@ -340,26 +340,11 @@ class discordlink extends eqLogic {
 		$icon = "null";
 		$emojyArray = config::byKey('emojy', 'discordlink');
 		$icon = $emojyArray[$_icon];
-		if ($icon == "null" || $icon == "") {
-			$icon = discordlink::addemojy($_icon);
+		if ($icon == "null") {
+			$icon = ":interrobang:";
 		}
 		$icon .= " ";
 		return $icon;
-	}
-
-	public static function addemojy($_icon, $_emojy = "null") {
-		$icon = "null";
-		$emojyArray = config::byKey('emojy', 'discordlink');
-		$icon = $emojyArray[$_icon];
-		if ($icon == "null" || $icon == "") {
-			if ($_emojy != "null") {
-				$emojyArray[$_icon] = $_emojy;
-			} else {
-				$emojyArray[$_icon] = ":interrobang:";
-			}
-		}
-		config::save('emojy', $emojyArray, 'discordlink');
-		return $emojyArray[$_icon];
 	}
 
 	public static function CreateCmd() {
@@ -510,8 +495,8 @@ class discordlinkCmd extends cmd {
 			}
 
 			$request = $this->buildRequest($_options);
+			log::add('discordlink', 'debug', 'Envoi de ' . $request);
 			if ($request != 'truesendwithembed') {
-				log::add('discordlink', 'debug', 'Envoi de ' . $request);
 				$request_http = new com_http($request);
 				$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
 				if ($this->getConfiguration('noSslCheck') == 1) $request_http->setNoSslCheck(true);
