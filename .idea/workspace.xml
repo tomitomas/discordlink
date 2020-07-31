@@ -47,12 +47,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cfdae333-e74b-45d0-a0bb-168b7cb240e9" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/deployment.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/discordlink.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/resources/install.sh" beforeDir="false" afterPath="$PROJECT_DIR$/resources/install.sh" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -87,7 +83,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1596178519338</updated>
-      <workItem from="1596178520415" duration="1040000" />
+      <workItem from="1596178520415" duration="1552000" />
     </task>
     <servers />
   </component>
