@@ -9,8 +9,8 @@
 	"hasDependency" : true,
 	"hasOwnDeamon" : true,
 	"maxDependancyInstallTime" : 300,
-	"changelog" : "https://trmaud.github.io/Docs/discordlink/fr_FR/changelog",
-	"documentation" : "https://trmaud.github.io/Docs/discordlink/fr_FR/",
+	"changelog" : "https://domotechdiscord.github.io/Docs/discordlink/fr_FR/changelog",
+	"documentation" : "https://domotechdiscord.github.io/Docs/discordlink/fr_FR/",
 	"link" : {
 		"forum":"https://community.jeedom.com/t/plugin-tiers-discord-link-actualites/26528?u=titi_titi",
 		"video" : "https://www.youtube.com/watch?v=DinkR8TcGes"
