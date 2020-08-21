@@ -65,7 +65,7 @@ function addEmojyToTable(_cmd) {
       +        '</div>'
       +     '</div>'
       + '<td>'
-      + '<i class="fa fa-minus-circle pull-right emojyAction cursor" data-action="remove"></i>'
+      + '<i class="fas fa-minus-circle pull-right emojyAction cursor" data-action="remove"></i>'
       +   '</td>'
       + '</tr>';
 
