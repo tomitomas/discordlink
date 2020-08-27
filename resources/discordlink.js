@@ -25,43 +25,24 @@ const config = {
 
 var dernierStartServeur=0;
 
-// Par sécurité pour détecter un éventuel souci :
 if (!token) config.logger('DiscordLink-Config: *********************TOKEN NON DEFINI*********************');
 
-// Speed up calls to hasOwnProperty - Pour le test function isEmpty(obj)
 var hasOwnProperty = Object.prototype.hasOwnProperty;
 function isEmpty(obj) {
 
-    // null and undefined are "empty"
     if (obj == null) return true;
 
-    // Assume if it has a length property with a non-zero value
-    // that that property is correct.
     if (obj.length > 0)    return false;
     if (obj.length === 0)  return true;
 
-    // If it isn't an object at this point
-    // it is empty, but it can't be anything *but* empty
-    // Is it empty?  Depends on your application.
     if (typeof obj !== "object") return true;
 
-    // Otherwise, does it have any properties of its own?
-    // Note that this doesn't handle
-    // toString and valueOf enumeration bugs in IE < 9
     for (var key in obj) {
         if (hasOwnProperty.call(obj, key)) return false;
     }
 
     return true;
 }
-
-
-	// arguments[0]	c'est le texte
-	// arguments[1]	c'est le niveau de log ou un array
-
-	//niveaudeLog=5 c'est tout
-	//niveaudeLog=2 c'est reduit
-
 
 function console2(text, level='') {
 	var today = new Date();
@@ -98,13 +79,9 @@ function console2(text, level='') {
 
 }
 
-
 /* Routing */
 const app = express();
 let server = null;
-/* Objet contenant les commandes pour appeler via chaine */
-var CommandAlexa = {};
-
 
 function LancementCommande(commande, req)
 {
@@ -121,7 +98,6 @@ app.get('/stop', (req, res) => {
 	});
 });
 
-
 /***** Restart server *****/
 app.get('/restart', (req, res) => {
 	config.logger('DiscordLink: Restart');
@@ -132,17 +108,6 @@ app.get('/restart', (req, res) => {
 	startServer();
 
 });
-
-app.get('/restart', (req, res) => {
-	config.logger('DiscordLink: Restart');
-	res.status(200).json({});
-		config.logger('DiscordLink: ******************************************************************');
-		config.logger('DiscordLink: *****************************Relance forcée du Serveur*************');
-		config.logger('DiscordLink: ******************************************************************');
-	startServer();
-
-});
-
 
 app.get('/getinvite', (req, res) => {
 
@@ -325,6 +290,24 @@ app.get('/sendEmbed', (req, res) => {
 		res.status(200).json(toReturn);
 	}
 });
+
+async function deletemessagechannel(message) {
+	var date = new Date();
+	var timestamp = date.getTime();
+	var mindaytimestamp = timestamp-172800000;
+	var maxdaytimestamp = timestamp-1206000000;
+	const fetched = await message.channel.messages.fetch({force:true});
+	const delmessage = new Array();
+
+	for (const message of fetched) {
+		if (maxdaytimestamp < message[1].createdTimestamp && message[1].createdTimestamp <= mindaytimestamp) {
+			if (message[1].deletable) {
+				delmessage.push(message[1])
+			}
+		}
+	}
+	message.channel.bulkDelete(delmessage);
+};
 /* Main */
 
 startServer();
@@ -379,6 +362,10 @@ client.on("ready", async() => {
 client.on('message', (receivedMessage) => {
 
     if (receivedMessage.author == client.user) {
+    	if (receivedMessage.content == "!clearmessagechannel") {
+			deletemessagechannel(receivedMessage);
+			receivedMessage.delete();
+		}
         return;
 	}
 	if (receivedMessage.author.bot) {

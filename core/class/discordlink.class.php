@@ -372,6 +372,7 @@ class discordlink extends eqLogic {
 				'sendMsgTTS'=>array('reqplug' => '0','Libelle'=>'Envoi message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
 				'sendEmbed'=>array('reqplug' => '0','Libelle'=>'Envoi message évolué', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
 				'sendFile'=>array('reqplug' => '0','Libelle'=>'Envoi fichier', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#&message=#message#', 'visible' => 0),
+				'deleteMessage'=>array('reqplug' => '0','Libelle'=>'Supprime les message du channel', 'Type'=>'action', 'SubType'=>'other','request'=>'deleteMessage?null', 'visible' => 0),
 				'deamonInfo'=>array('reqplug' => '0','Libelle'=>'Etat des démons', 'Type'=>'action', 'SubType'=>'other','request'=>'deamonInfo?null', 'visible' => 1),
 				'dependanceInfo'=>array('reqplug' => '0','Libelle'=>'Etat des dépendances', 'Type'=>'action', 'SubType'=>'other','request'=>'dependanceInfo?null', 'visible' => 1),
 				'zwave'=>array('reqplug' => 'openzwave','Libelle'=>'Etat des équipements Z-Wave', 'Type'=>'action', 'SubType'=>'other','request'=>'zwave?null', 'visible' => 1),
@@ -573,6 +574,9 @@ class discordlinkCmd extends cmd {
 				case 'LastUser':
 					$request = $this->build_LastUser($_options);
 				break;
+				case 'deleteMessage':
+					$request = $this->build_deleteMessage($_options);
+					break;
 				default:
 					$request = '';
 				break;
@@ -1015,6 +1019,13 @@ class discordlinkCmd extends cmd {
 			$message=str_replace("|","\n",$result['Message']);
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 			$_options = array('Titre'=>$result['Titre'], 'description'=> $message, 'colors'=> '#ff00ff', 'footer'=> 'By Yasu et Jcamus86');
+			$cmd->execCmd($_options);
+			return 'truesendwithembed';
+		}
+
+		public function build_deleteMessage($_options = array()) {
+			$cmd = $this->getEqLogic()->getCmd('action', 'sendMsg');
+			$_options = array('message'=>'!clearmessagechannel');
 			$cmd->execCmd($_options);
 			return 'truesendwithembed';
 		}
