@@ -137,6 +137,8 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                     echo '<div style="visibility: hidden; display: none;"><label class="checkbox-inline"><input id="zwavecheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="zwavecheck"/>{{Vérification Z-wave}}</label></div>';
                                 }
                                 ?>
+                                </br>
+                                <label class="checkbox-inline"><input id="clearchannel" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="clearchannel" />{{Clear automatique des channel chaque jours}}</label>
                             </div>
                         </div>
                         <div class="form-group deamon">

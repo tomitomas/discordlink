@@ -167,13 +167,17 @@ class discordlink extends eqLogic {
       }
 
     /*
-     * Fonction exécutée automatiquement tous les jours par Jeedom
+     * Fonction exécutée automatiquement tous les jours par Jeedom*/
       public static function cronDaily() {
-
+		  $eqLogics = eqLogic::byType('discordlink');
+		  foreach ($eqLogics as $eqLogic) {
+			  $clearchannel = $eqLogic->getConfiguration('clearchannel',0);
+			  if ($clearchannel ==1) {
+			  	$cmd = $eqLogic->getCmd("action","deleteMessage");
+				$cmd->execCmd();
+			  }
+		  }
       }
-     */
-
-
 
     /*     * *********************Méthodes d'instance************************* */
 
@@ -1027,6 +1031,7 @@ class discordlinkCmd extends cmd {
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendMsg');
 			$_options = array('message'=>'!clearmessagechannel');
 			$cmd->execCmd($_options);
+			return 'truesendwithembed';
 			return 'truesendwithembed';
 		}
 
