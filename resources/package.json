@@ -2,7 +2,7 @@
   "name": "discordlinkBot",
   "version": "1.0.0",
   "private": true,
-  "description": "Ceci est le bot relier au plugin Discord Link sur Jeedom",
+  "description": "Ceci est le bot relié au plugin Discord Link sur Jeedom",
   "main": "discordlink.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
