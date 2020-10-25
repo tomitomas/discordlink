@@ -4,11 +4,11 @@
 	"description" : "Le plugin Discord Link permet d’envoyer des messages sur son serveur Discord : - Messages Classiques - Messages Evolués - Messages TTS - Gestion des Channels ( Salon ) - Fonction ASK Fonction - Envoi de Fichiers - Compatible avec les interactions de Jeedom - Fonction Etat des Démons de Jeedom - Fonction Etat des Dépendances des plugins Jeedom - Fonction Etat du résumé global.",
 	"licence" : "AGPL",
 	"author" : "Thibaut.Trarbach",
-	"require" : "3.2",
+	"require" : "3.3",
 	"category" : "communication",
 	"hasDependency" : true,
 	"hasOwnDeamon" : true,
-	"maxDependancyInstallTime" : 300,
+	"maxDependancyInstallTime" : 600,
 	"changelog" : "https://domotechdiscord.github.io/Docs/discordlink/fr_FR/changelog",
 	"documentation" : "https://domotechdiscord.github.io/Docs/discordlink/fr_FR/",
 	"link" : {
