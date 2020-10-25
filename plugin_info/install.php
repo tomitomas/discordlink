@@ -25,6 +25,8 @@ function discordlink_install() {
 }
 
 function discordlink_update() {
+    $plugin = plugin::byId("discordlink");
+    $plugin->dependancy_install();
     discordlink::CreateCmd();
     discordlink::setemojy();
     discordlink::updateobject();
