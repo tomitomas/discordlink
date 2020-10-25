@@ -91,7 +91,7 @@ function LancementCommande(commande, req)
 
 /***** Stop the server *****/
 app.get('/stop', (req, res) => {
-	config.logger('DiscordLink: Shuting down');
+	config.logger('DiscordLink: Shutting down');
 	res.status(200).json({});
 	server.close(() => {
 		process.exit(0);

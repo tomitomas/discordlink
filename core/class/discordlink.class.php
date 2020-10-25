@@ -384,7 +384,7 @@ class discordlink extends eqLogic {
 				'objectSummary'=>array('reqplug' => '0','Libelle'=>'Résumé par objet', 'Type'=>'action', 'SubType'=>'select','request'=>'objectSummary?null', 'visible' => 1),
 				'batteryinfo'=>array('reqplug' => '0','Libelle'=>'Résumé des batteries', 'Type'=>'action', 'SubType'=>'other','request'=>'batteryinfo?null', 'visible' => 1),
 				'centreMsg'=>array('reqplug' => '0','Libelle'=>'Centre de messages', 'Type'=>'action', 'SubType'=>'other','request'=>'centreMsg?null', 'visible' => 1),
-				'LastUser'=>array('reqplug' => '0','Libelle'=>'Dernière Connexions utilisateurs', 'Type'=>'action', 'SubType'=>'other','request'=>'LastUser?null', 'visible' => 1),
+				'LastUser'=>array('reqplug' => '0','Libelle'=>'Dernière Connexion utilisateur', 'Type'=>'action', 'SubType'=>'other','request'=>'LastUser?null', 'visible' => 1),
 				'1oldmsg'=>array('reqplug' => '0','Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
 				'2oldmsg'=>array('reqplug' => '0','Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
 				'3oldmsg'=>array('reqplug' => '0','Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1)
@@ -595,7 +595,7 @@ class discordlinkCmd extends cmd {
 			}
 		}
 
-		private function build_ControledeSliderSelectMessage($_options = array(), $default = "Une erreur est survenu") {
+		private function build_ControledeSliderSelectMessage($_options = array(), $default = "Une erreur est survenue") {
 
 			$request = $this->getConfiguration('request');
 			if ((isset($_options['message'])) && ($_options['message'] == "")) $_options['message'] = $default;
@@ -643,7 +643,7 @@ class discordlinkCmd extends cmd {
 			return $request;
 		}
 
-		private function build_ControledeSliderSelectEmbed($_options = array(), $default = "Une erreur est survenu") {
+		private function build_ControledeSliderSelectEmbed($_options = array(), $default = "Une erreur est survenue") {
 
 			$request = $this->getConfiguration('request');
 
@@ -868,7 +868,7 @@ class discordlinkCmd extends cmd {
 			$_options = array('Titre'=>'Résumé Batteries : ', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
 			$cmd->execCmd($_options);
 
-			$message2 = "Battery en alerte : __***" . $nb_alert . "***__\n Battery critique : __***".$nb_critique."***__";
+			$message2 = "Batterie en alerte : __***" . $nb_alert . "***__\n Batterie critique : __***".$nb_critique."***__";
 
 			$message2=str_replace("|","\n",$message2);
 			$_options2 = array('Titre'=>'Résumé Batterie', 'description'=> $message2, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
@@ -964,7 +964,7 @@ class discordlinkCmd extends cmd {
 
 				// Message selon le nombre de mises à jours
 				if ($nbMaj == 0) {
-					$msg = "*Vous n'avez pas de mise à jour en attente !*";
+					$msg = "*Vous n'avez pas de mises à jour en attente !*";
 				}elseif  ($nbMaj == 1) {
 					$msg = "*Vous avez **".$nbMaj."** mise à jour en attente".$msgBloq." :*"."\n".$listUpdate;
 				} else {
@@ -972,7 +972,7 @@ class discordlinkCmd extends cmd {
 				}
 			
 				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-				$_options = array('Titre'=>':gear: CENTRE DE MISE A JOUR :gear:', 'description'=> $msg, 'colors'=> '#ff0000', 'footer'=> 'By jcamus86');
+				$_options = array('Titre'=>':gear: CENTRE DE MISES A JOUR :gear:', 'description'=> $msg, 'colors'=> '#ff0000', 'footer'=> 'By jcamus86');
 				$cmd->execCmd($_options);
 
 				// -------------------------------------------------------------------------------------- //
@@ -1002,14 +1002,14 @@ class discordlinkCmd extends cmd {
 					$i=1;
 					$msg = "*Le centre de message est vide !*";
 					$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-					$_options = array('Titre'=>':clipboard: CENTRE DE MESSAGE :clipboard:', 'description'=> $msg, 'colors'=> '#ff8040', 'footer'=> 'By jcamus86');
+					$_options = array('Titre'=>':clipboard: CENTRE DE MESSAGES :clipboard:', 'description'=> $msg, 'colors'=> '#ff8040', 'footer'=> 'By jcamus86');
 					$cmd->execCmd($_options);
 				}else{
 					$i=0;
 					foreach ($msg as $value){
 						$i++;
 						$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-						$_options = array('Titre'=>':clipboard: CENTRE DE MESSAGE '.$i.'/'.count($msg).' :clipboard:', 'description'=> $value, 'colors'=> '#ff8040', 'footer'=> 'By jcamus86');
+						$_options = array('Titre'=>':clipboard: CENTRE DE MESSAGES '.$i.'/'.count($msg).' :clipboard:', 'description'=> $value, 'colors'=> '#ff8040', 'footer'=> 'By jcamus86');
 						$cmd->execCmd($_options);
 					}
 				}
