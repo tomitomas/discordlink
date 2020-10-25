@@ -25,11 +25,7 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cfdae333-e74b-45d0-a0bb-168b7cb240e9" name="Default Changelist" comment="Update Discord Auto">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugin_info/info.json" beforeDir="false" afterPath="$PROJECT_DIR$/plugin_info/info.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/plugin_info/install.php" beforeDir="false" afterPath="$PROJECT_DIR$/plugin_info/install.php" afterDir="false" />
-    </list>
+    <list default="true" id="cfdae333-e74b-45d0-a0bb-168b7cb240e9" name="Default Changelist" comment="Update Discord Auto" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -86,7 +82,7 @@
       <workItem from="1599309847111" duration="575000" />
       <workItem from="1599834256931" duration="74000" />
       <workItem from="1601406845399" duration="2995000" />
-      <workItem from="1603644800680" duration="747000" />
+      <workItem from="1603644800680" duration="1147000" />
     </task>
     <task id="LOCAL-00001" summary="Add delete last message">
       <created>1598554226454</created>
@@ -109,7 +105,21 @@
       <option name="project" value="LOCAL" />
       <updated>1603645274081</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Prepare pour la stable">
+      <created>1603645560432</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1603645560432</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Update Dep 2">
+      <created>1603645956543</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1603645956543</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -144,7 +154,9 @@
     <MESSAGE value="Add delete last message" />
     <MESSAGE value="Update Discord Auto" />
     <MESSAGE value="Update Dependance" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update Dependance" />
+    <MESSAGE value="Prepare pour la stable" />
+    <MESSAGE value="Update Dep 2" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update Dep 2" />
   </component>
   <component name="WindowStateProjectService">
     <state width="1877" height="98" key="GridCell.Tab.0.bottom" timestamp="1601411945135">
@@ -179,11 +191,11 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="165" key="SettingsEditor/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1598541489676" />
-    <state x="-1368" y="256" key="Vcs.Push.Dialog.v2" timestamp="1603645276383">
+    <state x="-1368" y="256" key="Vcs.Push.Dialog.v2" timestamp="1603645563052">
       <screen x="-1920" y="3" width="1920" height="1040" />
     </state>
     <state x="-1368" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1598554256159" />
-    <state x="-1368" y="256" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@-1920.3.1920.1040" timestamp="1603645276383" />
+    <state x="-1368" y="256" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@-1920.3.1920.1040" timestamp="1603645563052" />
     <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1601409291795" />
     <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1598541550134">
       <screen x="0" y="0" width="1920" height="1040" />
