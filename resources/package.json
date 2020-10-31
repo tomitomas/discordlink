@@ -10,7 +10,7 @@
   "author": "Thibaut Trarbach",
   "license": "ISC",
   "dependencies": {
-    "bufferutil": "^4.0.1",
+    "bufferutil": "^4.0.2",
     "discord.js": "^12.4.1",
     "express": "^4.17.1",
     "extend": "^3.0.2",
@@ -19,7 +19,7 @@
     "https": "^1.0.0",
     "querystring": "^0.2.0",
     "request": "^2.88.2",
-    "utf-8-validate": "^5.0.2"
+    "utf-8-validate": "^5.0.3"
   },
   "repository": {
     "type": "git",
