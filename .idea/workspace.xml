@@ -29,7 +29,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/class/discordlink.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/core/class/discordlink.class.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/class/discordlinkCovid.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/core/class/discordlinkCovid.class.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/template/scenario/cmd.covidSend.html" beforeDir="false" afterPath="$PROJECT_DIR$/core/template/scenario/cmd.covidSend.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +101,7 @@
       <workItem from="1604189212177" duration="270000" />
       <workItem from="1604230689421" duration="4162000" />
       <workItem from="1604255060176" duration="1279000" />
-      <workItem from="1604257797708" duration="2372000" />
+      <workItem from="1604257797708" duration="4796000" />
     </task>
     <task id="LOCAL-00001" summary="Add delete last message">
       <created>1598554226454</created>
@@ -167,7 +166,14 @@
       <option name="project" value="LOCAL" />
       <updated>1604258732052</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Update Discord">
+      <created>1604260344733</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1604260344733</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -209,6 +215,10 @@
     <option name="LAST_COMMIT_MESSAGE" value="Update Discord" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="-1506" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1604266016393">
+      <screen x="-1920" y="3" width="1920" height="1040" />
+    </state>
+    <state x="-1506" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/-1920.3.1920.1040@-1920.3.1920.1040" timestamp="1604266016393" />
     <state x="633" y="441" width="665" height="158" key="GitCloneDialog" timestamp="1604230773092">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -249,12 +259,12 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604158629483" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1604258840807">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1604260348537">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-1368" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1598554256159" />
     <state x="-1368" y="256" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@-1920.3.1920.1040" timestamp="1603646022617" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604258840807" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604260348537" />
     <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1604156109928">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

@@ -1036,9 +1036,9 @@ class discordlinkCmd extends cmd {
 
 		public function build_CovidSend($_options = array()) {
 
-			$motif = null;
-			$datesortie = null;
-			$heuresortie = null;
+			$motif = "travail";
+			$datesortie = "Maintenant";
+			$heuresortie = "Maintenant";
 
 			$users = config::byKey('user', 'discordlink');
 			$user = $_options['user'];
@@ -1058,14 +1058,14 @@ class discordlinkCmd extends cmd {
 
 			$fields = array(
 				array("name"=> "Nom", "value" => $nom, "inline" => 1),
-				array("name"=> "Prenom", "value" => $prenom, "inline" => 1),
+				array("name"=> "Prénom", "value" => $prenom, "inline" => 1),
 				array("name"=> "Motif", "value" => $motif, "inline" => 0),
 				array("name"=> "Date", "value" => $datesortie, "inline" => 0),
 				array("name"=> "Heure", "value" => $heuresortie, "inline" => 0)
 			);
 
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-			$_options = array('Titre'=>"Votre attestation Covid", 'description'=> $message, 'colors'=> '#ff00ff', 'footer'=> 'By Noodom et Thibaut', 'field'=> $fields);
+			$_options = array('Titre'=>"Votre attestation Covid", 'description'=> $message, 'colors'=> '#ff00ff', 'footer'=> 'By Noodom & Thibaut', 'field'=> $fields);
 			$cmd->execCmd($_options);
 			return 'truesendwithembed';
 		}

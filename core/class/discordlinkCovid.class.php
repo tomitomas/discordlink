@@ -30,11 +30,14 @@ class discordlinkCovid
         $code_postal = config::bykey("info::postalCode");
         $ville = config::bykey("info::city");
 
-        (empty($adresse)) ? $adresse = "pas d'adresse" : null;
-        (empty($code_postal)) ? $code_postal = "12345" : null;
-        (empty($ville)) ? $ville = "pas de Ville" : null;
-        (empty($datesortie)) ? $datesortie = date("Y-m-d") : null;
-        (empty($heuresortie)) ? $heuresortie = date("H:i") : null;
+        ("" != $adresse || is_null($adresse)) ? $adresse = "pas d'adresse" : null;
+        ("" != $code_postal || is_null($code_postal)) ? $code_postal = "12345" : null;
+        ("" != $ville || is_null($ville)) ? $ville = "pas de Ville" : null;
+        ("" != $datesortie || is_null($datesortie)) ? $datesortie = date("Y-m-d") : null;
+        ("" != $heuresortie || is_null($heuresortie)) ? $heuresortie = date("H:i") : null;
+
+        log::add('discordlink', 'debug', '$datesortie : '.$datesortie);
+        log::add('discordlink', 'debug', '$heuresortie : '.$heuresortie);
 
         $nom = self::encodeTag($nom);
         $prenom = self::encodeTag($prenom);
