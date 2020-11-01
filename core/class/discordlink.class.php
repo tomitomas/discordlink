@@ -1036,6 +1036,10 @@ class discordlinkCmd extends cmd {
 
 		public function build_CovidSend($_options = array()) {
 
+			$motif = null;
+			$datesortie = null;
+			$heuresortie = null;
+
 			$users = config::byKey('user', 'discordlink');
 			$user = $_options['user'];
 			$user = $users[$user];
@@ -1046,14 +1050,18 @@ class discordlinkCmd extends cmd {
 			$villenaissance = $user['villeNaissanceUser'];
 
 			if (("" != ($_options['motif']))) $motif = $_options['motif'];
+			if (("" != ($_options['datesortie']))) $datesortie = $_options['datesortie'];
+			if (("" != ($_options['heuresortie']))) $heuresortie = $_options['heuresortie'];
 
-			$result = discordlinkCovid::generateCovid($prenom,$nom,$datenaissance,$villenaissance,$motif);
+			$result = discordlinkCovid::generateCovid($prenom,$nom,$datenaissance,$villenaissance,$motif,$datesortie,$heuresortie);
 			$message=str_replace("|","\n","[Attestation Covid]($result)");
 
 			$fields = array(
 				array("name"=> "Nom", "value" => $nom, "inline" => 1),
 				array("name"=> "Prenom", "value" => $prenom, "inline" => 1),
-				array("name"=> "Motif", "value" => $motif, "inline" => 0)
+				array("name"=> "Motif", "value" => $motif, "inline" => 0),
+				array("name"=> "Date", "value" => $datesortie, "inline" => 0),
+				array("name"=> "Heure", "value" => $heuresortie, "inline" => 0)
 			);
 
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');

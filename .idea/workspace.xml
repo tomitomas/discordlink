@@ -101,7 +101,8 @@
       <workItem from="1604169064806" duration="8014000" />
       <workItem from="1604189212177" duration="270000" />
       <workItem from="1604230689421" duration="4162000" />
-      <workItem from="1604255060176" duration="1011000" />
+      <workItem from="1604255060176" duration="1279000" />
+      <workItem from="1604257797708" duration="2372000" />
     </task>
     <task id="LOCAL-00001" summary="Add delete last message">
       <created>1598554226454</created>
@@ -152,7 +153,21 @@
       <option name="project" value="LOCAL" />
       <updated>1604189246118</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Update Discord Auto">
+      <created>1604256163766</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1604256163766</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Update Discord">
+      <created>1604258732052</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1604258732052</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -185,12 +200,13 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Add delete last message" />
-    <MESSAGE value="Update Discord Auto" />
     <MESSAGE value="Update Dependance" />
     <MESSAGE value="Prepare pour la stable" />
     <MESSAGE value="Update Dep 2" />
     <MESSAGE value="Add Covid" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add Covid" />
+    <MESSAGE value="Update Discord Auto" />
+    <MESSAGE value="Update Discord" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update Discord" />
   </component>
   <component name="WindowStateProjectService">
     <state x="633" y="441" width="665" height="158" key="GitCloneDialog" timestamp="1604230773092">
@@ -233,12 +249,12 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604158629483" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1604189249507">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1604258840807">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-1368" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1598554256159" />
     <state x="-1368" y="256" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@-1920.3.1920.1040" timestamp="1603646022617" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604189249507" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604258840807" />
     <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1604156109928">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

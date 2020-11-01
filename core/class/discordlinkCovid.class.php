@@ -21,12 +21,10 @@ require_once __DIR__  . '/../../../../core/php/core.inc.php';
 class discordlinkCovid
 {
 
-    public function generateCovid ($nom = null, $prenom = null, $date_naissance = null, $lieu_naissance = null, $motif = null) {
+    public function generateCovid ($nom = null, $prenom = null, $date_naissance = null, $lieu_naissance = null, $motif = null, $datesortie = null, $heuresortie = null) {
 
         date_default_timezone_set('Europe/Paris');
         $createdate = date("m/d/Y H:i");
-        $datesortie = date("Y-m-d");
-        $heuresortie = date("H:i");
 
         $adresse = config::bykey("info::address");
         $code_postal = config::bykey("info::postalCode");
@@ -35,6 +33,8 @@ class discordlinkCovid
         (empty($adresse)) ? $adresse = "pas d'adresse" : null;
         (empty($code_postal)) ? $code_postal = "12345" : null;
         (empty($ville)) ? $ville = "pas de Ville" : null;
+        (empty($datesortie)) ? $datesortie = date("Y-m-d") : null;
+        (empty($heuresortie)) ? $heuresortie = date("H:i") : null;
 
         $nom = self::encodeTag($nom);
         $prenom = self::encodeTag($prenom);
