@@ -23,6 +23,11 @@ class discordlinkCovid
 
     public function generateCovid ($nom = null, $prenom = null, $date_naissance = null, $lieu_naissance = null, $motif = null) {
 
+        date_default_timezone_set('Europe/Paris');
+        $createdate = date("m/d/Y H:i");
+        $datesortie = date("Y-m-d");
+        $heuresortie = date("H:i");
+
         $adresse = config::bykey("info::address");
         $code_postal = config::bykey("info::postalCode");
         $ville = config::bykey("info::city");
@@ -39,12 +44,11 @@ class discordlinkCovid
         $code_postal = self::encodeTag($code_postal);
         $ville = self::encodeTag($ville);
         $motif = self::encodeTag($motif);
+        $createdate = self::encodeTag($createdate);
+        $datesortie = self::encodeTag($datesortie);
+        $heuresortie = self::encodeTag($heuresortie);
 
-
-        // Génération de l'url du QR Code
-        //createAT=11%2F01%2F2020+18%3A20&datesortie=2020-11-10&heuresortie=20%3A30&
-
-        $url = "https://attestation.les2t.fr/#prenom=$prenom&nom=$nom&date-de-naissance=$date_naissance&lieu-de-naissance=$lieu_naissance&adresse=$adresse&ville=$ville&code-postal=$code_postal&reason=$motif&autogenpdf";
+        $url = "https://attestation.les2t.fr/#prenom=$prenom&nom=$nom&date-de-naissance=$date_naissance&lieu-de-naissance=$lieu_naissance&adresse=$adresse&ville=$ville&code-postal=$code_postal&reason=$motif&createAT=$createdate&datesortie=$datesortie&heuresortie=$heuresortie&autogenpdf";
 
         return $url;
     }
