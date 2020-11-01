@@ -134,7 +134,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             <div class="col-sm-9">
                                 <label class="checkbox-inline"><input id="deamoncheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="deamoncheck" />{{Vérification Démons}}</label>
                                 <label class="checkbox-inline"><input id="depcheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="depcheck" />{{Vérification Dépendances}}</label>
-                                <label class="checkbox-inline"><input id="connectcheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="connectcheck" />{{Annonce des connections}}</label>
+                                <label class="checkbox-inline"><input id="connectcheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="connectcheck" />{{Annonce des connexions}}</label>
                                 <?php
                                 if (discordlink::testplugin('openzwave')) {
                                     echo '<label class="checkbox-inline"><input id="zwavecheck" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="zwavecheck"/>{{Vérification Z-wave}}</label>';
@@ -143,11 +143,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
                                 }
                                 ?>
                                 </br>
-                                <label class="checkbox-inline"><input id="clearchannel" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="clearchannel" />{{Clear automatique des channel chaque jours}}</label>
+                                <label class="checkbox-inline"><input id="clearchannel" type="checkbox" class="eqLogicAttr" data-l1key="configuration" data-l2key="clearchannel" />{{Clear automatique des channels chaque jour}}</label>
                             </div>
                         </div>
                         <div class="form-group deamon">
-                            <label class="col-sm-3 control-label">{{Auto-actualisation deamon (cron)}}</label>
+                            <label class="col-sm-3 control-label">{{Auto-actualisation démon (cron)}}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="autorefreshDeamon" placeholder="{{Auto-actualisation Deamon (cron)}}" />
                             </div>
@@ -176,13 +176,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
                         </br>
                         </br>
                         <div class="form-group zwave">
-                            <label class="col-sm-3 control-label">{{Node Id Zwave a exclure : }}</label>
+                            <label class="col-sm-3 control-label">{{Node Id Zwave à exclure : }}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="zwaveIdExclude" placeholder="{{exemple : 21 17 58}}" />
                             </div>
                         </div>
                         <div class="form-group zwave">
-                            <label class="col-sm-3 control-label">{{Temps maximal entre la dernière reponse (En seconde)(Z-Wave) : }}</label>
+                            <label class="col-sm-3 control-label">{{Temps maximal entre la dernière réponse (En seconde)(Z-Wave) : }}</label>
                             <div class="col-sm-3">
                                 <input type="number" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TempMax" placeholder="{{default : 43200}}" />
                             </div>
