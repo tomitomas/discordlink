@@ -147,7 +147,7 @@ $eqLogics = eqLogic::byType($plugin->getId());
                             </div>
                         </div>
                         <div class="form-group deamon">
-                            <label class="col-sm-3 control-label">{{Auto-actualisation deamon (cron)}}</label>
+                            <label class="col-sm-3 control-label">{{Auto-actualisation démon (cron)}}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="autorefreshDeamon" placeholder="{{Auto-actualisation Deamon (cron)}}" />
                             </div>
@@ -176,13 +176,13 @@ $eqLogics = eqLogic::byType($plugin->getId());
                         </br>
                         </br>
                         <div class="form-group zwave">
-                            <label class="col-sm-3 control-label">{{Node Id Zwave a exclure : }}</label>
+                            <label class="col-sm-3 control-label">{{Node Id Zwave à exclure : }}</label>
                             <div class="col-sm-3">
                                 <input type="text" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="zwaveIdExclude" placeholder="{{exemple : 21 17 58}}" />
                             </div>
                         </div>
                         <div class="form-group zwave">
-                            <label class="col-sm-3 control-label">{{Temps maximal entre la dernière reponse (En seconde)(Z-Wave) : }}</label>
+                            <label class="col-sm-3 control-label">{{Temps maximal entre la dernière réponse (En seconde)(Z-Wave) : }}</label>
                             <div class="col-sm-3">
                                 <input type="number" class="eqLogicAttr form-control" data-l1key="configuration" data-l2key="TempMax" placeholder="{{default : 43200}}" />
                             </div>
