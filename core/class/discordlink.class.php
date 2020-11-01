@@ -374,7 +374,7 @@ class discordlink extends eqLogic {
 			$TabCmd = array(
 				'sendMsg'=>array('reqplug' => '0', 'Libelle'=>'Envoi message', 'Type'=>'action', 'SubType' => 'message','request'=> 'sendMsg?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
 				'sendMsgTTS'=>array('reqplug' => '0','Libelle'=>'Envoi message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
-				'sendEmbed'=>array('reqplug' => '0','Libelle'=>'Envoi message évolué', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
+				'sendEmbed'=>array('reqplug' => '0','Libelle'=>'Envoi message évolué', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&countanswer=#countanswer#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
 				'sendFile'=>array('reqplug' => '0','Libelle'=>'Envoi fichier', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#&message=#message#', 'visible' => 0),
 				'deleteMessage'=>array('reqplug' => '0','Libelle'=>'Supprime les message du channel', 'Type'=>'action', 'SubType'=>'other','request'=>'deleteMessage?null', 'visible' => 0),
 				'deamonInfo'=>array('reqplug' => '0','Libelle'=>'Etat des démons', 'Type'=>'action', 'SubType'=>'other','request'=>'deamonInfo?null', 'visible' => 1),
@@ -385,6 +385,7 @@ class discordlink extends eqLogic {
 				'batteryinfo'=>array('reqplug' => '0','Libelle'=>'Résumé des batteries', 'Type'=>'action', 'SubType'=>'other','request'=>'batteryinfo?null', 'visible' => 1),
 				'centreMsg'=>array('reqplug' => '0','Libelle'=>'Centre de messages', 'Type'=>'action', 'SubType'=>'other','request'=>'centreMsg?null', 'visible' => 1),
 				'LastUser'=>array('reqplug' => '0','Libelle'=>'Dernière Connexion utilisateur', 'Type'=>'action', 'SubType'=>'other','request'=>'LastUser?null', 'visible' => 1),
+				'covidSend'=>array('reqplug' => '0','Libelle'=>'Send Attestation', 'Type'=>'action', 'SubType'=>'other','request'=>'covidSend?null', 'visible' => 1),
 				'1oldmsg'=>array('reqplug' => '0','Libelle'=>'Dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
 				'2oldmsg'=>array('reqplug' => '0','Libelle'=>'Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1),
 				'3oldmsg'=>array('reqplug' => '0','Libelle'=>'Avant Avant dernier message', 'Type'=>'info', 'SubType'=>'string', 'visible' => 1)
@@ -578,6 +579,9 @@ class discordlinkCmd extends cmd {
 				case 'LastUser':
 					$request = $this->build_LastUser($_options);
 				break;
+				case 'covidSend':
+					$request = $this->build_CovidSend($_options);
+					break;
 				case 'deleteMessage':
 					$request = $this->build_deleteMessage($_options);
 					break;
@@ -654,6 +658,7 @@ class discordlinkCmd extends cmd {
 			$field = "null";
 			$colors = "null";
 			$timeout = "null";
+			$countanswer = "null";
 
 			if (isset($_options['answer'])) {
 				if (("" != ($_options['title']))) $titre = $_options['title'];
@@ -675,14 +680,14 @@ class discordlinkCmd extends cmd {
 				}
 				$url = rtrim($url, ',');
 				$url .= ']';
-				$field = count($answer);
-
+				$countanswer = count($answer);
 			} else {
 				if (("" != ($_options['Titre']))) $titre = $_options['Titre'];
 				if (("" != ($_options['url']))) $url = $_options['url'];
 				if (("" != ($_options['description']))) $description = $_options['description'];
 				if (("" != ($_options['footer']))) $footer = $_options['footer'];
 				if (("" != ($_options['colors']))) $colors = $_options['colors'];
+				if (("" != ($_options['field']))) $field = json_encode($_options['field']);
 			}
 
 			$description = discordlink::emojyconvert($description);
@@ -698,6 +703,8 @@ class discordlinkCmd extends cmd {
 			array(urlencode(self::decodeTexteAleatoire($description))), $request);
 			$request = str_replace(array('#footer#'),
 			array(urlencode(self::decodeTexteAleatoire($footer))), $request);
+			$request = str_replace(array('#countanswer#'),
+			array(urlencode(self::decodeTexteAleatoire($countanswer))), $request);
 			$request = str_replace(array('#field#'),
 			array(urlencode(self::decodeTexteAleatoire($field))), $request);
 			$request = str_replace(array('#color#'),
@@ -1027,11 +1034,38 @@ class discordlinkCmd extends cmd {
 			return 'truesendwithembed';
 		}
 
+		public function build_CovidSend($_options = array()) {
+
+			$users = config::byKey('user', 'discordlink');
+			$user = $_options['user'];
+			$user = $users[$user];
+
+			$nom = $user['nomUser'];
+			$prenom = $user['prenomUser'];
+			$datenaissance = $user['dateNaissanceUser'];
+			$villenaissance = $user['villeNaissanceUser'];
+
+			if (("" != ($_options['motif']))) $motif = $_options['motif'];
+
+			$result = discordlinkCovid::generateCovid($prenom,$nom,$datenaissance,$villenaissance,$motif);
+			$message=str_replace("|","\n","[Attestation Covid]($result)");
+
+			$fields = array(
+				array("name"=> "Nom", "value" => $nom, "inline" => 1),
+				array("name"=> "Prenom", "value" => $prenom, "inline" => 1),
+				array("name"=> "Motif", "value" => $motif, "inline" => 0)
+			);
+
+			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
+			$_options = array('Titre'=>"Votre attestation Covid", 'description'=> $message, 'colors'=> '#ff00ff', 'footer'=> 'By Noodom et Thibaut', 'field'=> $fields);
+			$cmd->execCmd($_options);
+			return 'truesendwithembed';
+		}
+
 		public function build_deleteMessage($_options = array()) {
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendMsg');
 			$_options = array('message'=>'!clearmessagechannel');
 			$cmd->execCmd($_options);
-			return 'truesendwithembed';
 			return 'truesendwithembed';
 		}
 
@@ -1046,6 +1080,8 @@ class discordlinkCmd extends cmd {
 				return getTemplate('core', 'scenario', 'cmd.sendEmbed', 'discordlink');
 			if ($command == 'sendFile')
 				return getTemplate('core', 'scenario', 'cmd.sendFile', 'discordlink');
+			if ($command == 'covidSend')
+				return getTemplate('core', 'scenario', 'cmd.covidSend', 'discordlink');
 			return parent::getWidgetTemplateCode($_version, $_noCustom);
 		}
 		

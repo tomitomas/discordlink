@@ -1,0 +1,158 @@
+<div class="input-group input-group-sm" style="width: 100%; padding-top: 1px">
+    <span class="input-group-addon" id="basic-addon1" style="width: 100px">Motif</span>
+    <select class="message expressionAttr form-control ta_autosize" data-l1key="options" data-l2key="user" rows="1"
+            style="resize:vertical;" data-cmd_id="#id#" data-uid="#uid#">
+
+
+    </select>
+    </span>
+</div>
+
+<div class="input-group input-group-sm" style="width: 100%; padding-top: 1px">
+    <span class="input-group-addon" id="basic-addon1" style="width: 100px">Motif</span>
+    <select class="message expressionAttr form-control ta_autosize" data-l1key="options" data-l2key="motif" rows="1"
+            style="resize:vertical;" data-cmd_id="#id#" data-uid="#uid#">
+        <option value="enfants">Enfants</option>
+        <option value="travail">Travail</option>
+        <option value="achats">Achats</option>
+        <option value="sante">Sante</option>
+        <option value="famille">Famille</option>
+        <option value="handicap">Handicap</option>
+        <option value="sport_animaux">Sport ou Animaux</option>
+        <option value="convocation">Convocation</option>
+        <option value="missions">Missions</option>
+    </select>
+  </span>
+</div>
+<script>
+    var user = "#user#";
+    $.ajax({
+        type: 'POST',
+        url: 'plugins/discordlink/core/ajax/discordlink.ajax.php',
+        data: {
+            action: 'getuserArray'
+        },
+        dataType: 'json',
+        error: function (request, status, error) {
+            handleAjaxError(request, status, error, $('#div_AboAlert'));
+        },
+        success: function (data) {
+            if (data.state != 'ok') {
+                $('#div_AboAlert').showAlert({message: 'ERROR', level: 'danger'});
+                return;
+            }
+            for (var i in data.result) {
+                var text = data.result[i].prenomUser +" "+data.result[i].nomUser;
+                var value = i;
+                adduser(text, value);
+            }
+            $('.expressionAttr[data-l1key=options][data-l2key=user][data-uid=#uid#]').val(user);
+        }
+    });
+
+    function adduser(text, value) {
+        $('.expressionAttr[data-l1key=options][data-l2key=user][data-uid=#uid#]').append('<option value="'+value+'">'+text+'</option>');
+    }
+
+</script>
+
+<script>
+    var motif = "#motif#";
+    $('.expressionAttr[data-l1key=options][data-l2key=motif][data-uid=#uid#]').val(motif);
+
+    $('.listEquipementInfoTitre[data-uid=#uid#]').on('click', function () {
+        if ('#message_cmd_subtype#' != '') {
+            jeedom.cmd.getSelectModal({
+                cmd: {
+                    type: '#message_cmd_type#',
+                    subType: '#message_cmd_subtype#'
+                }
+            }, function (result) {
+                $('.expressionAttr[data-l1key=options][data-l2key=Titre][data-uid=#uid#]').atCaret('insert', result
+                    .human);
+            });
+        } else {
+            jeedom.cmd.getSelectModal({
+                cmd: {
+                    type: '#message_cmd_type#'
+                }
+            }, function (result) {
+                $('.expressionAttr[data-l1key=options][data-l2key=Titre][data-uid=#uid#]').atCaret('insert', result
+                    .human);
+            });
+        }
+    });
+
+    $('.listEquipementInfourl[data-uid=#uid#]').on('click', function () {
+        if ('#message_cmd_subtype#' != '') {
+            jeedom.cmd.getSelectModal({
+                cmd: {
+                    type: '#message_cmd_type#',
+                    subType: '#message_cmd_subtype#'
+                }
+            }, function (result) {
+                $('.expressionAttr[data-l1key=options][data-l2key=url][data-uid=#uid#]').atCaret('insert', result
+                    .human);
+            });
+        } else {
+            jeedom.cmd.getSelectModal({
+                cmd: {
+                    type: '#message_cmd_type#'
+                }
+            }, function (result) {
+                $('.expressionAttr[data-l1key=options][data-l2key=url][data-uid=#uid#]').atCaret('insert', result
+                    .human);
+            });
+        }
+    });
+
+    $('.listEquipementInfoDesk[data-uid=#uid#]').on('click', function () {
+        if ('#message_cmd_subtype#' != '') {
+            jeedom.cmd.getSelectModal({
+                cmd: {
+                    type: '#message_cmd_type#',
+                    subType: '#message_cmd_subtype#'
+                }
+            }, function (result) {
+                $('.expressionAttr[data-l1key=options][data-l2key=description][data-uid=#uid#]').atCaret('insert',
+                    result.human);
+            });
+        } else {
+            jeedom.cmd.getSelectModal({
+                cmd: {
+                    type: '#message_cmd_type#'
+                }
+            }, function (result) {
+                $('.expressionAttr[data-l1key=options][data-l2key=description][data-uid=#uid#]').atCaret('insert',
+                    result.human);
+            });
+        }
+    });
+
+    $('.listEquipementInfoFooter[data-uid=#uid#]').on('click', function () {
+        if ('#message_cmd_subtype#' != '') {
+            jeedom.cmd.getSelectModal({
+                cmd: {
+                    type: '#message_cmd_type#',
+                    subType: '#message_cmd_subtype#'
+                }
+            }, function (result) {
+                $('.expressionAttr[data-l1key=options][data-l2key=footer][data-uid=#uid#]').atCaret('insert', result
+                    .human);
+            });
+        } else {
+            jeedom.cmd.getSelectModal({
+                cmd: {
+                    type: '#message_cmd_type#'
+                }
+            }, function (result) {
+                $('.expressionAttr[data-l1key=options][data-l2key=footer][data-uid=#uid#]').atCaret('insert', result
+                    .human);
+            });
+        }
+    });
+
+    $('.colorChooser[data-uid=#uid#]').off('change').on('change', function () {
+        $('.expressionAttr[data-uid=#uid#][data-l1key=options][data-l2key=colors]').value($(this).value())
+    });
+</script>

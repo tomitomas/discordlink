@@ -26,6 +26,11 @@ $eqLogics = eqLogic::byType($plugin->getId());
                     <br>
                     <span>Emojis Settings</span></a>
             </div>
+            <div class="cursor eqLogicAction logoSecondary" style="position: absolute; left: 0px; top: 0px;">
+                <a href="index.php?v=d&m=discordlink&p=discordlinkuser"><img style="margin-top:-32px;" src="plugins/discordlink/plugin_info/discordlink_icon.png" width="75" height="75">
+                    <br>
+                    <span>Covid User</span></a>
+            </div>
         </div>
         <legend><i class="fas fa-table"></i> {{Mes Channels}}</legend>
         <input class="form-control" placeholder="{{Rechercher}}" id="in_searchEqlogic" />
