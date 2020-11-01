@@ -26,16 +26,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="cfdae333-e74b-45d0-a0bb-168b7cb240e9" name="Default Changelist" comment="Update Discord Auto">
-      <change afterPath="$PROJECT_DIR$/core/class/discordlinkCovid.class.php" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/core/template/scenario/cmd.covidSend.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/desktop/js/discordlinkuser.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/desktop/php/discordlinkuser.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/ajax/discordlink.ajax.php" beforeDir="false" afterPath="$PROJECT_DIR$/core/ajax/discordlink.ajax.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/core/class/discordlink.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/core/class/discordlink.class.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/php/discordlink.inc.php" beforeDir="false" afterPath="$PROJECT_DIR$/core/php/discordlink.inc.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/desktop/php/discordlink.php" beforeDir="false" afterPath="$PROJECT_DIR$/desktop/php/discordlink.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/discordlink.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/discordlink.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/class/discordlinkCovid.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/core/class/discordlinkCovid.class.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/template/scenario/cmd.covidSend.html" beforeDir="false" afterPath="$PROJECT_DIR$/core/template/scenario/cmd.covidSend.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -105,6 +99,9 @@
       <workItem from="1603925545340" duration="8000" />
       <workItem from="1604155587482" duration="12416000" />
       <workItem from="1604169064806" duration="8014000" />
+      <workItem from="1604189212177" duration="270000" />
+      <workItem from="1604230689421" duration="4162000" />
+      <workItem from="1604255060176" duration="1011000" />
     </task>
     <task id="LOCAL-00001" summary="Add delete last message">
       <created>1598554226454</created>
@@ -148,7 +145,14 @@
       <option name="project" value="LOCAL" />
       <updated>1603646018696</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Add Covid">
+      <created>1604189246118</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1604189246118</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -185,9 +189,14 @@
     <MESSAGE value="Update Dependance" />
     <MESSAGE value="Prepare pour la stable" />
     <MESSAGE value="Update Dep 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update Dep 2" />
+    <MESSAGE value="Add Covid" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add Covid" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="633" y="441" width="665" height="158" key="GitCloneDialog" timestamp="1604230773092">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="633" y="441" width="665" height="158" key="GitCloneDialog/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604230773092" />
     <state width="1877" height="98" key="GridCell.Tab.0.bottom" timestamp="1601411945135">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -224,12 +233,12 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604158629483" />
-    <state x="-1368" y="256" key="Vcs.Push.Dialog.v2" timestamp="1603646022617">
-      <screen x="-1920" y="3" width="1920" height="1040" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1604189249507">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-1368" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1598554256159" />
     <state x="-1368" y="256" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@-1920.3.1920.1040" timestamp="1603646022617" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1601409291795" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604189249507" />
     <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1604156109928">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

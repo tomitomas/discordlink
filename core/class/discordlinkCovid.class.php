@@ -42,7 +42,9 @@ class discordlinkCovid
 
 
         // Génération de l'url du QR Code
-        $url = "https://covid.luko.eu/generate.html#f=$prenom&l=$nom&b=$date_naissance&p=$lieu_naissance&a=$adresse&c=$ville&z=$code_postal&r=$motif";
+        //createAT=11%2F01%2F2020+18%3A20&datesortie=2020-11-10&heuresortie=20%3A30&
+
+        $url = "https://attestation.les2t.fr/#prenom=$prenom&nom=$nom&date-de-naissance=$date_naissance&lieu-de-naissance=$lieu_naissance&adresse=$adresse&ville=$ville&code-postal=$code_postal&reason=$motif&autogenpdf";
 
         return $url;
     }
