@@ -25,10 +25,9 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cfdae333-e74b-45d0-a0bb-168b7cb240e9" name="Default Changelist" comment="Update Discord Auto">
+    <list default="true" id="cfdae333-e74b-45d0-a0bb-168b7cb240e9" name="Default Changelist" comment="Debug">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/class/discordlink.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/core/class/discordlink.class.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/core/class/discordlinkCovid.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/core/class/discordlinkCovid.class.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/template/scenario/cmd.covidSend.html" beforeDir="false" afterPath="$PROJECT_DIR$/core/template/scenario/cmd.covidSend.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -101,7 +100,8 @@
       <workItem from="1604189212177" duration="270000" />
       <workItem from="1604230689421" duration="4162000" />
       <workItem from="1604255060176" duration="1279000" />
-      <workItem from="1604257797708" duration="4796000" />
+      <workItem from="1604257797708" duration="5678000" />
+      <workItem from="1604269417908" duration="2918000" />
     </task>
     <task id="LOCAL-00001" summary="Add delete last message">
       <created>1598554226454</created>
@@ -173,7 +173,14 @@
       <option name="project" value="LOCAL" />
       <updated>1604260344733</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Debug">
+      <created>1604266644723</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1604266644723</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -212,7 +219,8 @@
     <MESSAGE value="Add Covid" />
     <MESSAGE value="Update Discord Auto" />
     <MESSAGE value="Update Discord" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update Discord" />
+    <MESSAGE value="Debug" />
+    <option name="LAST_COMMIT_MESSAGE" value="Debug" />
   </component>
   <component name="WindowStateProjectService">
     <state x="-1506" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1604266016393">
@@ -259,12 +267,12 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state width="498" height="446" key="SwitcherDM/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604158629483" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1604260348537">
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1604271825586">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-1368" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1598554256159" />
     <state x="-1368" y="256" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@-1920.3.1920.1040" timestamp="1603646022617" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604260348537" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604271825586" />
     <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1604156109928">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -274,6 +282,10 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="738" y="421" key="git4idea.remote.GitConfigureRemotesDialog/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1598541439311" />
+    <state x="-1139" y="294" key="refactoring.ChangeSignatureDialog" timestamp="1604268357898">
+      <screen x="-1920" y="3" width="1920" height="1040" />
+    </state>
+    <state x="-1139" y="294" key="refactoring.ChangeSignatureDialog/0.0.1920.1040/-1920.3.1920.1040@-1920.3.1920.1040" timestamp="1604268357898" />
     <state x="616" y="240" key="run.anything.popup" timestamp="1604180687488">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>

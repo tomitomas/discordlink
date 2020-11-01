@@ -5,7 +5,7 @@
         <option value="">Non defini</option>
     </select>
     <input class="expressionAttr form-control input-sm" data-l1key="options" data-l2key="user" value="#user#"
-           data-uid="#uid#" style="width: 80%; display: inline-block;"/>
+           data-cmd_id="#id#" data-uid="#uid#" style="width: 80%; display: inline-block;"/>
     </span>
 </div>
 
@@ -73,16 +73,11 @@
             for (var i in data.result) {
                 var text = data.result[i].prenomUser +" "+data.result[i].nomUser;
                 var value = i;
-                adduser(text, value);
+                $('.userchose[data-uid=#uid#]').append('<option value="'+value+'">'+text+'</option>');
             }
             $('.userchose[data-uid=#uid#]').val(user);
         }
     });
-
-    function adduser(text, value) {
-        $('.userchose[data-uid=#uid#]').append('<option value="'+value+'">'+text+'</option>');
-    }
-
 </script>
 
 <script>
