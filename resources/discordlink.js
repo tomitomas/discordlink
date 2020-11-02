@@ -202,7 +202,8 @@ app.get('/sendEmbed', (req, res) => {
 	var title = req.query.title;
 	var url = req.query.url;
 	var description = req.query.description;
-	var field = req.query.field;
+	var countanswer = req.query.countanswer;
+	var fields = req.query.field;
 	var footer = req.query.footer;
 	var reponse = "null";
 
@@ -211,13 +212,33 @@ app.get('/sendEmbed', (req, res) => {
 	const Embed = new Discord.MessageEmbed()
 	.setColor(color)
 	.setTimestamp();
-	if(title != "null")Embed.setTitle(title);
-	if(url != "null" && field == "null")Embed.setURL(url);
-	if(description != "null")Embed.setDescription(description);
-	if(footer != "null")Embed.setFooter(footer);
+	if(title != "null") Embed.setTitle(title);
+	if(url != "null" && countanswer == "null") Embed.setURL(url);
+	if(description != "null") Embed.setDescription(description);
+	if(footer != "null") Embed.setFooter(footer);
 
+	if (fields != "null") {
+		fields = JSON.parse(fields);
+		for(var field in fields){
+			var name = fields[field]['name']
+			var value = fields[field]['value']
+			var inline = fields[field]['inline']
+
+			if (inline = 1) {
+				inline = true
+			} else {
+				inline = false
+			}
+
+
+			console.log(fields[field])
+			console.log("Name : "+name+" | Value : "+value)
+
+			Embed.addField(name, value, inline)
+		}
+	}
     client.channels.cache.get(req.query.channelID).send(Embed).then(async m => {
-		if(field != "null") {
+		if(countanswer != "null") {
 
 			toReturn.push({
 				'querry': req.query,
@@ -228,7 +249,7 @@ app.get('/sendEmbed', (req, res) => {
 
 			var emojy = ["🇦","🇧","🇨","🇩","🇪","🇫","🇬","🇭","🇮","🇯","🇰","🇱","🇲","🇳","🇴","🇵","🇶","🇷","🇸","🇹","🇺","🇻","🇼","🇽","🇾","🇿"];
 			a = 0;
-			while (a < field) {
+			while (a < countanswer) {
 				await m.react(emojy[a]);
 				a++;
 			}
@@ -283,7 +304,7 @@ app.get('/sendEmbed', (req, res) => {
 			});
 		}
 	}).catch(console.error);
-	if(field == "null") {
+	if(countanswer == "null") {
 		toReturn.push({
 			'querry': req.query
 		});

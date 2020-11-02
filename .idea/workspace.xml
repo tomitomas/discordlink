@@ -25,7 +25,11 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cfdae333-e74b-45d0-a0bb-168b7cb240e9" name="Default Changelist" comment="Update Discord Auto" />
+    <list default="true" id="cfdae333-e74b-45d0-a0bb-168b7cb240e9" name="Default Changelist" comment="Debug">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/class/discordlink.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/core/class/discordlink.class.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/core/class/discordlinkCovid.class.php" beforeDir="false" afterPath="$PROJECT_DIR$/core/class/discordlinkCovid.class.php" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -60,10 +64,17 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.date" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/desktop/js" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.github.ui.GithubSettingsConfigurable" />
     <property name="ts.external.directory.path" value="C:\Users\trmau\AppData\Local\JetBrains\Toolbox\apps\PhpStorm\ch-0\202.6397.115\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\trmau\Documents\GitHub\discordlink\desktop\js" />
+      <recent name="C:\Users\trmau\Documents\GitHub\discordlink\desktop\php" />
+    </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -82,7 +93,16 @@
       <workItem from="1599309847111" duration="575000" />
       <workItem from="1599834256931" duration="74000" />
       <workItem from="1601406845399" duration="2995000" />
-      <workItem from="1603644800680" duration="1147000" />
+      <workItem from="1603644800680" duration="1818000" />
+      <workItem from="1603652418738" duration="612000" />
+      <workItem from="1603925545340" duration="8000" />
+      <workItem from="1604155587482" duration="12416000" />
+      <workItem from="1604169064806" duration="8014000" />
+      <workItem from="1604189212177" duration="270000" />
+      <workItem from="1604230689421" duration="4162000" />
+      <workItem from="1604255060176" duration="1279000" />
+      <workItem from="1604257797708" duration="5678000" />
+      <workItem from="1604269417908" duration="4524000" />
     </task>
     <task id="LOCAL-00001" summary="Add delete last message">
       <created>1598554226454</created>
@@ -119,7 +139,56 @@
       <option name="project" value="LOCAL" />
       <updated>1603645956543</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Update Dep 2">
+      <created>1603646018696</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1603646018696</updated>
+    </task>
+    <task id="LOCAL-00007" summary="Add Covid">
+      <created>1604189246118</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1604189246118</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Update Discord Auto">
+      <created>1604256163766</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1604256163766</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Update Discord">
+      <created>1604258732052</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1604258732052</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Update Discord">
+      <created>1604260344733</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1604260344733</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Debug">
+      <created>1604266644723</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1604266644723</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Debug">
+      <created>1604274600536</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1604274600536</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -152,13 +221,24 @@
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Add delete last message" />
-    <MESSAGE value="Update Discord Auto" />
     <MESSAGE value="Update Dependance" />
     <MESSAGE value="Prepare pour la stable" />
     <MESSAGE value="Update Dep 2" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update Dep 2" />
+    <MESSAGE value="Add Covid" />
+    <MESSAGE value="Update Discord Auto" />
+    <MESSAGE value="Update Discord" />
+    <MESSAGE value="Debug" />
+    <option name="LAST_COMMIT_MESSAGE" value="Debug" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="-1506" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1604266016393">
+      <screen x="-1920" y="3" width="1920" height="1040" />
+    </state>
+    <state x="-1506" y="178" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/-1920.3.1920.1040@-1920.3.1920.1040" timestamp="1604266016393" />
+    <state x="633" y="441" width="665" height="158" key="GitCloneDialog" timestamp="1604230773092">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="633" y="441" width="665" height="158" key="GitCloneDialog/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604230773092" />
     <state width="1877" height="98" key="GridCell.Tab.0.bottom" timestamp="1601411945135">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
@@ -191,20 +271,33 @@
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="461" y="165" key="SettingsEditor/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1598541489676" />
-    <state x="-1368" y="256" key="Vcs.Push.Dialog.v2" timestamp="1603645563052">
-      <screen x="-1920" y="3" width="1920" height="1040" />
+    <state width="498" height="446" key="SwitcherDM" timestamp="1604158629483">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="498" height="446" key="SwitcherDM/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604158629483" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2" timestamp="1604274603885">
+      <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="-1368" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.0.1920.1040@-1920.0.1920.1040" timestamp="1598554256159" />
-    <state x="-1368" y="256" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@-1920.3.1920.1040" timestamp="1603645563052" />
-    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1601409291795" />
-    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1598541550134">
+    <state x="-1368" y="256" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@-1920.3.1920.1040" timestamp="1603646022617" />
+    <state x="552" y="253" key="Vcs.Push.Dialog.v2/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604274603885" />
+    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2" timestamp="1604156109928">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1598541550134" />
+    <state x="777" y="434" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604156109928" />
     <state x="738" y="421" key="git4idea.remote.GitConfigureRemotesDialog" timestamp="1598541439311">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="738" y="421" key="git4idea.remote.GitConfigureRemotesDialog/0.0.1920.1040/-1920.0.1920.1040@0.0.1920.1040" timestamp="1598541439311" />
+    <state x="-1139" y="294" key="refactoring.ChangeSignatureDialog" timestamp="1604268357898">
+      <screen x="-1920" y="3" width="1920" height="1040" />
+    </state>
+    <state x="-1139" y="294" key="refactoring.ChangeSignatureDialog/0.0.1920.1040/-1920.3.1920.1040@-1920.3.1920.1040" timestamp="1604268357898" />
+    <state x="616" y="240" key="run.anything.popup" timestamp="1604180687488">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040/-1920.3.1920.1040@0.0.1920.1040" timestamp="1604180687488" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
