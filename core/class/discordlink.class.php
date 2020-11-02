@@ -1043,6 +1043,8 @@ class discordlinkCmd extends cmd {
 			$users = config::byKey('user', 'discordlink');
 			$user = $_options['user'];
 			$user = $users[$user];
+			log::add('discordlink', 'debug', 'Users '.json_encode($users));
+			log::add('discordlink', 'debug', 'User '.json_encode($user));
 
 			$nom = $user['nomUser'];
 			$prenom = $user['prenomUser'];
