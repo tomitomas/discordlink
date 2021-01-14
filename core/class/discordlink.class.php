@@ -1079,8 +1079,8 @@ class discordlinkCmd extends cmd {
 			return 'truesendwithembed';
 		}
 
-		public function getWidgetTemplateCode($_version = 'dashboard', $_noCustom = false) {
-			if ($_version != 'scenario') return parent::getWidgetTemplateCode($_version, $_noCustom);
+		public function getWidgetTemplateCode($_version = 'dashboard', $_clean = false, $_widgetName = '') {
+			if ($_version != 'scenario') return parent::getWidgetTemplateCode($_version, $_clean, $_widgetName = '');
 			list($command, $arguments) = explode('?', $this->getConfiguration('request'), 2);
 			if ($command == 'sendMsg')
 				return getTemplate('core', 'scenario', 'cmd.sendMsg', 'discordlink');
@@ -1092,7 +1092,7 @@ class discordlinkCmd extends cmd {
 				return getTemplate('core', 'scenario', 'cmd.sendFile', 'discordlink');
 			if ($command == 'covidSend')
 				return getTemplate('core', 'scenario', 'cmd.covidSend', 'discordlink');
-			return parent::getWidgetTemplateCode($_version, $_noCustom);
+			return parent::getWidgetTemplateCode($_version, $_clean, $_widgetName = '');
 		}
 
 		/*     * **********************Getteur Setteur*************************** */
