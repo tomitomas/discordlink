@@ -1079,19 +1079,19 @@ class discordlinkCmd extends cmd {
 			return 'truesendwithembed';
 		}
 
-		public function getWidgetTemplateCode($_version = 'dashboard', $_clean = false, $_widgetName = '') {
+		public function getWidgetTemplateCode($_version = 'dashboard', $_clean = true, $_widgetName = '') {
 			if ($_version != 'scenario') return parent::getWidgetTemplateCode($_version, $_clean, $_widgetName = '');
 			list($command, $arguments) = explode('?', $this->getConfiguration('request'), 2);
 			if ($command == 'sendMsg')
-				return getTemplate('core', 'scenario', 'cmd.sendMsg', 'discordlink');
+				return self::getTemplate('core', 'scenario', 'cmd.sendMsg', 'discordlink');
 			if ($command == 'sendMsgTTS')
-				return getTemplate('core', 'scenario', 'cmd.sendMsgtts', 'discordlink');
+				return self::getTemplate('core', 'scenario', 'cmd.sendMsgtts', 'discordlink');
 			if ($command == 'sendEmbed')
-				return getTemplate('core', 'scenario', 'cmd.sendEmbed', 'discordlink');
+				return self::getTemplate('core', 'scenario', 'cmd.sendEmbed', 'discordlink');
 			if ($command == 'sendFile')
-				return getTemplate('core', 'scenario', 'cmd.sendFile', 'discordlink');
+				return self::getTemplate('core', 'scenario', 'cmd.sendFile', 'discordlink');
 			if ($command == 'covidSend')
-				return getTemplate('core', 'scenario', 'cmd.covidSend', 'discordlink');
+				return self::getTemplate('core', 'scenario', 'cmd.covidSend', 'discordlink');
 			return parent::getWidgetTemplateCode($_version, $_clean, $_widgetName = '');
 		}
 
