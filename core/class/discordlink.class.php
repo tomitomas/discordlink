@@ -1081,7 +1081,7 @@ class discordlinkCmd extends cmd {
 
 		public function getWidgetTemplateCode($_version = 'dashboard', $_clean = true, $_widgetName = '') {
 			$data = null;
-			if ($_version != 'scenario') return parent::getWidgetTemplateCode($_version, $_clean, $_widgetName = '');
+			if ($_version != 'scenario') return parent::getWidgetTemplateCode($_version, $_clean, $_widgetName);
 			list($command, $arguments) = explode('?', $this->getConfiguration('request'), 2);
 			if ($command == 'sendMsg')
 				$data = getTemplate('core', 'scenario', 'cmd.sendMsg', 'discordlink');
@@ -1098,7 +1098,7 @@ class discordlinkCmd extends cmd {
 					 if(!is_array($data)) return array('template' => $data, 'isCoreWidget' => false);
 				} else return $data;
 			}
-			return parent::getWidgetTemplateCode($_version, $_clean, $_widgetName = '');
+			return parent::getWidgetTemplateCode($_version, $_clean, $_widgetName);
 		}
 
 		/*     * **********************Getteur Setteur*************************** */
