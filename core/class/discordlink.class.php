@@ -1079,10 +1079,9 @@ class discordlinkCmd extends cmd {
 			return 'truesendwithembed';
 		}
 
-		public function getWidgetTemplateCode($_version = 'dashboard', $_noCustom = false) {
-			if ($_version != 'scenario') return parent::getWidgetTemplateCode($_version, $_noCustom);
+		public function getWidgetTemplateCode($_version = 'dashboard', $_clean = true, $_widgetName = '') {
+			if ($_version != 'scenario') return parent::getWidgetTemplateCode($_version, $_clean, $_widgetName = '');
 			list($command, $arguments) = explode('?', $this->getConfiguration('request'), 2);
-			$data = null;
 			if ($command == 'sendMsg')
 				$data = getTemplate('core', 'scenario', 'cmd.sendMsg', 'discordlink');
 			if ($command == 'sendMsgTTS')
@@ -1103,7 +1102,7 @@ class discordlinkCmd extends cmd {
 			}
 
 
-			return parent::getWidgetTemplateCode($_version, $_noCustom);
+			return parent::getWidgetTemplateCode($_version, $_clean, $_widgetName = '');
 		}
 
 		/*     * **********************Getteur Setteur*************************** */
