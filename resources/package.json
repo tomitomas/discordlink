@@ -10,19 +10,21 @@
   "author": "Thibaut Trarbach",
   "license": "ISC",
   "dependencies": {
-    "bufferutil": "^4.0.2",
-    "discord.js": "^12.4.1",
+    "discord.js": "^12.5.1",
     "express": "^4.17.1",
     "extend": "^3.0.2",
     "http-proxy-middleware": "^1.0.5",
     "http-proxy-response-rewrite": "0.0.1",
     "https": "^1.0.0",
-    "querystring": "^0.2.0",
-    "request": "^2.88.2",
-    "utf-8-validate": "^5.0.3"
+    "querystring": "^0.2.1",
+    "request": "^2.88.2"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/trmaud/discordlink.git"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^4.0.3",
+    "utf-8-validate": "^5.0.4"
   }
 }

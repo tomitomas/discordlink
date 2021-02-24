@@ -376,7 +376,7 @@ class discordlink extends eqLogic {
 				'sendMsgTTS'=>array('reqplug' => '0','Libelle'=>'Envoi message TTS', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendMsgTTS?message=#message#', 'visible' => 1, 'Template' => 'discordlink::message'),
 				'sendEmbed'=>array('reqplug' => '0','Libelle'=>'Envoi message évolué', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendEmbed?color=#color#&title=#title#&url=#url#&description=#description#&field=#field#&countanswer=#countanswer#&footer=#footer#&timeout=#timeout#', 'visible' => 0),
 				'sendFile'=>array('reqplug' => '0','Libelle'=>'Envoi fichier', 'Type'=>'action', 'SubType' => 'message', 'request'=> 'sendFile?patch=#patch#&name=#name#&message=#message#', 'visible' => 0),
-				'deleteMessage'=>array('reqplug' => '0','Libelle'=>'Supprime les message du channel', 'Type'=>'action', 'SubType'=>'other','request'=>'deleteMessage?null', 'visible' => 0),
+				'deleteMessage'=>array('reqplug' => '0','Libelle'=>'Supprime les messages du channel', 'Type'=>'action', 'SubType'=>'other','request'=>'deleteMessage?null', 'visible' => 0),
 				'deamonInfo'=>array('reqplug' => '0','Libelle'=>'Etat des démons', 'Type'=>'action', 'SubType'=>'other','request'=>'deamonInfo?null', 'visible' => 1),
 				'dependanceInfo'=>array('reqplug' => '0','Libelle'=>'Etat des dépendances', 'Type'=>'action', 'SubType'=>'other','request'=>'dependanceInfo?null', 'visible' => 1),
 				'zwave'=>array('reqplug' => 'openzwave','Libelle'=>'Etat des équipements Z-Wave', 'Type'=>'action', 'SubType'=>'other','request'=>'zwave?null', 'visible' => 1),
@@ -425,7 +425,7 @@ class discordlink extends eqLogic {
 						$Cmddiscordlink->setTemplate("mobile", $Cmd['Template']);
 					}
 					$Cmddiscordlink->setOrder($Order);
-					$Cmddiscordlink->setDisplay('message_placeholder', 'Message a envoyer sur discord');
+					$Cmddiscordlink->setDisplay('message_placeholder', 'Message à envoyer sur Discord');
 					$Cmddiscordlink->setDisplay('forceReturnLineBefore', true);
 					$Cmddiscordlink->save();
 					$Order++;
@@ -1009,14 +1009,14 @@ class discordlinkCmd extends cmd {
 					$i=1;
 					$msg = "*Le centre de message est vide !*";
 					$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-					$_options = array('Titre'=>':clipboard: CENTRE DE MESSAGES :clipboard:', 'description'=> $msg, 'colors'=> '#ff8040', 'footer'=> 'By jcamus86');
+					$_options = array('Titre'=>':clipboard: CENTRE DE MESSAGES :clipboard:', 'description'=> $msg, 'colors'=> '#ff8040', 'footer'=> 'By Jcamus86');
 					$cmd->execCmd($_options);
 				}else{
 					$i=0;
 					foreach ($msg as $value){
 						$i++;
 						$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-						$_options = array('Titre'=>':clipboard: CENTRE DE MESSAGES '.$i.'/'.count($msg).' :clipboard:', 'description'=> $value, 'colors'=> '#ff8040', 'footer'=> 'By jcamus86');
+						$_options = array('Titre'=>':clipboard: CENTRE DE MESSAGES '.$i.'/'.count($msg).' :clipboard:', 'description'=> $value, 'colors'=> '#ff8040', 'footer'=> 'By Jcamus86');
 						$cmd->execCmd($_options);
 					}
 				}
@@ -1079,20 +1079,26 @@ class discordlinkCmd extends cmd {
 			return 'truesendwithembed';
 		}
 
-		public function getWidgetTemplateCode($_version = 'dashboard', $_noCustom = false) {
-			if ($_version != 'scenario') return parent::getWidgetTemplateCode($_version, $_noCustom);
+		public function getWidgetTemplateCode($_version = 'dashboard', $_clean = true, $_widgetName = '') {
+			$data = null;
+			if ($_version != 'scenario') return parent::getWidgetTemplateCode($_version, $_clean, $_widgetName);
 			list($command, $arguments) = explode('?', $this->getConfiguration('request'), 2);
 			if ($command == 'sendMsg')
-				return getTemplate('core', 'scenario', 'cmd.sendMsg', 'discordlink');
+				$data = getTemplate('core', 'scenario', 'cmd.sendMsg', 'discordlink');
 			if ($command == 'sendMsgTTS')
-				return getTemplate('core', 'scenario', 'cmd.sendMsgtts', 'discordlink');
+				$data = getTemplate('core', 'scenario', 'cmd.sendMsgtts', 'discordlink');
 			if ($command == 'sendEmbed')
-				return getTemplate('core', 'scenario', 'cmd.sendEmbed', 'discordlink');
+				$data = getTemplate('core', 'scenario', 'cmd.sendEmbed', 'discordlink');
 			if ($command == 'sendFile')
-				return getTemplate('core', 'scenario', 'cmd.sendFile', 'discordlink');
+				$data = getTemplate('core', 'scenario', 'cmd.sendFile', 'discordlink');
 			if ($command == 'covidSend')
-				return getTemplate('core', 'scenario', 'cmd.covidSend', 'discordlink');
-			return parent::getWidgetTemplateCode($_version, $_noCustom);
+				$data = getTemplate('core', 'scenario', 'cmd.covidSend', 'discordlink');
+			if (!is_null($data)) {
+				if (version_compare(jeedom::version(),'4.2.0','>=')) {
+					 if(!is_array($data)) return array('template' => $data, 'isCoreWidget' => false);
+				} else return $data;
+			}
+			return parent::getWidgetTemplateCode($_version, $_clean, $_widgetName);
 		}
 
 		/*     * **********************Getteur Setteur*************************** */
