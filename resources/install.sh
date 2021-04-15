@@ -15,7 +15,6 @@ step 0 "Vérifications diverses"
 
 step 5 "Mise à jour APT et installation des packages nécessaires"
 try sudo apt-get update
-try sudo DEBIAN_FRONTEND=noninteractive apt-get install -y some_prerequired_packages
 
 #install nodejs, steps 10->50
 . ${BASEDIR}/install_nodejs.sh ${installVer}
