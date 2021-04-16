@@ -516,8 +516,6 @@ class discordlinkCmd extends cmd {
 				return;
 			}
 
-			//TODO : Mettre un system pour verifier le deamon
-
 			$deamon = discordlink::deamon_info();
 			if ($deamon['state'] == 'ok') {
 				$request = $this->buildRequest($_options);
@@ -671,37 +669,42 @@ class discordlinkCmd extends cmd {
 				if (("" != ($_options['title']))) $titre = $_options['title'];
 				$colors = "#1100FF";
 
-				$answer = $_options['answer'];
-				$timeout = $_options['timeout'];
-				$description = "";
+				if ($_options['answer'][0] != "") {
+					$answer = $_options['answer'];
+					$timeout = $_options['timeout'];
+					$description = "";
 
-				$a = 0;
-				$url = "[";
-				$choix = [":regional_indicator_a:",":regional_indicator_b:",":regional_indicator_c:",":regional_indicator_d:",":regional_indicator_e:",":regional_indicator_f:",":regional_indicator_g:",":regional_indicator_h:",":regional_indicator_i:",":regional_indicator_j:",":regional_indicator_k:",":regional_indicator_l:",":regional_indicator_m:",":regional_indicator_n:",":regional_indicator_o:",":regional_indicator_p:",":regional_indicator_q:",":regional_indicator_r:",":regional_indicator_s:",":regional_indicator_t:",":regional_indicator_u:",":regional_indicator_v:",":regional_indicator_w:",":regional_indicator_x:",":regional_indicator_y:",":regional_indicator_z:"];
-				while ($a < count($answer)) {
-					$description .=	$choix[$a] . " : ". $answer[$a];
-					$description .= "
+					$a = 0;
+					$url = "[";
+					$choix = [":regional_indicator_a:", ":regional_indicator_b:", ":regional_indicator_c:", ":regional_indicator_d:", ":regional_indicator_e:", ":regional_indicator_f:", ":regional_indicator_g:", ":regional_indicator_h:", ":regional_indicator_i:", ":regional_indicator_j:", ":regional_indicator_k:", ":regional_indicator_l:", ":regional_indicator_m:", ":regional_indicator_n:", ":regional_indicator_o:", ":regional_indicator_p:", ":regional_indicator_q:", ":regional_indicator_r:", ":regional_indicator_s:", ":regional_indicator_t:", ":regional_indicator_u:", ":regional_indicator_v:", ":regional_indicator_w:", ":regional_indicator_x:", ":regional_indicator_y:", ":regional_indicator_z:"];
+					while ($a < count($answer)) {
+						$description .= $choix[$a] . " : " . $answer[$a];
+						$description .= "
 ";
-					$url .= '"'.$answer[$a].'",';
-					$a ++;
+						$url .= '"' . $answer[$a] . '",';
+						$a++;
+					}
+					$url = rtrim($url, ',');
+					$url .= ']';
+					$countanswer = count($answer);
+				} else {
+					$timeout = $_options['timeout'];
+					$countanswer = 0;
+					$description = "Votre prochain message sera la réponse.";
+					$url = "text";
 				}
-				$url = rtrim($url, ',');
-				$url .= ']';
-				$countanswer = count($answer);
 			} else {
-				if (("" != ($_options['Titre']))) $titre = $_options['Titre'];
-				if (("" != ($_options['url']))) $url = $_options['url'];
-				if (("" != ($_options['description']))) $description = $_options['description'];
-				if (("" != ($_options['footer']))) $footer = $_options['footer'];
-				if (("" != ($_options['colors']))) $colors = $_options['colors'];
-				if (("" != ($_options['field']))) $field = json_encode($_options['field']);
+				if (isset($_options['Titre'])) if (("" != ($_options['Titre']))) $titre = $_options['Titre'];
+				if (isset($_options['url'])) if (("" != ($_options['url']))) $url = $_options['url'];
+				if (isset($_options['description'])) if (("" != ($_options['description']))) $description = $_options['description'];
+				if (isset($_options['footer'])) if (("" != ($_options['footer']))) $footer = $_options['footer'];
+				if (isset($_options['colors'])) if (("" != ($_options['colors']))) $colors = $_options['colors'];
+				if (isset($_options['field'])) if (("" != ($_options['field']))) $field = json_encode($_options['field']);
 			}
 
 			$description = discordlink::emojyconvert($description);
 			log::add('discordlink', 'debug', 'desctription : '.$description);
 
-			$request = str_replace(array('#title#'),
-			array(urlencode(self::decodeTexteAleatoire($titre))), $request);
 			$request = str_replace(array('#title#'),
 			array(urlencode(self::decodeTexteAleatoire($titre))), $request);
 			$request = str_replace(array('#url#'),
