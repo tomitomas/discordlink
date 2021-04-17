@@ -6,7 +6,8 @@ require('fs');
 const Discord = require("discord.js");
 
 const client = new Discord.Client();
-const request = require('request');
+const fetch = require('node-fetch');
+//const request = require('request');
 
 const token = process.argv[3];
 const IPJeedom = process.argv[2];
@@ -342,22 +343,12 @@ function httpPost(nom, jsonaenvoyer) {
     console.log("jsonaenvoyer : "+ jsonaenvoyer)
     config.logger && config.logger('DATA envoyé:' + jsonaenvoyer, 'DEBUG');
 
-    request.post(url, {
-        json: true,
-        gzip: false,
-        multipart: [
-            {
-                body: jsonaenvoyer
+    fetch(url, {method: 'post', body: JSON.stringify(jsonaenvoyer)})
+        .then(res => {
+            if (!res.ok) {
+                console.log("Erreur lors du contact de votre JeeDom")
             }
-        ]
-    }, function (err, response, json) {
-
-        if (!err && response.statusCode === 200) {
-
-        } else {
-
-        }
-    });
+        })
 }
 
 client.on("ready", async () => {

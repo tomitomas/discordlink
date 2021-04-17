@@ -25,7 +25,8 @@
     </select>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cfdae333-e74b-45d0-a0bb-168b7cb240e9" name="Default Changelist" comment="Debug">
+    <list default="true" id="cfdae333-e74b-45d0-a0bb-168b7cb240e9" name="Default Changelist" comment="- Ajout du ASK text">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/discordlink.js" beforeDir="false" afterPath="$PROJECT_DIR$/resources/discordlink.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/resources/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/resources/package-lock.json" afterDir="false" />
@@ -48,7 +49,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GithubDefaultAccount">
-    <option name="defaultAccountId" value="6d92f7ea-23fc-41ed-88b8-bff8ddf082fd" />
+    <option name="defaultAccountId" value="6e6edf05-afd4-4d10-9e25-a9b04a7f8157" />
   </component>
   <component name="PackageJsonUpdateNotifier">
     <dismissed value="$PROJECT_DIR$/resources/package.json" />
@@ -72,7 +73,7 @@
     <property name="WebServerToolWindowPanel.toolwindow.show.permissions" value="false" />
     <property name="WebServerToolWindowPanel.toolwindow.show.size" value="false" />
     <property name="javascript.nodejs.core.library.configured.version" value="14.15.5" />
-    <property name="javascript.nodejs.core.library.typings.version" value="14.14.31" />
+    <property name="javascript.nodejs.core.library.typings.version" value="14.14.39" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/desktop/js" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
@@ -82,7 +83,7 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="org.jetbrains.plugins.github.ui.GithubSettingsConfigurable" />
-    <property name="ts.external.directory.path" value="C:\Users\trmau\AppData\Local\JetBrains\Toolbox\apps\PhpStorm\ch-0\202.6397.115\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
+    <property name="ts.external.directory.path" value="C:\Users\trmau\AppData\Local\JetBrains\Toolbox\apps\PhpStorm\ch-0\211.6693.120\plugins\JavaScriptLanguage\jsLanguageServicesImpl\external" />
     <property name="vue.rearranger.settings.migration" value="true" />
   </component>
   <component name="RecentsManager">
@@ -118,7 +119,14 @@
       <workItem from="1604255060176" duration="1279000" />
       <workItem from="1604257797708" duration="5678000" />
       <workItem from="1604269417908" duration="4524000" />
-      <workItem from="1614181746453" duration="1610000" />
+      <workItem from="1614181746453" duration="2310000" />
+      <workItem from="1614210772636" duration="5000" />
+      <workItem from="1618471394620" duration="2238000" />
+      <workItem from="1618473734882" duration="2679000" />
+      <workItem from="1618517156894" duration="2149000" />
+      <workItem from="1618526185336" duration="5081000" />
+      <workItem from="1618651841981" duration="273000" />
+      <workItem from="1618677246876" duration="1162000" />
     </task>
     <task id="LOCAL-00001" summary="Add delete last message">
       <created>1598554226454</created>
@@ -211,7 +219,56 @@
       <option name="project" value="LOCAL" />
       <updated>1610838424163</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="Update Demon and Dependance">
+      <created>1614183757752</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1614183757752</updated>
+    </task>
+    <task id="LOCAL-00015" summary="- Update des dependance">
+      <created>1618473614245</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1618473614245</updated>
+    </task>
+    <task id="LOCAL-00016" summary="- Mise a jours de la commande clear Message">
+      <created>1618473633391</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1618473633391</updated>
+    </task>
+    <task id="LOCAL-00017" summary="- Update Error HTTP quand le demon est couper">
+      <created>1618474655739</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1618474655739</updated>
+    </task>
+    <task id="LOCAL-00018" summary="- Update de la version de node JS (12 -&gt; 14)&#10;- Update du script de mise a jours de Node JS">
+      <created>1618474704141</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1618474704141</updated>
+    </task>
+    <task id="LOCAL-00019" summary="- Update Dependence pour la correction d'une erreur">
+      <created>1618520419448</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1618520419448</updated>
+    </task>
+    <task id="LOCAL-00020" summary="- Ajout du ASK text">
+      <created>1618531703682</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1618531703682</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -228,7 +285,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="beta" />
+                        <option value="origin/beta" />
                       </list>
                     </value>
                   </entry>
@@ -252,7 +309,14 @@
     <MESSAGE value="Update Discord" />
     <MESSAGE value="Debug" />
     <MESSAGE value="Update Test Widget" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update Test Widget" />
+    <MESSAGE value="Update Demon and Dependance" />
+    <MESSAGE value="- Update des dependance" />
+    <MESSAGE value="- Mise a jours de la commande clear Message" />
+    <MESSAGE value="- Update Error HTTP quand le demon est couper" />
+    <MESSAGE value="- Update de la version de node JS (12 -&gt; 14)&#10;- Update du script de mise a jours de Node JS" />
+    <MESSAGE value="- Update Dependence pour la correction d'une erreur" />
+    <MESSAGE value="- Ajout du ASK text" />
+    <option name="LAST_COMMIT_MESSAGE" value="- Ajout du ASK text" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
