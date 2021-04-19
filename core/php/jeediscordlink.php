@@ -76,17 +76,18 @@ switch ($nom) {
 }
 
 function getdevicepuisupdate($nom, $variable, $commandejeedom, $_idchannel, $id_user) {
-	$discordlinkeqlogic=eqLogic::byLogicalId($_idchannel, 'discordlink'); 
-	if (is_object($discordlinkeqlogic))  {
-		$oldmsg1 = $discordlinkeqlogic->getCmd('info', '1oldmsg');
-		$oldmsg2 = $discordlinkeqlogic->getCmd('info', '2oldmsg');
-		$oldmsg1 = $oldmsg1->execCmd();
-		$oldmsg2 = $oldmsg2->execCmd();
+	$discordlinkeqlogic=eqLogic::byLogicalId($_idchannel, 'discordlink');
 
-		updatecommande("1oldmsg", $variable, "1oldmsg", $discordlinkeqlogic);
-		updatecommande("2oldmsg", $oldmsg1, "2oldmsg", $discordlinkeqlogic);
-		updatecommande("3oldmsg", $oldmsg2, "3oldmsg", $discordlinkeqlogic);
-	}
+	if (!is_object($discordlinkeqlogic)) return;
+
+	$oldmsg1 = $discordlinkeqlogic->getCmd('info', '1oldmsg');
+	$oldmsg2 = $discordlinkeqlogic->getCmd('info', '2oldmsg');
+	$oldmsg1 = $oldmsg1->execCmd();
+	$oldmsg2 = $oldmsg2->execCmd();
+
+	updatecommande("1oldmsg", $variable, "1oldmsg", $discordlinkeqlogic);
+	updatecommande("2oldmsg", $oldmsg1, "2oldmsg", $discordlinkeqlogic);
+	updatecommande("3oldmsg", $oldmsg2, "3oldmsg", $discordlinkeqlogic);
 
 	log::add('discordlink', 'debug', $discordlinkeqlogic->getConfiguration('interactionjeedom'));
 	if ($discordlinkeqlogic->getConfiguration('interactionjeedom') == 1) {
@@ -133,7 +134,16 @@ function updatecommande($nom, $_value, $_logicalId, $_discordlinkeqlogic, $_upda
 function getASK($_value, $_idchannel, $_demande) {
 	$discordlinkeqlogic=eqLogic::byLogicalId($_idchannel, 'discordlink');
 	$cmd = $discordlinkeqlogic->getCmd('action', "sendEmbed");
-	$value = $_demande[$_value];
+	if ($_demande === "text") {
+		log::add('discordlink', 'debug', 'ASK : Text');
+		$value = $_value;
+	} else {
+		log::add('discordlink', 'debug', 'ASK : Autre');
+		$value = $_demande[$_value];
+	}
+
+	log::add('discordlink', 'debug', 'ASK : Demande :"'.$_demande.'" || Reponse : "'.$value.'"');
+
 	$cmd->askResponse($value);
 }
 ?>
