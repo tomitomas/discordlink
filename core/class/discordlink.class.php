@@ -403,14 +403,14 @@ class discordlink extends eqLogic {
 					$Cmddiscordlink = $eqLogic->getCmd(null, $CmdKey);
 					if (!is_object($Cmddiscordlink) ) {
 						$Cmddiscordlink = new discordlinkCmd();
+						$Cmddiscordlink->setName($Cmd['Libelle']);
+						$Cmddiscordlink->setIsVisible($Cmd['visible']);
+						$Cmddiscordlink->setType($Cmd['Type']);
+						$Cmddiscordlink->setSubType($Cmd['SubType']);
 					}
-					$Cmddiscordlink->setName($Cmd['Libelle']);
 					$Cmddiscordlink->setEqLogic_id($eqLogic->getId());
-					$Cmddiscordlink->setType($Cmd['Type']);
-					$Cmddiscordlink->setSubType($Cmd['SubType']);
 					$Cmddiscordlink->setLogicalId($CmdKey);
 					$Cmddiscordlink->setEventOnly(1);
-					$Cmddiscordlink->setIsVisible($Cmd['visible']);
 					if ($Cmd['Type'] == "action" && $CmdKey != "deamonInfo") {
 						$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
 						$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
