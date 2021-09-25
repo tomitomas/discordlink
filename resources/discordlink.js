@@ -121,7 +121,8 @@ app.get('/sendMsg', (req, res) => {
     });
     res.status(200).json(toReturn);
 
-    client.channels.cache.get(req.query.channelID).send(req.query.message);
+    let channel = client.channels.cache.get(req.query.channelID);
+    if (channel != null) channel.send(req.query.message);
 });
 
 app.get('/sendFile', (req, res) => {
