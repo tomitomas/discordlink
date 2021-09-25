@@ -276,7 +276,7 @@ class discordlink extends eqLogic {
 		if(config::byKey('joueA', 'discordlink') != ''){
 			$joueA = config::byKey('joueA', 'discordlink');
 		}
-		$cmd = 'nice -n 19 nodejs ' . $sensor_path . '/discordlink.js ' . network::getNetworkAccess('internal') . ' ' . config::byKey('Token', 'discordlink') . ' '.log::getLogLevel('discordlink') . ' ' . $url . ' ' . jeedom::getApiKey('discordlink') . ' ' . rawurlencode($joueA);
+		$cmd = 'nice -n 19 node ' . $sensor_path . '/discordlink.js ' . network::getNetworkAccess('internal') . ' ' . config::byKey('Token', 'discordlink') . ' '.log::getLogLevel('discordlink') . ' ' . $url . ' ' . jeedom::getApiKey('discordlink') . ' ' . rawurlencode($joueA);
 		log::add('discordlink', 'debug', 'Lancement démon discordlink : ' . $cmd);
 		$result = exec('NODE_ENV=production nohup ' . $cmd . ' >> ' . log::getPathToLog('discordlink_node') . ' 2>&1 &');
 		if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
@@ -855,6 +855,7 @@ class discordlinkCmd extends cmd {
 					$nb_battery = $nb_battery + 1;
 					if(eqLogic::byId($eqLogic->getId())->getStatus('battery') <= $seuil_alert) {
 						if(eqLogic::byId($eqLogic->getId())->getStatus('battery') <= $seuil_critique) {
+
 							$list_battery .= "\n".discordlink::geticon("batterie_nok").substr($eqLogic->getHumanName(), strrpos($eqLogic->getHumanName(), '[',-1) + 1, -1) . ' => __***' . eqLogic::byId($eqLogic->getId())->getStatus('battery') . "%***__";
 							$nb_critique = $nb_critique + 1;
 							if ($colors != '#ff0000') $colors = '#ff0000';
@@ -902,7 +903,7 @@ class discordlinkCmd extends cmd {
 			$def = config::byKey('object:summary');
 			$message='';
 			foreach ($def as $key => $value) {
-				$result == '';
+				$result = '';
 				$result = $object->getSummary($key);
 				if ($result == '') continue;
 				$message .='|'.discordlink::geticon($key).' *** '. $result.' '.$def[$key]['unit'] .' ***		('.$def[$key]['name'].')';
@@ -923,9 +924,7 @@ class discordlinkCmd extends cmd {
 				$maxTime = $this->getEqLogic()->getConfiguration('TempMax', 43200);
 				$_format = 'Y-m-d H:M:S';
 				$eqLogics = eqLogic::byType('openzwave');
-
 				foreach($eqLogics as $eqLogic) {
-
 					$zwaveexclude = $this->getEqLogic()->getConfiguration('zwaveIdExclude', '');
 					if (!(strpos($zwaveexclude, $eqLogic->getLogicalId()) !== false)) {
 						$maxDate = date($_format, "1970-1-1 00:00:00");

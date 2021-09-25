@@ -72,7 +72,6 @@ app.get('/restart', (req, res) => {
     config.logger('DiscordLink: *****************************Relance forcée du Serveur*************');
     config.logger('DiscordLink: ******************************************************************');
     startServer();
-
 });
 
 app.get('/getinvite', (req, res) => {
@@ -81,12 +80,14 @@ app.get('/getinvite', (req, res) => {
     let toReturn = [];
 
     config.logger('DiscordLink: GetInvite');
-    client.generateInvite(["ADMINISTRATOR"]).then(link => {
+    /*client.generateInvite(["ADMINISTRATOR"]).then(link => {
         toReturn.push({
             'invite': link
         });
         res.status(200).json(toReturn);
-    }).catch(console.error);
+    }).catch(console.error);*/
+
+    res.status(200).json(toReturn);
 });
 
 app.get('/getchannel', (req, res) => {
@@ -178,6 +179,7 @@ app.get('/sendEmbed', (req, res) => {
     const Embed = new Discord.MessageEmbed()
         .setColor(color)
         .setTimestamp();
+    //Embed.setThumbnail("https://st.depositphotos.com/1428083/2946/i/600/depositphotos_29460297-stock-photo-bird-cage.jpg");
     if (title !== "null") Embed.setTitle(title);
     if (url !== "null" && countanswer === "null") Embed.setURL(url);
     if (description !== "null") Embed.setDescription(description);
