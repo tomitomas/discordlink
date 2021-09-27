@@ -1,12 +1,27 @@
 /*jshint esversion: 6,node: true,-W041: false */
-//Test : node discordlink.js http://192.168.1.200 NjkzNDU5ODg2NTY2Mjc3MTUw.Xn9Y2A.ldbfL6uAUwGxF-wdU7YOsNkg6ew 100 http://127.0.0.1:80/plugins/discordlink/core/api/jeeDiscordlink.php?apikey=kZxOHfEX aelfgZZWEJaDFnlkhH2wO2pi kZxOHfEXaelfgZZWEJaDFnlkhH2wO2pi Me%20pr%C3%A9pare%20%C3%A0%20faire%20r%C3%A9gner%20la%20terreur
-
+//Test : node discordlink.js http://192.168.1.200 NjkzNDU5ODg2NTY2Mjc3MTUw.Xn9Y2A.ldbfL6uAUwGxF-wdU7YOsNkg6ew 100 http://192.168.1.200:80/plugins/discordlink/core/api/jeeDiscordlink.php?apikey=kZxOHfEX aelfgZZWEJaDFnlkhH2wO2pi kZxOHfEXaelfgZZWEJaDFnlkhH2wO2pi Me%20pr%C3%A9pare%20%C3%A0%20faire%20r%C3%A9gner%20la%20terreur
 const express = require('express');
 require('fs');
-const Discord = require("discord.js");
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
-const client = new Discord.Client();
-const fetch = require('node-fetch');
+const { Client, Intents, Permissions, MessageEmbed } = require('discord.js');
+const client = new Client({ intents: [
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_MEMBERS,
+        Intents.FLAGS.GUILD_BANS,
+        Intents.FLAGS.GUILD_EMOJIS_AND_STICKERS,
+        Intents.FLAGS.GUILD_INTEGRATIONS,
+        Intents.FLAGS.GUILD_WEBHOOKS,
+        Intents.FLAGS.GUILD_INVITES,
+        Intents.FLAGS.GUILD_VOICE_STATES,
+        Intents.FLAGS.GUILD_PRESENCES,
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
+        Intents.FLAGS.GUILD_MESSAGE_TYPING,
+        Intents.FLAGS.DIRECT_MESSAGES,
+        Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
+        Intents.FLAGS.DIRECT_MESSAGE_TYPING
+    ] });
 //const request = require('request');
 
 const token = process.argv[3];
@@ -80,25 +95,28 @@ app.get('/getinvite', (req, res) => {
     let toReturn = [];
 
     config.logger('DiscordLink: GetInvite');
-    /*client.generateInvite(["ADMINISTRATOR"]).then(link => {
-        toReturn.push({
-            'invite': link
-        });
-        res.status(200).json(toReturn);
-    }).catch(console.error);*/
-
+    let link = client.generateInvite({
+        scopes: ["bot"],
+        permissions: Permissions.FLAGS.ADMINISTRATOR
+    });
+    toReturn.push({
+        'invite': link
+    });
     res.status(200).json(toReturn);
 });
 
-app.get('/getchannel', (req, res) => {
+app.get('/getChannels', (req, res) => {
     res.type('json');
     let toReturn = [];
 
     config.logger('DiscordLink: GetChannel');
-    let channelsall = client.channels.cache.array();
+    let channelsall = client.channels.cache;
     for (let b in channelsall) {
         let channel = channelsall[b];
-        if (channel.type === "text") {
+
+        console.log(channelsall)
+
+        if (channel.type === "GUILD_TEXT") {
             toReturn.push({
                 'id': channel.id,
                 'name': channel.name,
@@ -177,14 +195,14 @@ app.get('/sendEmbed', (req, res) => {
 
     if (color === "null") color = "#ff0000";
 
-    const Embed = new Discord.MessageEmbed()
+    const embed = new MessageEmbed()
         .setColor(color)
         .setTimestamp();
     //Embed.setThumbnail("https://st.depositphotos.com/1428083/2946/i/600/depositphotos_29460297-stock-photo-bird-cage.jpg");
-    if (title !== "null") Embed.setTitle(title);
-    if (url !== "null" && countanswer === "null") Embed.setURL(url);
-    if (description !== "null") Embed.setDescription(description);
-    if (footer !== "null") Embed.setFooter(footer);
+    if (title !== "null") embed.setTitle(title);
+    if (url !== "null" && countanswer === "null") embed.setURL(url);
+    if (description !== "null") embed.setDescription(description);
+    if (footer !== "null") embed.setFooter(footer);
     if (fields !== "null") {
         fields = JSON.parse(fields);
         for (let field in fields) {
@@ -197,11 +215,11 @@ app.get('/sendEmbed', (req, res) => {
             console.log(fields[field])
             console.log("Name : " + name + " | Value : " + value)
 
-            Embed.addField(name, value, inline)
+            embed.addField(name, value, inline)
         }
     }
 
-    client.channels.cache.get(req.query.channelID).send(Embed).then(async m => {
+    client.channels.cache.get(req.query.channelID).send(embed).then(async m => {
         if (countanswer !== "null") {
             let timecalcul = (req.query.timeout * 1000);
             toReturn.push({
@@ -327,6 +345,13 @@ function startServer() {
 
     config.logger('DiscordLink:    ******************** Lancement BOT ***********************', 'INFO');
 
+
+    client.login(token);
+
+    client.on('ready', () => {
+        console.log(`Logged in as ${client.user.tag}!`);
+    });
+
     client.login(config.token);
 
     server = app.listen(config.listeningPort, () => {
@@ -358,7 +383,7 @@ client.on("ready", async () => {
     await client.user.setActivity(joueA);
 });
 
-client.on('message', (receivedMessage) => {
+client.on('messageCreate', (receivedMessage) => {
 
 
     if (receivedMessage.content === "!clearmessagechannel") {
