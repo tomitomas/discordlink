@@ -2,7 +2,7 @@ name: SonarQube
 on:
   push:
     branches:
-      - discordlink # or the name of your main branch
+      - dev # or the name of your main branch
 jobs:
   build:
     name: Build
