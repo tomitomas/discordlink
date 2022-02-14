@@ -410,7 +410,6 @@ class discordlink extends eqLogic {
 					}
 					$Cmddiscordlink->setEqLogic_id($eqLogic->getId());
 					$Cmddiscordlink->setLogicalId($CmdKey);
-					$Cmddiscordlink->setEventOnly(1);
 					if ($Cmd['Type'] == "action" && $CmdKey != "deamonInfo") {
 						$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
 						$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
