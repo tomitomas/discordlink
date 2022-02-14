@@ -31,7 +31,7 @@ if (!isConnect()) {
             </div>
         </div>
         </br>
-        <div class="form-group">
+        <div class="form-group" hidden>
             <label class="col-lg-4 control-label">{{Bot Invite : }}</label>
             <div class="col-lg-6">
                 <?php
