@@ -1,7 +1,7 @@
 /*jshint esversion: 6,node: true,-W041: false */
 //Test : node discordlink.js http://192.168.1.200 NjkzNDU5ODg2NTY2Mjc3MTUw.Xn9Y2A.ldbfL6uAUwGxF-wdU7YOsNkg6ew 100 http://192.168.1.200:80/plugins/discordlink/core/api/jeeDiscordlink.php?apikey=kZxOHfEX aelfgZZWEJaDFnlkhH2wO2pi kZxOHfEXaelfgZZWEJaDFnlkhH2wO2pi Me%20pr%C3%A9pare%20%C3%A0%20faire%20r%C3%A9gner%20la%20terreur
 const express = require('express');
-require('fs');
+const bodyParser = require('body-parser');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const { Client, Intents, Permissions, MessageEmbed } = require('discord.js');
@@ -38,36 +38,16 @@ const config = {
 };
 
 let dernierStartServeur = 0;
-
 if (!token) config.logger('DiscordLink-Config: *********************TOKEN NON DEFINI*********************');
 
 function console2(text, level = '') {
-    try {
-        let niveauLevel;
-        switch (level) {
-            case "ERROR":
-                niveauLevel = 400;
-                break;
-            case "WARNING":
-                niveauLevel = 300;
-                break;
-            case "INFO":
-                niveauLevel = 200;
-                break;
-            case "DEBUG":
-                niveauLevel = 100;
-                break;
-            default:
-                niveauLevel = 400; //pour trouver ce qui n'a pas été affecté à un niveau
-                break;
-        }
-    } catch (e) {
-        console.log(arguments[0]);
-    }
+    console.log(text)
 }
 
 /* Routing */
 const app = express();
+app.use(bodyParser.json())
+
 let server = null;
 
 /***** Stop the server *****/
@@ -79,54 +59,60 @@ app.get('/stop', (req, res) => {
     });
 });
 
-/***** Restart server *****/
-app.get('/restart', (req, res) => {
-    config.logger('DiscordLink: Restart');
-    res.status(200).json({});
-    config.logger('DiscordLink: ******************************************************************');
-    config.logger('DiscordLink: *****************************Relance forcée du Serveur*************');
-    config.logger('DiscordLink: ******************************************************************');
-    startServer();
+/***** Request *****/
+app.post('/api/request', async (req, res) => {
+    console.log(req.body);
+
+    let result = await requestInfo(req.body)
+    console.log(result)
+
+    res.status(200);
+    res.send(result);
 });
 
-app.get('/getinvite', (req, res) => {
+async function requestInfo(data) {
+    let result;
+    switch (data.action) {
+        case 'getDiscordInvite':
+            result = getDiscordInvite()
+            break;
+        case 'getDiscordChannels':
+            result = getDiscordChannels()
+            break;
+    }
 
-    res.type('json');
-    let toReturn = [];
+    return result;
 
-    config.logger('DiscordLink: GetInvite');
-    let link = client.generateInvite({
+}
+
+function getDiscordInvite () {
+    return client.generateInvite({
         scopes: ["bot"],
         permissions: Permissions.FLAGS.ADMINISTRATOR
     });
-    toReturn.push({
-        'invite': link
-    });
-    res.status(200).json(toReturn);
-});
+}
 
-app.get('/getChannels', (req, res) => {
-    res.type('json');
+function getDiscordChannels() {
     let toReturn = [];
+    let channels = client.channels.cache;
+    channels.forEach(value => {
+        console.log("test")
+        console.log(value)
 
-    config.logger('DiscordLink: GetChannel');
-    let channelsall = client.channels.cache;
-    for (let b in channelsall) {
-        let channel = channelsall[b];
-
-        console.log(channelsall)
-
-        if (channel.type === "GUILD_TEXT") {
+        if (value.type === "GUILD_TEXT") {
             toReturn.push({
-                'id': channel.id,
-                'name': channel.name,
-                'guildID': channel.guild.id,
-                'guildName': channel.guild.name
+                'id': value.id,
+                'name': value.name,
+                'guildID': value.guild.id,
+                'guildName': value.guild.name
             });
         }
-    }
-    res.status(200).json(toReturn);
-});
+    })
+
+    return toReturn;
+}
+
+/*
 
 app.get('/sendMsg', (req, res) => {
     res.type('json');
@@ -310,7 +296,7 @@ app.get('/sendEmbed', (req, res) => {
         });
         res.status(200).json(toReturn);
     }
-});
+}); */
 
 async function deletemessagechannel(message) {
     let date = new Date();
@@ -342,28 +328,21 @@ startServer();
 
 function startServer() {
     dernierStartServeur = Date.now();
-
     config.logger('DiscordLink:    ******************** Lancement BOT ***********************', 'INFO');
 
-
-    client.login(token);
-
+    //client.login(token);
     client.on('ready', () => {
         console.log(`Logged in as ${client.user.tag}!`);
     });
 
-    client.login(config.token);
+    client.login("NjkzNDU5ODg2NTY2Mjc3MTUw.GXpJLz.WUMnC02mkYl_m9xjz8LV8WyabeR6cBZ151zceg");
 
-    server = app.listen(config.listeningPort, () => {
-        config.logger('DiscordLink:    **************************************************************', 'INFO');
-        config.logger('DiscordLink:    ************** Server OK listening on port ' + server.address().port + ' **************', 'INFO');
-        config.logger('DiscordLink:    **************************************************************', 'INFO');
-
-    });
+    app.listen(3466, () => {
+        console.log(`Example app listening on port ${3466}`)
+    })
 }
 
 function httpPost(nom, jsonaenvoyer) {
-
     let url = IPJeedom + "/plugins/discordlink/core/php/jeediscordlink.php?apikey=" + ClePlugin + "&nom=" + nom;
 
     config.logger && config.logger('URL envoyée: ' + url, "DEBUG");
@@ -384,8 +363,6 @@ client.on("ready", async () => {
 });
 
 client.on('messageCreate', (receivedMessage) => {
-
-
     if (receivedMessage.content === "!clearmessagechannel") {
         deletemessagechannel(receivedMessage);
         receivedMessage.delete();
