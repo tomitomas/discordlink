@@ -217,107 +217,101 @@ class discordlink extends eqLogic {
 		}
 	}
 
-	public static function dependancy_info() {
+	public static function dependancy_info()
+	{
 		$return = array();
-		$return['log'] = 'discordlink_dep';
-		$resources = realpath(dirname(__FILE__) . '/../../resources/');
-		$packageJson=json_decode(file_get_contents($resources.'/package.json'),true);
-		$state='ok';
-		foreach($packageJson["dependencies"] as $dep => $ver){
-			if(!file_exists($resources.'/node_modules/'.$dep.'/package.json')) {
-				$state='nok';
-			}
-		}
-		$return['progress_file'] = jeedom::getTmpFolder('discordlink') . '/dependance';
-		$return['state']=$state;
+		$return['progress_file'] = jeedom::getTmpFolder(__CLASS__) . '/dependance';
+		$return['state'] = 'ok';
+		if (config::byKey('lastDependancyInstallTime', __CLASS__) == '') $return['state'] = 'nok';
+		elseif (!file_exists(__DIR__ . '/../../resources/discordlink/deamon/node_modules')) $return['state'] = 'nok';
 		return $return;
-    }
-
-	public static function dependancy_install($verbose = "false") {
-		if (file_exists(jeedom::getTmpFolder('discordlink') . '/dependance')) {
-			return false;
-		}
-		log::remove('discordlink_dep');
-		$_debug = 0;
-		if (log::getLogLevel('discordlink') == 100 || $verbose === "true" || $verbose === true) $_debug = 1;
-		log::add('discordlink', 'info', 'Installation des dépendances : ');
-		$resource_path = realpath(dirname(__FILE__) . '/../../resources');
-		return array('script' => $resource_path . '/install.sh ' . $resource_path . ' discordlink ' . $_debug, 'log' => log::getPathToLog('discordlink_dep'));
 	}
 
-
-	public static function deamon_info() {
+	public static function deamon_info()
+	{
 		$return = array();
-		$return['log'] = 'discordlink_node';
+		$return['log'] = 'discordlink';
 		$return['state'] = 'nok';
 
-		// Regarder si discordlink.js est lancé
-		$pid = trim(shell_exec('ps ax | grep "resources/discordlink.js" | grep -v "grep" | wc -l'));
-		if ($pid != '' && $pid != '0') $return['state'] = 'ok';
-
-		// Regarder si le token est ok
-		if (config::byKey('Token', 'discordlink', 'null') != "null") $return['launchable'] = 'ok';
-		else {
-			$return['launchable'] = 'nok';
-			$return['launchable_message'] = "TOKEN DISCORD ABSENT ";
+		if (self::isRunning()) {
+			$return['state'] = 'ok';
 		}
+
 		return $return;
+	}
+
+	public static function isRunning(): bool
+	{
+		if (!empty(system::ps('discordLink.js'))) {
+			return true;
+		}
+		return false;
 	}
 
 	public static function deamon_start($_debug = false) {
 		self::deamon_stop();
 		$deamon_info = self::deamon_info();
-		if ($deamon_info['launchable'] != 'ok') throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
-		log::add('discordlink', 'info', 'Lancement du bot');
-		$url = network::getNetworkAccess('internal', 'proto:127.0.0.1:port:comp') . '/plugins/discordlink/core/api/jeeDiscordlink.php?apikey=' . jeedom::getApiKey('discordlink');
-		$log = $_debug ? '1' : '0';
-		$sensor_path = realpath(dirname(__FILE__) . '/../../resources');
-		$joueA = 'Travailler main dans la main avec votre Jeedom';
-		if(config::byKey('joueA', 'discordlink') != ''){
-			$joueA = config::byKey('joueA', 'discordlink');
+		if ($deamon_info['launchable'] != 'ok') {
+			throw new Exception(__('Veuillez vérifier la configuration', __FILE__));
 		}
-		$cmd = 'nice -n 19 node ' . $sensor_path . '/discordlink.js ' . network::getNetworkAccess('internal') . ' ' . config::byKey('Token', 'discordlink') . ' '.log::getLogLevel('discordlink') . ' ' . $url . ' ' . jeedom::getApiKey('discordlink') . ' ' . rawurlencode($joueA);
-		log::add('discordlink', 'debug', 'Lancement démon discordlink : ' . $cmd);
-		$result = exec('NODE_ENV=production nohup ' . $cmd . ' >> ' . log::getPathToLog('discordlink_node') . ' 2>&1 &');
-		if (strpos(strtolower($result), 'error') !== false || strpos(strtolower($result), 'traceback') !== false) {
-			log::add('discordlink', 'error', $result);
-			return false;
+
+		$discord_path = realpath(dirname(__FILE__) . '/../../resources/deamon');
+		$data_path = dirname(__FILE__) . '/../../data/deamon';
+		if (!is_dir($data_path)) {
+			mkdir($data_path, 0777, true);
 		}
+		$data_path = realpath(dirname(__FILE__) . '/../../data/deamon');
+		//self::configureSettings($data_path);
+		chdir($discord_path);
+		$cmd = 'STORE_DIR=' . $data_path;
+		$cmd .= ' yarn start';
+		log::add('discordlink', 'info','[' . __FUNCTION__ . '] '. 'Lancement démon Discord : ' . $cmd);
+		exec($cmd . ' >> ' . log::getPathToLog('discordlink') . ' 2>&1 &');
 		$i = 0;
-		while ($i < 30) {
+		while ($i < 10) {
 			$deamon_info = self::deamon_info();
-			if ($deamon_info['state'] == 'ok') break;
+			if ($deamon_info['state'] == 'ok') {
+				break;
+			}
 			sleep(1);
 			$i++;
 		}
-		if ($i >= 30) {
-			log::add('discordlink', 'error', 'Impossible de lancer le démon discordlink, vérifiez le port', 'unableStartDeamon');
+		if ($i >= 10) {
+			log::add('daikinRCCloud', 'error', 'Impossible de lancer le démon discordlink, vérifiez la log', 'unableStartDeamon');
 			return false;
 		}
 		message::removeAll('discordlink', 'unableStartDeamon');
-		log::add('discordlink', 'info', 'Démon discordlink lancé');
-		discordlink::updateinfo();
+		log::add('discordlink', 'info', 'Démon Discord lancé');
 		return true;
 	}
 
 	public static function deamon_stop() {
-		log::add('discordlink', 'info', 'Arrêt du service discordlink');
-		@file_get_contents("http://" . config::byKey('internalAddr') . ":3466/stop");
-		sleep(3);
-		if(shell_exec('ps aux | grep "resources/discordlink.js" | grep -v "grep" | wc -l') == '1') {
-			exec('sudo kill $(ps aux | grep "resources/discordlink.js" | grep -v "grep" | awk \'{print $2}\') &>/dev/null');
+		log::add('discordlink','debug','[' . __FUNCTION__ . '] '.'Stop démon');
+		$find = 'discordLink.js';
+		$cmd = "(ps ax || ps w) | grep -ie '" . $find . "' | grep -v grep | awk '{print $1}' | xargs " . system::getCmdSudo() . "kill -15 > /dev/null 2>&1";
+		exec($cmd);
+		$i = 0;
+		while ($i < 5) {
 			$deamon_info = self::deamon_info();
-			if ($deamon_info['state'] == 'ok') {
-				sleep(1);
-				exec('sudo kill -9 $(ps aux | grep "resources/discordlink.js" | grep -v "grep" | awk \'{print $2}\') &>/dev/null');
+			if ($deamon_info['state'] == 'nok') {
+				break;
 			}
-			$deamon_info = self::deamon_info();
-			if ($deamon_info['state'] == 'ok') {
+			sleep(1);
+			$i++;
+		}
+		if ($i >= 5) {
+			system::kill('discordLink.js',true);
+			$i =0;
+			while ($i < 5) {
+				$deamon_info = self::deamon_info();
+				if ($deamon_info['state'] == 'nok') {
+					break;
+				}
 				sleep(1);
-				exec('sudo kill -9 $(ps aux | grep "resources/discordlink.js" | grep -v "grep" | awk \'{print $2}\') &>/dev/null');
+				$i++;
 			}
 		}
-    }
+	}
 
 
     public function preInsert() {

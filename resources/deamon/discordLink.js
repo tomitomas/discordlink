@@ -1,5 +1,5 @@
 /*jshint esversion: 6,node: true,-W041: false */
-//Test : node discordlink.js http://192.168.1.200 NjkzNDU5ODg2NTY2Mjc3MTUw.Xn9Y2A.ldbfL6uAUwGxF-wdU7YOsNkg6ew 100 http://192.168.1.200:80/plugins/discordlink/core/api/jeeDiscordlink.php?apikey=kZxOHfEX aelfgZZWEJaDFnlkhH2wO2pi kZxOHfEXaelfgZZWEJaDFnlkhH2wO2pi Me%20pr%C3%A9pare%20%C3%A0%20faire%20r%C3%A9gner%20la%20terreur
+//Test : node discordLink.js http://192.168.1.200 NjkzNDU5ODg2NTY2Mjc3MTUw.Xn9Y2A.ldbfL6uAUwGxF-wdU7YOsNkg6ew 100 http://192.168.1.200:80/plugins/discordlink/core/api/jeeDiscordlink.php?apikey=kZxOHfEX aelfgZZWEJaDFnlkhH2wO2pi kZxOHfEXaelfgZZWEJaDFnlkhH2wO2pi Me%20pr%C3%A9pare%20%C3%A0%20faire%20r%C3%A9gner%20la%20terreur
 const express = require('express');
 const bodyParser = require('body-parser');
 const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
@@ -79,6 +79,8 @@ async function requestInfo(data) {
         case 'getDiscordChannels':
             result = getDiscordChannels()
             break;
+        case 'sendDiscordMessage':
+            result = sendDiscordMessage(data)
     }
 
     return result;
@@ -112,100 +114,61 @@ function getDiscordChannels() {
     return toReturn;
 }
 
-/*
-
-app.get('/sendMsg', (req, res) => {
-    res.type('json');
-    let toReturn = [];
-
-    config.logger('DiscordLink: sendMsg');
-
-    toReturn.push({
-        'id': req.query
-    });
-    res.status(200).json(toReturn);
-
-    let channel = client.channels.cache.get(req.query.channelID);
-    if (channel != null) channel.send(req.query.message);
-});
-
-app.get('/sendFile', (req, res) => {
-    res.type('json');
-    let toReturn = [];
-
-    config.logger('DiscordLink: sendMsg');
-
-    client.channels.cache.get(req.query.channelID).send(req.query.message, {
-        files: [{
-            attachment: req.query.patch,
-            name: req.query.name
-        }]
-    });
-
-    toReturn.push({
-        'id': req.query
-    });
-    res.status(200).json(toReturn);
-});
-
-app.get('/sendMsgTTS', (req, res) => {
-    res.type('json');
-    let toReturn = [];
-
-    config.logger('DiscordLink: sendMsgTTS');
-
-    client.channels.cache.get(req.query.channelID).send(req.query.message, {
-        tts: true
-    });
-
-    toReturn.push({
-        'id': req.query
-    });
-    res.status(200).json(toReturn);
-});
-
-app.get('/sendEmbed', (req, res) => {
-    res.type('json');
-    let toReturn = [];
-
-    config.logger('DiscordLink: sendEmbed');
-
-    let color = req.query.color;
-    let title = req.query.title;
-    let url = req.query.url;
-    let description = req.query.description;
-    let countanswer = req.query.countanswer;
-    let fields = req.query.field;
-    let footer = req.query.footer;
-    let reponse = "null";
-
-    if (color === "null") color = "#ff0000";
-
-    const embed = new MessageEmbed()
-        .setColor(color)
-        .setTimestamp();
-    //Embed.setThumbnail("https://st.depositphotos.com/1428083/2946/i/600/depositphotos_29460297-stock-photo-bird-cage.jpg");
-    if (title !== "null") embed.setTitle(title);
-    if (url !== "null" && countanswer === "null") embed.setURL(url);
-    if (description !== "null") embed.setDescription(description);
-    if (footer !== "null") embed.setFooter(footer);
-    if (fields !== "null") {
-        fields = JSON.parse(fields);
-        for (let field in fields) {
-            let name = fields[field]['name'];
-            let value = fields[field]['value'];
-            let inline = fields[field]['inline'];
-
-            inline = inline === 1;
-
-            console.log(fields[field])
-            console.log("Name : " + name + " | Value : " + value)
-
-            embed.addField(name, value, inline)
-        }
+function sendDiscordMessage(data) {
+    let channel = client.channels.cache.get(data.channelID);
+    let options = {
+        content: data.message ?? null,
+        tts: data.tts ?? false,
+        files: data.files ? [generateDiscordFile(data.files)] : null,
+        embeds: data.embeds ? [generateDiscordEmbed(data.embeds)] : null,
     }
 
-    client.channels.cache.get(req.query.channelID).send(embed).then(async m => {
+    console.log(options)
+    if (channel != null) channel.send(options);
+
+    return true;
+}
+
+function generateDiscordEmbed(data) {
+    const embed = new MessageEmbed()
+        .setTimestamp();
+    embed.setColor(data.color ?? "#ff0000");
+    data.url ? embed.setURL(data.url) : false;
+    data.title ? embed.setTitle(data.title) : false;
+    data.footer ? embed.setFooter(data.footer) : false;
+    data.thumbnail ? embed.setThumbnail(data.thumbnail) : false;
+    data.description ? embed.setDescription(data.description) : false;
+
+    if (data.fields) {
+        data.fields.forEach(field => {
+            if (field.name !== undefined &&  field.value !== undefined && field.inline !== undefined) {
+                embed.addField(field.name, field.value, field.inline);
+            }
+        })
+    }
+
+    return embed;
+}
+
+function generateDiscordFile(data) {
+    let result = [];
+
+    data.forEach(file => {
+        let filedef = {
+            "description": file.description,
+            "attachment": file.attachment,
+            "name": file.name
+        }
+        result.push(filedef);
+    })
+
+    console.log(result)
+    return result;
+}
+
+/*
+app.get('/sendEmbed', (req, res) => {
+       client.channels.cache.get(req.query.channelID).send(embed).then(async m => {
         if (countanswer !== "null") {
             let timecalcul = (req.query.timeout * 1000);
             toReturn.push({
@@ -322,10 +285,6 @@ async function deletemessagechannel(message) {
     }
 }
 
-/* Main */
-
-startServer();
-
 function startServer() {
     dernierStartServeur = Date.now();
     config.logger('DiscordLink:    ******************** Lancement BOT ***********************', 'INFO');
@@ -358,14 +317,17 @@ function httpPost(nom, jsonaenvoyer) {
         })
 }
 
+startServer();
+
 client.on("ready", async () => {
     await client.user.setActivity(joueA);
 });
 
 client.on('messageCreate', (receivedMessage) => {
     if (receivedMessage.content === "!clearmessagechannel") {
-        deletemessagechannel(receivedMessage);
-        receivedMessage.delete();
+        deletemessagechannel(receivedMessage).then(
+            value => value.delete()
+        );
         return;
     }
     if (receivedMessage.author === client.user) return;

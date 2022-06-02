@@ -1,0 +1,14 @@
+{
+  "apt": {
+    "nodejs" : {}
+  },
+  "npm": {
+    "yarn": {}
+  },
+  "plugin": {
+    "mqtt2" : {}
+  },
+  "post-install": {
+    "script" : "plugins/daikinRCCloud/resources/post_install.sh"
+  }
+}
