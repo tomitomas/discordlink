@@ -81,10 +81,13 @@ async function requestInfo(data) {
             break;
         case 'sendDiscordMessage':
             result = sendDiscordMessage(data)
+            break;
+        case 'deleteDiscordMessage':
+            result = await deleteDiscordMessages(data)
+            break;
     }
 
     return result;
-
 }
 
 function getDiscordInvite () {
@@ -161,9 +164,44 @@ function generateDiscordFile(data) {
         }
         result.push(filedef);
     })
-
-    console.log(result)
     return result;
+}
+
+async function deleteDiscordMessages(data) {
+    let finish = false;
+    let date = new Date();
+
+    let dateStart = data.start ?? (date.getTime() - 172800000)
+    let dateFinish = data.finish ?? date.getTime()
+    let nbMessages = data.nbMessages ?? 1000
+
+    let channel = client.channels.cache.get(data.channelID);
+
+    while (finish !== true) {
+        const delmessage = [];
+
+        let limit = nbMessages > 100 ? 100 : nbMessages;
+        let fetch = await channel.messages.fetch({
+            force: true,
+            limit: limit,
+        })
+
+        for (const message of fetch) {
+            if (!message[1].deletable) continue;
+            if (dateStart <= message[1].createdTimestamp) continue;
+            if (dateFinish >= message[1].createdTimestamp)  continue;
+            if (nbMessages <= 0) continue;
+            delmessage.push(message[1])
+
+            nbMessages--;
+        }
+
+        if (delmessage.length === 0) finish = true;
+        else await channel.bulkDelete(delmessage);
+        if (nbMessages === 0) finish = true;
+    }
+
+    return true;
 }
 
 /*
@@ -261,30 +299,6 @@ app.get('/sendEmbed', (req, res) => {
     }
 }); */
 
-async function deletemessagechannel(message) {
-    let date = new Date();
-    let timestamp = date.getTime();
-    let mindaytimestamp = timestamp - 172800000;
-    let maxdaytimestamp = timestamp - 1206000000;
-    let allDelete = true;
-    while (allDelete) {
-        const fetched = await message.channel.messages.fetch({force: true, limit: 100});
-        const delmessage = [];
-        for (const message of fetched) {
-            if (maxdaytimestamp < message[1].createdTimestamp /*&& message[1].createdTimestamp <= mindaytimestamp*/) {
-                if (message[1].deletable) {
-                    delmessage.push(message[1])
-                }
-            }
-        }
-        if (delmessage.length === 0) {
-            allDelete = false;
-        } else {
-            await message.channel.bulkDelete(delmessage);
-        }
-    }
-}
-
 function startServer() {
     dernierStartServeur = Date.now();
     config.logger('DiscordLink:    ******************** Lancement BOT ***********************', 'INFO');
@@ -338,5 +352,4 @@ client.on('messageCreate', (receivedMessage) => {
         message: receivedMessage.content,
         iduser: receivedMessage.author.id
     });
-
 });

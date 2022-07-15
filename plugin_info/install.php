@@ -15,8 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Jeedom. If not, see <http://www.gnu.org/licenses/>.
  */
-
-require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
+    require_once dirname(__FILE__) . '/../../../core/php/core.inc.php';
 
 function discordlink_install() {
     discordlink::CreateCmd();
@@ -30,6 +29,8 @@ function discordlink_update() {
     discordlink::CreateCmd();
     discordlink::setemojy();
     discordlink::updateobject();
+
+    config::remove('user', 'discordlink');
 }
 
 

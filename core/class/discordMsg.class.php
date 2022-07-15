@@ -19,7 +19,6 @@
 require_once __DIR__  . '/../../../../core/php/core.inc.php';
 
 class discordMsg {
-
     public static function LastUser() {
         $message = "";
         $userConnect_list_new = '';

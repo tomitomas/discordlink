@@ -39,19 +39,6 @@ try {
         ajax::success();
     }
 
-    if (init('action') == 'saveUser') {
-        $arrayUser = init('arrayUser');
-        $userConfig = array();
-
-        foreach ($arrayUser as $user) {
-            $key = $user['prenomUser']."_".$user['nomUser'];
-            $userConfig[$key] = $user;
-        }
-
-        config::save('user', $userConfig, 'discordlink');
-        ajax::success();
-    }
-
     if (init('action') == 'getemojy') {
         $emojyarray = config::byKey('emojy', 'discordlink');
         $emojycommandetable = array();
@@ -61,17 +48,6 @@ try {
         }
         $emojy = $emojycommandetable;
         ajax::success($emojy);
-    }
-
-    if (init('action') == 'getuser') {
-        $users = config::byKey('user', 'discordlink');
-        $userscommandetable = array();
-
-        foreach ($users as $user) {
-            array_push($userscommandetable, $user);
-        }
-
-        ajax::success($userscommandetable);
     }
 
     if (init('action') == 'getuserArray') {
