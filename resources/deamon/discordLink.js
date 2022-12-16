@@ -73,9 +73,6 @@ app.post('/api/request', async (req, res) => {
 async function requestInfo(data) {
     let result;
     switch (data.action) {
-        case 'getDiscordInvite':
-            result = getDiscordInvite()
-            break;
         case 'getDiscordChannels':
             result = getDiscordChannels()
             break;
@@ -90,67 +87,43 @@ async function requestInfo(data) {
     return result;
 }
 
-function getDiscordInvite () {
-    return client.generateInvite({
-        scopes: ["bot"],
-        permissions: Permissions.FLAGS.ADMINISTRATOR
-    });
-}
 
-function getDiscordChannels() {
-    let toReturn = [];
-    let channels = client.channels.cache;
-    channels.forEach(value => {
-        console.log("test")
-        console.log(value)
-
-        if (value.type === "GUILD_TEXT") {
-            toReturn.push({
-                'id': value.id,
-                'name': value.name,
-                'guildID': value.guild.id,
-                'guildName': value.guild.name
-            });
-        }
-    })
-
-    return toReturn;
-}
 
 function sendDiscordMessage(data) {
     let channel = client.channels.cache.get(data.channelID);
     let options = {
         content: data.message ?? null,
         tts: data.tts ?? false,
-        files: data.files ? [generateDiscordFile(data.files)] : null,
-        embeds: data.embeds ? [generateDiscordEmbed(data.embeds)] : null,
+        files: data.files ? generateDiscordFile(data.files) : null,
+        embeds: data.embeds ? generateDiscordEmbed(data.embeds) : null,
     }
 
-    console.log(options)
     if (channel != null) channel.send(options);
-
     return true;
 }
 
 function generateDiscordEmbed(data) {
-    const embed = new MessageEmbed()
-        .setTimestamp();
-    embed.setColor(data.color ?? "#ff0000");
-    data.url ? embed.setURL(data.url) : false;
-    data.title ? embed.setTitle(data.title) : false;
-    data.footer ? embed.setFooter(data.footer) : false;
-    data.thumbnail ? embed.setThumbnail(data.thumbnail) : false;
-    data.description ? embed.setDescription(data.description) : false;
+    let result = [];
+    data.forEach(embedData => {
+        const embed = new MessageEmbed()
+            .setTimestamp();
+        embed.setColor(embedData.color ?? "#ff0000");
+        embedData.url ? embed.setURL(embedData.url) : false;
+        embedData.title ? embed.setTitle(embedData.title) : false;
+        embedData.footer ? embed.setFooter(embedData.footer) : false;
+        embedData.thumbnail ? embed.setThumbnail(embedData.thumbnail) : false;
+        embedData.description ? embed.setDescription(embedData.description) : false;
 
-    if (data.fields) {
-        data.fields.forEach(field => {
-            if (field.name !== undefined &&  field.value !== undefined && field.inline !== undefined) {
-                embed.addField(field.name, field.value, field.inline);
-            }
-        })
-    }
-
-    return embed;
+        if (embedData.fields) {
+            embedData.fields.forEach(field => {
+                if (field.name !== undefined && field.value !== undefined && field.inline !== undefined) {
+                    embed.addField(field.name, field.value, field.inline);
+                }
+            })
+        }
+        result.push(embed);
+    })
+    return result;
 }
 
 function generateDiscordFile(data) {
@@ -303,12 +276,6 @@ function startServer() {
     dernierStartServeur = Date.now();
     config.logger('DiscordLink:    ******************** Lancement BOT ***********************', 'INFO');
 
-    //client.login(token);
-    client.on('ready', () => {
-        console.log(`Logged in as ${client.user.tag}!`);
-    });
-
-    client.login("NjkzNDU5ODg2NTY2Mjc3MTUw.GXpJLz.WUMnC02mkYl_m9xjz8LV8WyabeR6cBZ151zceg");
 
     app.listen(3466, () => {
         console.log(`Example app listening on port ${3466}`)

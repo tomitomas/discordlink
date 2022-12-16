@@ -9,6 +9,6 @@
     "mqtt2" : {}
   },
   "post-install": {
-    "script" : "plugins/daikinRCCloud/resources/post_install.sh"
+    "script" : "plugins/discordlink/resources/post_install.sh"
   }
 }

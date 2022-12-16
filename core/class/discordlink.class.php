@@ -232,6 +232,7 @@ class discordlink extends eqLogic {
 		$return = array();
 		$return['log'] = 'discordlink';
 		$return['state'] = 'nok';
+		$return['launchable'] = 'ok';
 
 		if (self::isRunning()) {
 			$return['state'] = 'ok';
@@ -257,16 +258,14 @@ class discordlink extends eqLogic {
 
 		$discord_path = realpath(dirname(__FILE__) . '/../../resources/deamon');
 		$data_path = dirname(__FILE__) . '/../../data/deamon';
-		if (!is_dir($data_path)) {
-			mkdir($data_path, 0777, true);
-		}
+		if (!is_dir($data_path)) mkdir($data_path, 0777, true);
 		$data_path = realpath(dirname(__FILE__) . '/../../data/deamon');
 		//self::configureSettings($data_path);
 		chdir($discord_path);
 		$cmd = 'STORE_DIR=' . $data_path;
 		$cmd .= ' yarn start';
 		log::add('discordlink', 'info','[' . __FUNCTION__ . '] '. 'Lancement démon Discord : ' . $cmd);
-		exec($cmd . ' >> ' . log::getPathToLog('discordlink') . ' 2>&1 &');
+		exec($cmd . ' >> ' . log::getPathToLog('discordlinkd') . ' 2>&1 &');
 		$i = 0;
 		while ($i < 10) {
 			$deamon_info = self::deamon_info();
@@ -277,7 +276,7 @@ class discordlink extends eqLogic {
 			$i++;
 		}
 		if ($i >= 10) {
-			log::add('daikinRCCloud', 'error', 'Impossible de lancer le démon discordlink, vérifiez la log', 'unableStartDeamon');
+			log::add('discordlink', 'error', 'Impossible de lancer le démon discordlink, vérifiez la log', 'unableStartDeamon');
 			return false;
 		}
 		message::removeAll('discordlink', 'unableStartDeamon');
@@ -361,7 +360,7 @@ class discordlink extends eqLogic {
 		return $emojyArray[$_icon];
 	}
 
-	public static function CreateCmd() {
+	public static function createCmd() {
 
 		$eqLogics = eqLogic::byType('discordlink');
 		foreach ($eqLogics as $eqLogic) {
@@ -404,7 +403,6 @@ class discordlink extends eqLogic {
 					}
 					$Cmddiscordlink->setEqLogic_id($eqLogic->getId());
 					$Cmddiscordlink->setLogicalId($CmdKey);
-					$Cmddiscordlink->setEventOnly(1);
 					if ($Cmd['Type'] == "action" && $CmdKey != "deamonInfo") {
 						$Cmddiscordlink->setConfiguration('request', $Cmd['request']);
 						$Cmddiscordlink->setConfiguration('value', 'http://' . config::byKey('internalAddr') . ':3466/' . $Cmd['request'] . "&channelID=" . $eqLogic->getConfiguration('channelid'));
@@ -487,180 +485,103 @@ class discordlink extends eqLogic {
 
     /*     * **********************Getteur Setteur*************************** */
 }
+
 class discordlinkCmd extends cmd {
 
-		/*     * *************************Attributs****************************** */
-
-
-		/*     * ***********************Methode static*************************** */
-
-
-		/*     * *********************Methode d'instance************************* */
-
-		/*
-		 * Non obligatoire permet de demander de ne pas supprimer les commandes même si elles ne sont pas dans la nouvelle configuration de l'équipement envoyé en JS
-		  public function dontRemoveCmd() {
-		  return true;
-		  }
-		 */
-
-		public function execute($_options = null) {
+	/**
+	 * @throws \ErrorException
+	 */
+	public function execute($_options = null): bool
+	{
 			if ($this->getLogicalId() == 'refresh') {
 				$this->getEqLogic()->refresh();
-				return;
-			}
+			} else {
+				$deamon = discordlink::deamon_info();
+				if ($deamon['state'] == 'ok') {
+					$message = $this->buildMessage($_options);
+					$data = $message->build($this->getEqLogic()->getConfiguration('channelID'));
 
-			$deamon = discordlink::deamon_info();
-			if ($deamon['state'] == 'ok') {
-				$request = $this->buildRequest($_options);
-				if ($request != 'truesendwithembed') {
-					log::add('discordlink', 'debug', 'Envoi de ' . $request);
-					$request_http = new com_http($request);
-					$request_http->setAllowEmptyReponse(true);//Autorise les réponses vides
-					if ($this->getConfiguration('noSslCheck') == 1) $request_http->setNoSslCheck(true);
-					if ($this->getConfiguration('doNotReportHttpError') == 1) $request_http->setNoReportError(true);
-					if (isset($_options['speedAndNoErrorReport']) && $_options['speedAndNoErrorReport'] == true) {// option non activée
-						$request_http->setNoReportError(true);
-						$request_http->exec(0.1, 1);
-						return;
-					}
-					$result = $request_http->exec($this->getConfiguration('timeout', 6), $this->getConfiguration('maxHttpRetry', 1));//Time out à 3s 3 essais
+					$result = discordlink_deamon::request($data);
 					if (!$result) throw new Exception(__('Serveur injoignable', __FILE__));
-					return true;
-				} else {
 					return true;
 				}
 			}
 			return false;
 		}
 
-		private function buildRequest($_options = array()) {
-			if ($this->getType() != 'action') return $this->getConfiguration('request');
-			$cmdANDarg = explode('?', $this->getConfiguration('request'), 2);
-			if (count($cmdANDarg) > 1)
-				list($command, $arguments) = $cmdANDarg;
-			else {
-				$command=$this->getConfiguration('request');
-				$arguments="";
-			}
-			switch ($command) {
+	/**
+	 * @throws \ErrorException
+	 */
+	private function buildMessage($_options = array()): discordlink_message
+	{
+			switch ($this->getLogicalId()) {
 				case 'sendMsg':
 				case 'sendMsgTTS':
-					$request = $this->build_ControledeSliderSelectMessage($_options);
+					$request = $this->sendMessage($_options);
 				break;
 				case 'sendEmbed':
-					$request = $this->build_ControledeSliderSelectEmbed($_options);
+					$request = $this->sendEmbeds($_options);
 				break;
 				case 'sendFile':
-					$request = $this->build_ControledeSliderSelectFile($_options);
+					$request = $this->sendFiles($_options);
 				break;
-				case 'deamonInfo':
-					$request = $this->build_deamonInfo($_options);
-				break;
-				case 'dependanceInfo':
-					$request = $this->build_dependanceInfo($_options);
-				break;
-				case 'globalSummary':
-					$request = $this->build_globalSummary($_options);
-				break;
-				case 'batteryinfo':
-					$request = $this->build_baterieglobal($_options);
-				break;
-				case 'objectSummary':
-					$request = $this->build_objectSummary($_options);
-				break;
-				case 'zwave':
-					$request = $this->build_zwave($_options);
-				break;
-				case 'centreMsg':
-					$request = $this->build_centreMsg($_options);
-				break;
-				case 'LastUser':
-					$request = $this->build_LastUser($_options);
-				break;
-				case 'covidSend':
-					$request = $this->build_CovidSend($_options);
-					break;
-				case 'deleteMessage':
-					$request = $this->build_deleteMessage($_options);
-					break;
 				default:
-					$request = '';
-				break;
+					throw new ErrorException('No request found in plugin', 404);
 			}
-			if ($request != 'truesendwithembed') {
-				$request = scenarioExpression::setTags($request);
-				if (trim($request) == '') throw new Exception(__('Commande inconnue ou requête vide : ', __FILE__) . print_r($this, true));
-				$channelID=str_replace("_player", "", $this->getEqLogic()->getConfiguration('channelid'));
-				return 'http://' . config::byKey('internalAddr') . ':3466/' . $request . '&channelID=' . $channelID;
-			} else {
-				return $request;
-			}
-		}
 
-		private function build_ControledeSliderSelectMessage($_options = array(), $default = "Une erreur est survenue") {
-
-			$request = $this->getConfiguration('request');
-			if ((isset($_options['message'])) && ($_options['message'] == "")) $_options['message'] = $default;
-			if (!(isset($_options['message']))) $_options['message'] = "";
-			$request = str_replace(array('#message#'),
-			array(urlencode(self::decodeTexteAleatoire($_options['message']))), $request);
-			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
 			return $request;
 		}
 
-		private function build_ControledeSliderSelectFile($_options = array(), $default = "Une erreur est survenu") {
-			$patch = "null";
-			$nameFile = "null";
-			$message = "null";
+		private function sendMessage($_options = array()): discordlink_message
+		{
+			log::add('discordlink', 'error', json_encode($_options));
 
-			$request = $this->getConfiguration('request');
-			if ((isset($_options['patch'])) && ($_options['patch'] == "")) $_options['patch'] = $default;
-			if (!(isset($_options['patch']))) $_options['patch'] = "";
+
+			$message = new discordlink_message();
+			if (!isset($_options['message']) || ($_options['message'] == "")) $message->setMessage('Une erreur est survenue');
+			else $message->setMessage($_options['message']);
+
+			return $message;
+		}
+
+		private function sendFiles($_options = array()): discordlink_message
+		{
+			$message = new discordlink_message();
+			$message->setMessage($_options['message']);
 
 			if (isset($_options['files']) && is_array($_options['files'])) {
 				foreach ($_options['files'] as $file) {
 					if (version_compare(phpversion(), '5.5.0', '>=')) {
-						$patch = $file;
+						$discordFile = new discordlink_files();
 						$files = new CurlFile($file);
 						$nameexplode = explode('.',$files->getFilename());
-						log::add('discordlink', 'info', $_options['title'].' taille : '.$nameexplode[sizeof($nameexplode)-1]);
-						$nameFile = (isset($_options['title']) ? $_options['title'].'.'.$nameexplode[sizeof($nameexplode)-1] : $files->getFilename());
+						$name = (isset($_options['title']) ? $_options['title'].'.'.$nameexplode[sizeof($nameexplode)-1] : $files->getFilename());
+
+						$discordFile->setAttachment($file);
+						$discordFile->setName($name);
+						$message->addFiles($file);
 					}
 				}
-				$message = $_options['message'];
 
 			} else {
-				$patch = $_options['patch'];
-				$nameFile = $_options['Name_File'];
+				$file = new discordlink_files();
+				$file->setName($_options['Name_File']);
+				$file->setAttachment($_options['patch']);
+
+				$message->addFiles($file);
 			}
 
-			$request = str_replace(array('#message#'),
-			array(urlencode(self::decodeTexteAleatoire($message))), $request);
-			$request = str_replace(array('#name#'),
-			array(urlencode(self::decodeTexteAleatoire($nameFile))), $request);
-			$request = str_replace(array('#patch#'),
-			array(urlencode(self::decodeTexteAleatoire($patch))), $request);
-
-			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
-			return $request;
+			return $message;
 		}
 
-		private function build_ControledeSliderSelectEmbed($_options = array(), $default = "Une erreur est survenue") {
-
-			$request = $this->getConfiguration('request');
-
-			$titre = "null";
-			$url = "null";
-			$description = "null";
-			$footer = "null";
-			$field = "null";
-			$colors = "null";
-			$timeout = "null";
-			$countanswer = "null";
+		private function sendEmbeds($_options = array()): discordlink_message
+		{
+			$message = new discordlink_message();
+			$emded = new discordlink_embed();
 
 			if (isset($_options['answer'])) {
-				if (("" != ($_options['title']))) $titre = $_options['title'];
+				$message->setMessage("Fonction Disable");
+				/*if (("" != ($_options['title']))) $titre = $_options['title'];
 				$colors = "#1100FF";
 
 				if ($_options['answer'][0] != "") {
@@ -686,393 +607,27 @@ class discordlinkCmd extends cmd {
 					$countanswer = 0;
 					$description = "Votre prochain message sera la réponse.";
 					$url = "text";
-				}
+				}*/
 			} else {
-				if (isset($_options['Titre'])) if (("" != ($_options['Titre']))) $titre = $_options['Titre'];
-				if (isset($_options['url'])) if (("" != ($_options['url']))) $url = $_options['url'];
-				if (isset($_options['description'])) if (("" != ($_options['description']))) $description = $_options['description'];
-				if (isset($_options['footer'])) if (("" != ($_options['footer']))) $footer = $_options['footer'];
-				if (isset($_options['colors'])) if (("" != ($_options['colors']))) $colors = $_options['colors'];
-				if (isset($_options['field'])) if (("" != ($_options['field']))) $field = json_encode($_options['field']);
+				if (isset($_options['Titre']) && "" != $_options['Titre']) $emded->setTitle($_options['Titre']);
+				if (isset($_options['url']) && "" != $_options['url']) $emded->setUrl('url');
+				if (isset($_options['description']) && "" != $_options['description']) $emded->setDescription($_options['description']);
+				if (isset($_options['footer']) && "" != $_options['footer']) $emded->setFooter($_options['footer']);
+				if (isset($_options['colors']) && "" != $_options['colors']) $emded->setColor($_options['colors']);
+				if (isset($_options['field']) && "" != $_options['field']) {
+					foreach ($_options['field'] as $field) {
+						$discordField = new discordlink_field();
+						$discordField->setName($field['name']);
+						$discordField->setValue($field['value']);
+						$discordField->setInline($field['inline']);
+
+						$emded->addFields($discordField);
+					}
+				}
+
+				$message->addEmbed($emded);
 			}
-
-			$description = discordlink::emojyconvert($description);
-			log::add('discordlink', 'debug', 'desctription : '.$description);
-
-			$request = str_replace(array('#title#'),
-			array(urlencode(self::decodeTexteAleatoire($titre))), $request);
-			$request = str_replace(array('#url#'),
-			array(urlencode(self::decodeTexteAleatoire($url))), $request);
-			$request = str_replace(array('#description#'),
-			array(urlencode(self::decodeTexteAleatoire($description))), $request);
-			$request = str_replace(array('#footer#'),
-			array(urlencode(self::decodeTexteAleatoire($footer))), $request);
-			$request = str_replace(array('#countanswer#'),
-			array(urlencode(self::decodeTexteAleatoire($countanswer))), $request);
-			$request = str_replace(array('#field#'),
-			array(urlencode(self::decodeTexteAleatoire($field))), $request);
-			$request = str_replace(array('#color#'),
-			array(urlencode(self::decodeTexteAleatoire($colors))), $request);
-			$request = str_replace(array('#timeout#'),
-			array(urlencode(self::decodeTexteAleatoire($timeout))), $request);
-
-			log::add('discordlink_node', 'info', '---->RequestFinale:'.$request);
-			return $request;
-		}
-
-		public static function decodeTexteAleatoire($_text) {
-			$return = $_text;
-			if (strpos($_text, '|') !== false && strpos($_text, '[') !== false && strpos($_text, ']') !== false) {
-				$replies = interactDef::generateTextVariant($_text);
-				$random = rand(0, count($replies) - 1);
-				$return = $replies[$random];
-			}
-			preg_match_all('/{\((.*?)\) \?(.*?):(.*?)}/', $return, $matches, PREG_SET_ORDER, 0);
-			$replace = array();
-			if (is_array($matches) && count($matches) > 0) {
-				foreach ($matches as $match) {
-					if (count($match) != 4) {
-						continue;
-					}
-					$replace[$match[0]] = (jeedom::evaluateExpression($match[1])) ? trim($match[2]) : trim($match[3]);
-				}
-			}
-			return str_replace(array_keys($replace), $replace, $return);
-		}
-
-		public function build_deamonInfo($_options = array()) {
-			$message='';
-			$colors = '#00ff08';
-
-			foreach(plugin::listPlugin(true) as $plugin){
-				if($plugin->getHasOwnDeamon() && config::byKey('deamonAutoMode', $plugin->getId(), 1) == 1) {
-					$deamon_info = $plugin->deamon_info();
-					if ($deamon_info['state'] != 'ok') {
-						$message .='|'.discordlink::geticon("deamon_nok").$plugin->getName().' ('.$plugin->getId().')';
-						if ($colors != '#ff0000') $colors = '#ff0000';
-					} else {
-						$message .='|'.discordlink::geticon("deamon_ok").$plugin->getName().' ('.$plugin->getId().')';
-					}
-
-					if ($plugin->getId() == 'blea') {
-						if (discordlink::testplugin('blea')) {
-							$remotes = blea_remote::all();
-							foreach ($remotes as $remote) {
-								$last = $remote->getCache('lastupdate','0');
-								if ($last == '0' || time() - strtotime($last)>65){
-									$message .='|'.discordlink::geticon("deamon_nok").' Antenne BLEA : '.$remote->getRemoteName();
-									if ($colors != '#ff0000') $colors = '#ff0000';
-								} else {
-									$message .='|'.discordlink::geticon("deamon_ok").' Antenne BLEA : '.$remote->getRemoteName();
-								}
-							}
-						}
-					}
-
-				}
-			}
-
-			if (isset($_options['cron']) AND $colors == '#00ff08') return 'truesendwithembed';
-			$message=str_replace("|","\n",$message);
-			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-			$_options = array('Titre'=>'Etat des démons', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
-			$cmd->execCmd($_options);
-			return 'truesendwithembed';
-		}
-
-		public function build_dependanceInfo($_options = array()) {
-			$message='';
-			$colors = '#00ff08';
-
-			foreach(plugin::listPlugin(true) as $plugin){
-				if($plugin->getHasDependency()) {
-					$dependency_info = $plugin->dependancy_info();
-					if ($dependency_info['state'] == 'ok') {
-						$message .='|'.discordlink::geticon("dep_ok").$plugin->getName().' ('.$plugin->getId().')';
-					} elseif ($dependency_info['state'] == 'in_progress') {
-						$message .='|'.discordlink::geticon("dep_progress").$plugin->getName().' ('.$plugin->getId().')';
-						if ($colors == '#00ff08') $colors = '#ffae00';
-					} else {
-						$message .='|'.discordlink::geticon("dep_nok").' ('.$plugin->getId().')';
-						if ($colors != '#ff0000') $colors = '#ff0000';
-					}
-
-				}
-			}
-
-			if (isset($_options['cron']) && $colors == '#00ff08') return 'truesendwithembed';
-			$message=str_replace("|","\n",$message);
-			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-			$_options = array('Titre'=>'Etat des dépendances', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
-			$cmd->execCmd($_options);
-			return 'truesendwithembed';
-		}
-
-		public function build_globalSummary($_options = array()) {
-
-			$objects = jeeObject::all();
-			$def = config::byKey('object:summary');
-			$values = array();
-			$message='';
-			foreach ($def as $key => $value) {
-				$result ='';
-				$result = jeeObject::getGlobalSummary($key);
-				if ($result == '') continue;
-				$message .='|'.discordlink::geticon($key).' *** '. $result.' '.$def[$key]['unit'] .' ***		('.$def[$key]['name'].')';
-			}
-				$message=str_replace("|","\n",$message);
-				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-				$_options = array('Titre'=>'Résumé général', 'description'=> $message, 'colors'=> '#0033ff', 'footer'=> 'By DiscordLink');
-				$cmd->execCmd($_options);
-
-			return 'truesendwithembed';
-		}
-
-		public function build_baterieglobal($_options = array()) {
-			$message='null';
-			$colors = '#00ff08';
-			$seuil_alert = 30;
-			$seuil_critique = 10;
-			$nb_alert = 0;
-			$nb_critique = 0;
-			$nb_battery = 0;
-			$nb_total = 0;
-			$nb_ligne = 0;
-
-			$eqLogics = eqLogic::all(true);
-			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-
-			foreach($eqLogics as $eqLogic)
-			{
-				$nb_total = $nb_total + 1;
-				if((is_numeric(eqLogic::byId($eqLogic->getId())->getStatus('battery')) == 1)) {
-					$nb_battery = $nb_battery + 1;
-					if(eqLogic::byId($eqLogic->getId())->getStatus('battery') <= $seuil_alert) {
-						if(eqLogic::byId($eqLogic->getId())->getStatus('battery') <= $seuil_critique) {
-
-							$list_battery .= "\n".discordlink::geticon("batterie_nok").substr($eqLogic->getHumanName(), strrpos($eqLogic->getHumanName(), '[',-1) + 1, -1) . ' => __***' . eqLogic::byId($eqLogic->getId())->getStatus('battery') . "%***__";
-							$nb_critique = $nb_critique + 1;
-							if ($colors != '#ff0000') $colors = '#ff0000';
-						} else {
-							$list_battery .= "\n".discordlink::geticon("batterie_progress").substr($eqLogic->getHumanName(), strrpos($eqLogic->getHumanName(), '[',-1) + 1, -1) . ' =>  __***' . eqLogic::byId($eqLogic->getId())->getStatus('battery') . "%***__";
-							$nb_alert = $nb_alert + 1;
-							if ($colors == '#00ff08') $colors = '#ffae00';
-						}
-					} else {
-						$list_battery = $list_battery . "\n" .discordlink::geticon("batterie_ok"). substr($eqLogic->getHumanName(), strrpos($eqLogic->getHumanName(), '[',-1) + 1, -1) . ' =>  __***' . eqLogic::byId($eqLogic->getId())->getStatus('battery') . "%***__";
-					}
-
-					if ($nb_ligne == 20) {
-						$message = $list_battery;
-						$message=str_replace("|","\n",$message);
-						$_options = array('Titre'=>'Résumé Batteries : ', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
-						$cmd->execCmd($_options);
-						$nb_ligne = 0;
-						$list_battery = '';
-						$message = '';
-					}
-					$nb_ligne++;
-				}
-			}
-
-			$message = $list_battery;
-			$message=str_replace("|","\n",$message);
-			$_options = array('Titre'=>'Résumé Batteries : ', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
-			$cmd->execCmd($_options);
-
-			$message2 = "Batterie en alerte : __***" . $nb_alert . "***__\n Batterie critique : __***".$nb_critique."***__";
-
-			$message2=str_replace("|","\n",$message2);
-			$_options2 = array('Titre'=>'Résumé Batterie', 'description'=> $message2, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
-			$cmd->execCmd($_options2);
-
-			return 'truesendwithembed';
-		}
-
-		public function build_objectSummary($_options = array()) {
-
-			$idobject = $_options['select'];
-			log::add('discordlink', 'debug', 'idobject : '.$idobject);
-			$object = jeeObject::byId($idobject);
-			$def = config::byKey('object:summary');
-			$message='';
-			foreach ($def as $key => $value) {
-				$result = '';
-				$result = $object->getSummary($key);
-				if ($result == '') continue;
-				$message .='|'.discordlink::geticon($key).' *** '. $result.' '.$def[$key]['unit'] .' ***		('.$def[$key]['name'].')';
-			}
-				$message=str_replace("|","\n",$message);
-				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-				$_options = array('Titre'=>'Résumé : '.$object->getname(), 'description'=> $message, 'colors'=> '#0033ff', 'footer'=> 'By DiscordLink');
-				$cmd->execCmd($_options);
-
-			return 'truesendwithembed';
-		}
-
-		public function build_zwave($_options = array()) {
-
-			if (discordlink::testplugin('openzwave')) {
-				$message = '';
-				$colors = '#00ff08';
-				$maxTime = $this->getEqLogic()->getConfiguration('TempMax', 43200);
-				$_format = 'Y-m-d H:M:S';
-				$eqLogics = eqLogic::byType('openzwave');
-				foreach($eqLogics as $eqLogic) {
-					$zwaveexclude = $this->getEqLogic()->getConfiguration('zwaveIdExclude', '');
-					if (!(strpos($zwaveexclude, $eqLogic->getLogicalId()) !== false)) {
-						$maxDate = date($_format, "1970-1-1 00:00:00");
-						$collectDate = strtotime($eqLogic->getStatus('lastCommunication', date($_format)));
-						//$scenario->setLog( 'Commande ' . $cmd->getHumanName() . ' - ' . $collectDate);
-						$maxDate = max($maxDate, $collectDate);
-						$elapsedTime = time() - $maxDate;
-						if ($elapsedTime >= $maxTime) {
-							$message .= "|".discordlink::geticon("zwave_nok"). " ". $eqLogic->getName(). ' ('.$elapsedTime.')';
-							if ($colors != '#ff0000') $colors = '#ff0000';
-						} else {
-							$message .= "|".discordlink::geticon("zwave_ok"). " ". $eqLogic->getName().' ('.$elapsedTime.')';
-						}
-					}
-				}
-				// log fin de traitement
-				if (isset($_options['cron']) && $colors == '#00ff08') return 'truesendwithembed';
-				$message=str_replace("|","\n",$message);
-				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-				$_options = array('Titre'=>'Zwave Info ', 'description'=> $message, 'colors'=> $colors, 'footer'=> 'By DiscordLink');
-				$cmd->execCmd($_options);
-			}
-			return 'truesendwithembed';
-		}
-
-		public function build_centreMsg($_options = array()) {
-
-			// Parcours de tous les Updates
-				$listUpdate = "";
-				$nbMaj = 0;
-				$msgBloq = "";
-				$nbMajBloq = 0;
-				foreach (update::all() as $update) {
-					$monUpdate = $update->getName();
-					$statusUpdate = strtolower($update->getStatus());
-					$configUpdate = $update->getConfiguration('doNotUpdate');
-					if ($configUpdate == 1) {
-						$configUpdate = " **(MaJ bloquée)**";
-						$nbMajBloq++;
-					}else{$configUpdate = "";}
-					if ($statusUpdate == "update") {
-						$nbMaj++;
-						if ($listUpdate == ""){ $listUpdate = $nbMaj."- ".$monUpdate.$configUpdate; } else {$listUpdate .= "\n".$nbMaj."- ".$monUpdate.$configUpdate;}
-					}
-				}
-				if ($nbMajBloq == 0) {
-					$msgBloq = "";
-				} elseif ($nbMajBloq == 1) {
-					$msgBloq = " (dont **".$nbMajBloq."** bloquée)";
-				} else {
-					$msgBloq = " (dont **".$nbMajBloq."** bloquées)";
-				}
-
-				// Message selon le nombre de mises à jours
-				if ($nbMaj == 0) {
-					$msg = "*Vous n'avez pas de mises à jour en attente !*";
-				}elseif  ($nbMaj == 1) {
-					$msg = "*Vous avez **".$nbMaj."** mise à jour en attente".$msgBloq." :*"."\n".$listUpdate;
-				} else {
-					$msg = "*Vous avez **".$nbMaj."** mises à jour en attente".$msgBloq." :*"."\n".$listUpdate;
-				}
-
-				$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-				$_options = array('Titre'=>':gear: CENTRE DE MISES A JOUR :gear:', 'description'=> $msg, 'colors'=> '#ff0000', 'footer'=> 'By jcamus86');
-				$cmd->execCmd($_options);
-
-				// -------------------------------------------------------------------------------------- //
-				$msg = "";
-				$nbMsg = 0;
-				$nbMsgMax = 5;		//Nombre de messages par bloc de notification
-				$MsgBloc = 1;
-				$listMessage = message::all();
-				foreach ($listMessage as $message){
-					$nbMsg++;
-					if (!($nbMsg <= $nbMsgMax)){
-						$nbMsg = 1;
-						$MsgBloc = $MsgBloc + 1;
-					}
-
-					$msg[$MsgBloc] .= "[".$message->getDate()."]";
-					$msg[$MsgBloc] .= " (".$message->getPlugin().") :";
-					$msg[$MsgBloc] .= "\n" ;
-					($message->getAction() != "") ? $msg[$MsgBloc] .= " (Action : ".$message->getAction().")" : null;
-					$msg[$MsgBloc] .= " ".$message->getMessage()."\n";
-					$msg[$MsgBloc] .= "\n" ;
-					$msg[$MsgBloc] = html_entity_decode($msg[$MsgBloc], ENT_QUOTES | ENT_HTML5);
-				}
-
-				// Message selon le nombre de messages
-				if ($nbMsg == 0){
-					$i=1;
-					$msg = "*Le centre de message est vide !*";
-					$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-					$_options = array('Titre'=>':clipboard: CENTRE DE MESSAGES :clipboard:', 'description'=> $msg, 'colors'=> '#ff8040', 'footer'=> 'By Jcamus86');
-					$cmd->execCmd($_options);
-				}else{
-					$i=0;
-					foreach ($msg as $value){
-						$i++;
-						$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-						$_options = array('Titre'=>':clipboard: CENTRE DE MESSAGES '.$i.'/'.count($msg).' :clipboard:', 'description'=> $value, 'colors'=> '#ff8040', 'footer'=> 'By Jcamus86');
-						$cmd->execCmd($_options);
-					}
-				}
-
-			return 'truesendwithembed';
-		}
-
-		public function build_LastUser($_options = array()) {
-			$result = discordMsg::LastUser();
-			if (isset($_options['cron']) && !$result['cronOk']) return 'truesendwithembed';
-			$message=str_replace("|","\n",$result['Message']);
-			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-			$_options = array('Titre'=>$result['Titre'], 'description'=> $message, 'colors'=> '#ff00ff', 'footer'=> 'By Yasu et Jcamus86');
-			$cmd->execCmd($_options);
-			return 'truesendwithembed';
-		}
-
-		public function build_CovidSend($_options = array()) {
-
-			$motif = "travail";
-			$datesortie = "Maintenant";
-			$heuresortie = "Maintenant";
-
-			$users = config::byKey('user', 'discordlink');
-			$user = $_options['user'];
-			$user = $users[$user];
-			log::add('discordlink', 'debug', 'Users '.json_encode($users));
-			log::add('discordlink', 'debug', 'User '.json_encode($user));
-
-			$nom = $user['nomUser'];
-			$prenom = $user['prenomUser'];
-			$datenaissance = $user['dateNaissanceUser'];
-			$villenaissance = $user['villeNaissanceUser'];
-
-			if (("" != ($_options['motif']))) $motif = $_options['motif'];
-			if (("" != ($_options['datesortie']))) $datesortie = $_options['datesortie'];
-			if (("" != ($_options['heuresortie']))) $heuresortie = $_options['heuresortie'];
-
-			$result = discordlinkCovid::generateCovid($prenom,$nom,$datenaissance,$villenaissance,$motif,$datesortie,$heuresortie);
-			$message=str_replace("|","\n","[Attestation Covid]($result)");
-
-			$fields = array(
-				array("name"=> "Nom", "value" => $nom, "inline" => 1),
-				array("name"=> "Prénom", "value" => $prenom, "inline" => 1),
-				array("name"=> "Motif", "value" => $motif, "inline" => 0),
-				array("name"=> "Date", "value" => $datesortie, "inline" => 0),
-				array("name"=> "Heure", "value" => $heuresortie, "inline" => 0)
-			);
-
-			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
-			$_options = array('Titre'=>"Votre attestation Covid", 'description'=> $message, 'colors'=> '#ff00ff', 'footer'=> 'By Noodom & Thibaut', 'field'=> $fields);
-			$cmd->execCmd($_options);
-			return 'truesendwithembed';
+			return $message;
 		}
 
 		public function build_deleteMessage($_options = array()) {

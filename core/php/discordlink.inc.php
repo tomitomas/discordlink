@@ -24,6 +24,7 @@ require_once __DIR__  . '/../../../../core/php/core.inc.php';
  * 
  */
 
-include_file('core', 'discordMsg', 'class', 'discordlink');
-include_file('core', 'discordlinkCovid', 'class', 'discordlink');
+include_file('core', 'discordlink_actions', 'class', 'discordlink');
+include_file('core', 'discordlink_models', 'class', 'discordlink');
+include_file('core', 'discordlink_deamon', 'class', 'discordlink');
 ?>
