@@ -212,8 +212,9 @@ class discordlink extends eqLogic {
 			if (!$result) return "null";
 			$result = substr($result, 1, -1);
 			$json = json_decode($result, true);
-			log::add('discordlink', 'debug', 'Invite = '.$json['invite']);
-			return $json['invite'];
+			$invite = $json['invite'] ?? "null";
+			log::add('discordlink', 'debug', 'Invite = '.$invite);
+			return $invite;
 		}
 	}
 
