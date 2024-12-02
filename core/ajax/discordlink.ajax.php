@@ -64,7 +64,8 @@ try {
     }
 
     if (init('action') == 'getuser') {
-        $users = config::byKey('user', 'discordlink');
+        /** @var array $users **/
+        $users = config::byKey('user', 'discordlink', array());
         $userscommandetable = array();
 
         foreach ($users as $user) {
