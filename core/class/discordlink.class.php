@@ -847,6 +847,7 @@ class discordlinkCmd extends cmd {
 			$eqLogics = eqLogic::all(true);
 			$cmd = $this->getEqLogic()->getCmd('action', 'sendEmbed');
 
+			$list_battery = '';
 			foreach($eqLogics as $eqLogic)
 			{
 				$nb_total = $nb_total + 1;
