@@ -77,7 +77,7 @@ class discordlink extends eqLogic {
 		discordlink::setchannel();
 	}
 
-	public function emojyconvert($_text): string
+	public static function emojyconvert($_text): string
 	{
 		$_returntext = '';
 		$textsplit = explode(" ", $_text);
@@ -93,7 +93,7 @@ class discordlink extends eqLogic {
 		return $_returntext;
 	}
 
-	public function checkall() {
+	public static function checkall() {
 		$dateRun = new DateTime();
 		$_options = array('cron'=>true);
 		$eqLogics = eqLogic::byType('discordlink');
